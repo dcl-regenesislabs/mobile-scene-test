@@ -10,7 +10,11 @@ import {
   PointerEventType,
   inputSystem,
   InputAction,
-  Schemas
+  Schemas,
+  TriggerArea,
+  triggerAreaEventsSystem,
+  MaterialTransparencyMode,
+  Entity
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion } from '@dcl/sdk/math'
 import { setupUI } from './ui'
@@ -55,6 +59,36 @@ const HoverState = engine.defineComponent('HoverState', {
   isHovered: Schemas.Boolean,
   lastAction: Schemas.String
 })
+
+// ============================================================================
+// TRIGGER AREA COMPONENTS
+// ============================================================================
+
+const TriggerVisual = engine.defineComponent('TriggerVisual', {
+  isPlayerInside: Schemas.Boolean
+})
+
+const RotatingTrigger = engine.defineComponent('RotatingTrigger', {
+  speed: Schemas.Float
+})
+
+const MovingTrigger = engine.defineComponent('MovingTrigger', {
+  startX: Schemas.Float,
+  endX: Schemas.Float,
+  speed: Schemas.Float,
+  direction: Schemas.Int  // 1 or -1
+})
+
+const BouncingTrigger = engine.defineComponent('BouncingTrigger', {
+  startY: Schemas.Float,
+  endY: Schemas.Float,
+  speed: Schemas.Float,
+  direction: Schemas.Int  // 1 or -1
+})
+
+// Colors for trigger areas
+const TRIGGER_COLOR_OUTSIDE = Color4.create(1.0, 0.0, 0.0, 0.2)  // Red, low opacity
+const TRIGGER_COLOR_INSIDE = Color4.create(0.0, 1.0, 0.0, 0.2)   // Green, low opacity
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -131,6 +165,95 @@ function createLabel(text: string, position: Vector3, fontSize: number = 2): num
   Billboard.create(label)
 
   return label
+}
+
+/**
+ * Sets up trigger enter/exit events for a trigger entity
+ */
+function setupTriggerEvents(trigger: Entity): void {
+  triggerAreaEventsSystem.onTriggerEnter(trigger, () => {
+    const visual = TriggerVisual.getMutable(trigger)
+    visual.isPlayerInside = true
+    Material.setPbrMaterial(trigger, {
+      albedoColor: TRIGGER_COLOR_INSIDE,
+      transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+    })
+    console.log(`Player entered trigger ${trigger}`)
+  })
+
+  triggerAreaEventsSystem.onTriggerExit(trigger, () => {
+    const visual = TriggerVisual.getMutable(trigger)
+    visual.isPlayerInside = false
+    Material.setPbrMaterial(trigger, {
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
+      transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+    })
+    console.log(`Player exited trigger ${trigger}`)
+  })
+}
+
+/**
+ * Creates a trigger box area with a visual mesh
+ */
+function createTriggerBox(
+  position: Vector3,
+  scale: Vector3
+): Entity {
+  const trigger = engine.addEntity()
+
+  Transform.create(trigger, {
+    position: position,
+    scale: scale
+  })
+
+  MeshRenderer.setBox(trigger)
+
+  Material.setPbrMaterial(trigger, {
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
+    transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+  })
+
+  TriggerArea.setBox(trigger)
+
+  TriggerVisual.create(trigger, {
+    isPlayerInside: false
+  })
+
+  setupTriggerEvents(trigger)
+
+  return trigger
+}
+
+/**
+ * Creates a trigger sphere area with a visual mesh
+ */
+function createTriggerSphere(
+  position: Vector3,
+  scale: Vector3
+): Entity {
+  const trigger = engine.addEntity()
+
+  Transform.create(trigger, {
+    position: position,
+    scale: scale
+  })
+
+  MeshRenderer.setSphere(trigger)
+
+  Material.setPbrMaterial(trigger, {
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
+    transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+  })
+
+  TriggerArea.setSphere(trigger)
+
+  TriggerVisual.create(trigger, {
+    isPlayerInside: false
+  })
+
+  setupTriggerEvents(trigger)
+
+  return trigger
 }
 
 /**
@@ -537,6 +660,127 @@ export function main() {
   })
 
   // -------------------------------------------------------------------------
+  // TEST 8: TRIGGER AREAS - Testing new TriggerArea feature
+  // Located in negative X parcels (-9 to -1)
+  // Static triggers near 0,0, animated triggers further away
+  // -------------------------------------------------------------------------
+  const triggerBaseX = -50  // Center of negative parcels area
+  const triggerBaseZ = 8
+
+  createLabel('TRIGGER AREA TEST\n(enter to change color)', Vector3.create(triggerBaseX, 6, triggerBaseZ - 8), 1.5)
+
+  // 1. Static Box Trigger (closest to 0,0)
+  createTriggerBox(
+    Vector3.create(triggerBaseX + 30, 2, triggerBaseZ),  // X = -20
+    Vector3.create(4, 4, 4)
+  )
+  createLabel('STATIC BOX', Vector3.create(triggerBaseX + 30, 5, triggerBaseZ), 1.2)
+
+  // 2. Static Sphere Trigger
+  createTriggerSphere(
+    Vector3.create(triggerBaseX + 20, 2, triggerBaseZ),  // X = -30
+    Vector3.create(4, 4, 4)
+  )
+  createLabel('STATIC SPHERE', Vector3.create(triggerBaseX + 20, 5, triggerBaseZ), 1.2)
+
+  // 3. Rotating Box Trigger
+  const rotatingBox = createTriggerBox(
+    Vector3.create(triggerBaseX + 10, 2, triggerBaseZ),  // X = -40
+    Vector3.create(4, 4, 4)
+  )
+  RotatingTrigger.create(rotatingBox, { speed: 30 })  // 30 degrees per second
+  createLabel('ROTATING BOX', Vector3.create(triggerBaseX + 10, 5, triggerBaseZ), 1.2)
+
+  // 4. Moving Box Trigger (horizontal)
+  const movingBox = createTriggerBox(
+    Vector3.create(triggerBaseX, 2, triggerBaseZ),  // X = -50
+    Vector3.create(4, 4, 4)
+  )
+  MovingTrigger.create(movingBox, {
+    startX: triggerBaseX - 5,
+    endX: triggerBaseX + 5,
+    speed: 3,
+    direction: 1
+  })
+  createLabel('MOVING BOX', Vector3.create(triggerBaseX, 5, triggerBaseZ), 1.2)
+
+  // 5. Bouncing Sphere Trigger (vertical bounce)
+  const bouncingSphere = createTriggerSphere(
+    Vector3.create(triggerBaseX - 10, 2, triggerBaseZ),  // X = -60
+    Vector3.create(4, 4, 4)
+  )
+  BouncingTrigger.create(bouncingSphere, {
+    startY: 2,
+    endY: 6,
+    speed: 2,
+    direction: 1
+  })
+  createLabel('BOUNCING SPHERE', Vector3.create(triggerBaseX - 10, 8, triggerBaseZ), 1.2)
+
+  // Platform floor for trigger area test
+  createPlatform(
+    Vector3.create(triggerBaseX, 0.05, triggerBaseZ),
+    Vector3.create(80, 0.1, 20),
+    Color4.create(0.2, 0.2, 0.2, 1)
+  )
+
+  // -------------------------------------------------------------------------
+  // TRIGGER AREA SYSTEMS
+  // -------------------------------------------------------------------------
+
+  // System: Rotate triggers
+  engine.addSystem((dt: number) => {
+    for (const [entity] of engine.getEntitiesWith(RotatingTrigger, Transform)) {
+      const rotating = RotatingTrigger.get(entity)
+      const transform = Transform.getMutable(entity)
+
+      const currentRotation = Quaternion.toEulerAngles(transform.rotation)
+      const newRotation = Quaternion.fromEulerDegrees(
+        currentRotation.x,
+        currentRotation.y + rotating.speed * dt,
+        currentRotation.z
+      )
+      transform.rotation = newRotation
+    }
+  })
+
+  // System: Move triggers back and forth (horizontal)
+  engine.addSystem((dt: number) => {
+    for (const [entity] of engine.getEntitiesWith(MovingTrigger, Transform)) {
+      const moving = MovingTrigger.getMutable(entity)
+      const transform = Transform.getMutable(entity)
+
+      const newX = transform.position.x + moving.speed * moving.direction * dt
+
+      if (newX >= moving.endX) {
+        moving.direction = -1
+      } else if (newX <= moving.startX) {
+        moving.direction = 1
+      }
+
+      transform.position = Vector3.create(newX, transform.position.y, transform.position.z)
+    }
+  })
+
+  // System: Bounce triggers up and down (vertical)
+  engine.addSystem((dt: number) => {
+    for (const [entity] of engine.getEntitiesWith(BouncingTrigger, Transform)) {
+      const bouncing = BouncingTrigger.getMutable(entity)
+      const transform = Transform.getMutable(entity)
+
+      const newY = transform.position.y + bouncing.speed * bouncing.direction * dt
+
+      if (newY >= bouncing.endY) {
+        bouncing.direction = -1
+      } else if (newY <= bouncing.startY) {
+        bouncing.direction = 1
+      }
+
+      transform.position = Vector3.create(transform.position.x, newY, transform.position.z)
+    }
+  })
+
+  // -------------------------------------------------------------------------
   // INPUT HANDLING SYSTEMS
   // -------------------------------------------------------------------------
 
@@ -656,5 +900,5 @@ export function main() {
   })
 
   console.log('✅ All test platforms created')
-  console.log('📊 Tests: Staircase, Gap Jumps, Descend, Step Heights, Ramps, Corridor Width, Control Mapping')
+  console.log('📊 Tests: Staircase, Gap Jumps, Descend, Step Heights, Ramps, Corridor Width, Control Mapping, Trigger Areas')
 }
