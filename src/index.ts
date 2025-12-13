@@ -17,6 +17,7 @@ import {
   Entity
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion } from '@dcl/sdk/math'
+import { movePlayerTo } from '~system/RestrictedActions'
 import { setupUI } from './ui'
 
 // ============================================================================
@@ -725,6 +726,159 @@ export function main() {
   )
 
   // -------------------------------------------------------------------------
+  // TEST 9: WALL TELEPORT TEST - Testing movePlayerTo into solid objects
+  // Located in negative Z parcels
+  // -------------------------------------------------------------------------
+  const wallTestX = 8
+  const wallTestZ = -40
+  const wallSize = 6  // 6x6x6 box
+  const safeAreaPos = Vector3.create(wallTestX, 1, wallTestZ + 10)  // Safe return position
+
+  createLabel('WALL TELEPORT TEST\n(teleport into solid box)', Vector3.create(wallTestX, 8, wallTestZ), 1.5)
+
+  // Platform for the test area
+  createPlatform(
+    Vector3.create(wallTestX, 0.05, wallTestZ),
+    Vector3.create(30, 0.1, 20),
+    Color4.create(0.25, 0.25, 0.25, 1)
+  )
+
+  // The solid wall/box to teleport into
+  const wallBox = engine.addEntity()
+  Transform.create(wallBox, {
+    position: Vector3.create(wallTestX, wallSize / 2, wallTestZ),
+    scale: Vector3.create(wallSize, wallSize, wallSize)
+  })
+  MeshRenderer.setBox(wallBox)
+  MeshCollider.setBox(wallBox)
+  Material.setPbrMaterial(wallBox, {
+    albedoColor: Color4.create(0.6, 0.2, 0.2, 1)
+  })
+  createLabel('SOLID BOX', Vector3.create(wallTestX, wallSize + 1, wallTestZ), 1)
+
+  // Safe area marker
+  const safeMarker = engine.addEntity()
+  Transform.create(safeMarker, {
+    position: Vector3.create(safeAreaPos.x, 0.1, safeAreaPos.z),
+    scale: Vector3.create(3, 0.1, 3)
+  })
+  MeshRenderer.setBox(safeMarker)
+  Material.setPbrMaterial(safeMarker, {
+    albedoColor: Color4.create(0.2, 0.8, 0.2, 1)
+  })
+  createLabel('SAFE AREA\n(return here)', Vector3.create(safeAreaPos.x, 1.5, safeAreaPos.z), 0.8)
+
+  // Teleport depths to test (from edge to center of the box)
+  // Box center is at wallTestX, wallTestZ. Box extends ±3 in each direction.
+  // We'll teleport from the +X side, going deeper into the box
+  const teleportDepths = [
+    { label: 'EDGE\n(0m)', depth: 0 },      // At the edge
+    { label: '0.5m\nINSIDE', depth: 0.5 },
+    { label: '1m\nINSIDE', depth: 1 },
+    { label: '1.5m\nINSIDE', depth: 1.5 },
+    { label: '2m\nINSIDE', depth: 2 },
+    { label: 'CENTER\n(3m)', depth: 3 }     // Center of the box
+  ]
+
+  // Create teleport buttons arranged in a line on the +X side of the box
+  const buttonStartX = wallTestX + wallSize / 2 + 3  // Start 3m from box edge
+  const buttonY = 0.5
+  const buttonSpacing = 2
+
+  teleportDepths.forEach((tp, index) => {
+    const buttonX = buttonStartX + index * buttonSpacing
+    const buttonZ = wallTestZ
+
+    // Create button
+    const button = engine.addEntity()
+    Transform.create(button, {
+      position: Vector3.create(buttonX, buttonY, buttonZ),
+      scale: Vector3.create(1.5, 1, 1.5)
+    })
+    MeshRenderer.setBox(button)
+    MeshCollider.setBox(button)
+    Material.setPbrMaterial(button, {
+      albedoColor: Color4.create(0.3, 0.3, 0.8, 1)
+    })
+
+    // Calculate target position inside the box
+    // Teleporting from +X side, so we go from edge (wallTestX + 3) toward center (wallTestX)
+    const targetX = wallTestX + wallSize / 2 - tp.depth
+    const targetY = 1  // Player height
+    const targetZ = wallTestZ
+
+    // Add pointer events for teleport
+    PointerEvents.create(button, {
+      pointerEvents: [
+        {
+          eventType: PointerEventType.PET_DOWN,
+          eventInfo: {
+            button: InputAction.IA_POINTER,
+            hoverText: `Teleport ${tp.label.replace('\n', ' ')}`
+          }
+        }
+      ]
+    })
+
+    // Label for the button
+    createLabel(tp.label, Vector3.create(buttonX, buttonY + 1.5, buttonZ), 0.7)
+
+    // Store target position for the system to use
+    const TeleportButton = engine.defineComponent(`TeleportButton_${index}`, {
+      targetX: Schemas.Float,
+      targetY: Schemas.Float,
+      targetZ: Schemas.Float,
+      safeX: Schemas.Float,
+      safeY: Schemas.Float,
+      safeZ: Schemas.Float
+    })
+
+    TeleportButton.create(button, {
+      targetX: targetX,
+      targetY: targetY,
+      targetZ: targetZ,
+      safeX: safeAreaPos.x,
+      safeY: safeAreaPos.y,
+      safeZ: safeAreaPos.z
+    })
+
+    // System to handle this button's click
+    engine.addSystem(() => {
+      const cmd = inputSystem.getInputCommand(
+        InputAction.IA_POINTER,
+        PointerEventType.PET_DOWN,
+        button
+      )
+
+      if (cmd) {
+        console.log(`Teleporting to depth ${tp.depth}m inside box...`)
+
+        // Teleport into the box
+        movePlayerTo({
+          newRelativePosition: Vector3.create(targetX, targetY, targetZ)
+        })
+
+        // After 2 seconds, teleport back to safe area
+        const returnTimer = engine.addEntity()
+        let elapsed = 0
+
+        const timerSystem = (dt: number) => {
+          elapsed += dt
+          if (elapsed >= 2) {
+            console.log('Returning to safe area...')
+            movePlayerTo({
+              newRelativePosition: safeAreaPos
+            })
+            engine.removeSystem(timerSystem)
+            engine.removeEntity(returnTimer)
+          }
+        }
+        engine.addSystem(timerSystem)
+      }
+    })
+  })
+
+  // -------------------------------------------------------------------------
   // TRIGGER AREA SYSTEMS
   // -------------------------------------------------------------------------
 
@@ -900,5 +1054,5 @@ export function main() {
   })
 
   console.log('✅ All test platforms created')
-  console.log('📊 Tests: Staircase, Gap Jumps, Descend, Step Heights, Ramps, Corridor Width, Control Mapping, Trigger Areas')
+  console.log('📊 Tests: Staircase, Gap Jumps, Descend, Step Heights, Ramps, Corridor Width, Control Mapping, Trigger Areas, Wall Teleport')
 }
