@@ -786,7 +786,7 @@ export function main() {
     text: 'Stay: 0',
     fontSize: 2,
     textColor: Color4.White(),
-    outlineWidth: 10.0,
+    outlineWidth: 0.2,
     outlineColor: Color3.Black()
   })
   Billboard.create(stayCounterLabel)
@@ -1310,14 +1310,14 @@ export function main() {
   const wallTestX = 8
   const wallTestZ = -40
   const wallSize = 6  // 6x6x6 box
-  const safeAreaPos = Vector3.create(wallTestX, 1, wallTestZ + 10)  // Safe return position
+  const safeAreaPos = Vector3.create(wallTestX, 1, wallTestZ + 15)  // Safe return position
 
   createLabel('WALL TELEPORT TEST\n(teleport into solid box)', Vector3.create(wallTestX, 8, wallTestZ), 1.5)
 
   // Platform for the test area
   createPlatform(
-    Vector3.create(wallTestX, 0.05, wallTestZ),
-    Vector3.create(30, 0.1, 20),
+    Vector3.create(wallTestX + 10, 0.05, wallTestZ),
+    Vector3.create(50, 0.1, 30),
     Color4.create(0.25, 0.25, 0.25, 1)
   )
 
@@ -1346,22 +1346,32 @@ export function main() {
   })
   createLabel('SAFE AREA\n(return here)', Vector3.create(safeAreaPos.x, 1.5, safeAreaPos.z), 0.8)
 
-  // Teleport depths to test (from edge to center of the box)
-  // Box center is at wallTestX, wallTestZ. Box extends ±3 in each direction.
-  // We'll teleport from the +X side, going deeper into the box
+  // 14 teleport depths: from 1m outside to 4m inside (past center)
+  // Box edge is at wallTestX + 3, center at wallTestX
   const teleportDepths = [
-    { label: 'EDGE\n(0m)', depth: 0 },      // At the edge
-    { label: '0.5m\nINSIDE', depth: 0.5 },
-    { label: '1m\nINSIDE', depth: 1 },
-    { label: '1.5m\nINSIDE', depth: 1.5 },
-    { label: '2m\nINSIDE', depth: 2 },
-    { label: 'CENTER\n(3m)', depth: 3 }     // Center of the box
+    { label: '-1.0m\nOUTSIDE', depth: -1.0 },
+    { label: '-0.5m\nOUTSIDE', depth: -0.5 },
+    { label: '0m\nEDGE', depth: 0 },
+    { label: '0.25m', depth: 0.25 },
+    { label: '0.5m', depth: 0.5 },
+    { label: '0.75m', depth: 0.75 },
+    { label: '1.0m', depth: 1.0 },
+    { label: '1.5m', depth: 1.5 },
+    { label: '2.0m', depth: 2.0 },
+    { label: '2.5m', depth: 2.5 },
+    { label: '3.0m\nCENTER', depth: 3.0 },
+    { label: '3.5m', depth: 3.5 },
+    { label: '4.0m', depth: 4.0 },
+    { label: '5.0m\nTHROUGH', depth: 5.0 }
   ]
 
+  // Store all button entities and their target positions
+  const teleportButtons: { entity: Entity, targetX: number, targetY: number, targetZ: number }[] = []
+
   // Create teleport buttons arranged in a line on the +X side of the box
-  const buttonStartX = wallTestX + wallSize / 2 + 3  // Start 3m from box edge
+  const buttonStartX = wallTestX + wallSize / 2 + 2  // Start 2m from box edge
   const buttonY = 0.5
-  const buttonSpacing = 2
+  const buttonSpacing = 1.8
 
   teleportDepths.forEach((tp, index) => {
     const buttonX = buttonStartX + index * buttonSpacing
@@ -1371,89 +1381,67 @@ export function main() {
     const button = engine.addEntity()
     Transform.create(button, {
       position: Vector3.create(buttonX, buttonY, buttonZ),
-      scale: Vector3.create(1.5, 1, 1.5)
+      scale: Vector3.create(1.2, 0.8, 1.2)
     })
     MeshRenderer.setBox(button)
     MeshCollider.setBox(button)
-    Material.setPbrMaterial(button, {
-      albedoColor: Color4.create(0.3, 0.3, 0.8, 1)
-    })
 
-    // Calculate target position inside the box
-    // Teleporting from +X side, so we go from edge (wallTestX + 3) toward center (wallTestX)
+    // Color based on position: green outside, yellow at edge, red inside
+    let buttonColor: Color4
+    if (tp.depth < 0) {
+      buttonColor = Color4.create(0.2, 0.7, 0.2, 1)  // Green - outside
+    } else if (tp.depth === 0) {
+      buttonColor = Color4.create(0.8, 0.8, 0.2, 1)  // Yellow - edge
+    } else {
+      buttonColor = Color4.create(0.7, 0.2, 0.2, 1)  // Red - inside
+    }
+    Material.setPbrMaterial(button, { albedoColor: buttonColor })
+
+    // Calculate target position
+    // Box edge is at wallTestX + wallSize/2 = wallTestX + 3
+    // Depth 0 = edge, positive = inside
     const targetX = wallTestX + wallSize / 2 - tp.depth
-    const targetY = 1  // Player height
+    const targetY = 1
     const targetZ = wallTestZ
 
-    // Add pointer events for teleport
+    // Store button info
+    teleportButtons.push({ entity: button, targetX, targetY, targetZ })
+
+    // Add pointer events
     PointerEvents.create(button, {
       pointerEvents: [
         {
           eventType: PointerEventType.PET_DOWN,
           eventInfo: {
             button: InputAction.IA_POINTER,
-            hoverText: `Teleport ${tp.label.replace('\n', ' ')}`
+            hoverText: `Teleport: ${tp.label.replace('\n', ' ')}`
           }
         }
       ]
     })
 
     // Label for the button
-    createLabel(tp.label, Vector3.create(buttonX, buttonY + 1.5, buttonZ), 0.7)
+    createLabel(tp.label, Vector3.create(buttonX, buttonY + 1.5, buttonZ), 0.6)
+  })
 
-    // Store target position for the system to use
-    const TeleportButton = engine.defineComponent(`TeleportButton_${index}`, {
-      targetX: Schemas.Float,
-      targetY: Schemas.Float,
-      targetZ: Schemas.Float,
-      safeX: Schemas.Float,
-      safeY: Schemas.Float,
-      safeZ: Schemas.Float
-    })
-
-    TeleportButton.create(button, {
-      targetX: targetX,
-      targetY: targetY,
-      targetZ: targetZ,
-      safeX: safeAreaPos.x,
-      safeY: safeAreaPos.y,
-      safeZ: safeAreaPos.z
-    })
-
-    // System to handle this button's click
-    engine.addSystem(() => {
+  // Single system to handle all teleport button clicks
+  engine.addSystem(() => {
+    for (const btn of teleportButtons) {
       const cmd = inputSystem.getInputCommand(
         InputAction.IA_POINTER,
         PointerEventType.PET_DOWN,
-        button
+        btn.entity
       )
 
       if (cmd) {
-        console.log(`Teleporting to depth ${tp.depth}m inside box...`)
+        console.log(`Teleporting to X=${btn.targetX.toFixed(2)}...`)
 
-        // Teleport into the box
+        // Teleport to target position
         movePlayerTo({
-          newRelativePosition: Vector3.create(targetX, targetY, targetZ)
+          newRelativePosition: Vector3.create(btn.targetX, btn.targetY, btn.targetZ)
         })
-
-        // After 2 seconds, teleport back to safe area
-        const returnTimer = engine.addEntity()
-        let elapsed = 0
-
-        const timerSystem = (dt: number) => {
-          elapsed += dt
-          if (elapsed >= 2) {
-            console.log('Returning to safe area...')
-            movePlayerTo({
-              newRelativePosition: safeAreaPos
-            })
-            engine.removeSystem(timerSystem)
-            engine.removeEntity(returnTimer)
-          }
-        }
-        engine.addSystem(timerSystem)
       }
-    })
+    }
   })
 
   // Note: All trigger animations (rotating, moving, scaling) now use Tween/TweenSequence
