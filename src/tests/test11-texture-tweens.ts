@@ -5,10 +5,21 @@ import {
   Material,
   Tween,
   TextureWrapMode,
-  tweenSystem
+  tweenSystem,
+  Entity,
+  Schemas
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Vector2 } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+
+// Custom component to track texture move tween data
+const TextureMoveLoop = engine.defineComponent('TextureMoveLoop', {
+  startX: Schemas.Float,
+  startY: Schemas.Float,
+  endX: Schemas.Float,
+  endY: Schemas.Float,
+  duration: Schemas.Float
+})
 
 /**
  * TEST 11: TEXTURE TWEENS TEST (ADR-255)
@@ -120,111 +131,114 @@ export function setupTextureTweensTest() {
   createLabel('Diagonal\nContinuous', Vector3.create(textureTweenBaseX + 25, 6, ttRow1Z), 0.9)
 
   // =========================================================================
-  // ROW 2: TextureMove with manual restart loop
+  // ROW 2: TextureMove with looping via component tracking
   // =========================================================================
   const ttRow2Z = textureTweenBaseZ + 4
 
   createLabel('ROW 2: TextureMove (looping)', Vector3.create(textureTweenBaseX - 25, 3, ttRow2Z), 1)
 
-  // T2.1 TextureMove X
-  const texMoveX = engine.addEntity()
-  Transform.create(texMoveX, {
-    position: Vector3.create(textureTweenBaseX - 15, 2.5, ttRow2Z),
-    scale: Vector3.create(4, 4, 0.2)
-  })
-  MeshRenderer.setPlane(texMoveX)
-  Material.setPbrMaterial(texMoveX, {
-    albedoColor: Color4.create(0.7, 0.4, 0.9, 1),
-    texture: Material.Texture.Common({
-      src: 'images/scene-thumbnail.png',
-      wrapMode: TextureWrapMode.TWM_REPEAT
+  // Helper function to create a looping TextureMove entity
+  function createLoopingTextureMove(
+    position: Vector3,
+    color: Color4,
+    startUV: Vector2,
+    endUV: Vector2,
+    duration: number,
+    labelText: string
+  ): Entity {
+    const entity = engine.addEntity()
+    Transform.create(entity, {
+      position: position,
+      scale: Vector3.create(4, 4, 0.2)
     })
-  })
-  Tween.setTextureMove(texMoveX, Vector2.create(0, 0), Vector2.create(1, 0), 4000)
-  createLabel('X: 0→1', Vector3.create(textureTweenBaseX - 15, 6, ttRow2Z), 0.9)
+    MeshRenderer.setPlane(entity)
+    Material.setPbrMaterial(entity, {
+      albedoColor: color,
+      texture: Material.Texture.Common({
+        src: 'images/scene-thumbnail.png',
+        wrapMode: TextureWrapMode.TWM_REPEAT
+      })
+    })
+
+    // Add custom component to track loop data
+    TextureMoveLoop.create(entity, {
+      startX: startUV.x,
+      startY: startUV.y,
+      endX: endUV.x,
+      endY: endUV.y,
+      duration: duration
+    })
+
+    // Start the initial tween
+    Tween.setTextureMove(entity, startUV, endUV, duration)
+
+    // Create label
+    createLabel(labelText, Vector3.create(position.x, 6, position.z), 0.9)
+
+    return entity
+  }
+
+  // T2.1 TextureMove X
+  createLoopingTextureMove(
+    Vector3.create(textureTweenBaseX - 15, 2.5, ttRow2Z),
+    Color4.create(0.7, 0.4, 0.9, 1),
+    Vector2.create(0, 0),
+    Vector2.create(1, 0),
+    4000,
+    'X: 0→1'
+  )
 
   // T2.2 TextureMove Y
-  const texMoveY = engine.addEntity()
-  Transform.create(texMoveY, {
-    position: Vector3.create(textureTweenBaseX - 5, 2.5, ttRow2Z),
-    scale: Vector3.create(4, 4, 0.2)
-  })
-  MeshRenderer.setPlane(texMoveY)
-  Material.setPbrMaterial(texMoveY, {
-    albedoColor: Color4.create(0.4, 0.7, 0.9, 1),
-    texture: Material.Texture.Common({
-      src: 'images/scene-thumbnail.png',
-      wrapMode: TextureWrapMode.TWM_REPEAT
-    })
-  })
-  Tween.setTextureMove(texMoveY, Vector2.create(0, 0), Vector2.create(0, 1), 4000)
-  createLabel('Y: 0→1', Vector3.create(textureTweenBaseX - 5, 6, ttRow2Z), 0.9)
+  createLoopingTextureMove(
+    Vector3.create(textureTweenBaseX - 5, 2.5, ttRow2Z),
+    Color4.create(0.4, 0.7, 0.9, 1),
+    Vector2.create(0, 0),
+    Vector2.create(0, 1),
+    4000,
+    'Y: 0→1'
+  )
 
   // T2.3 TextureMove diagonal
-  const texMoveDiag2 = engine.addEntity()
-  Transform.create(texMoveDiag2, {
-    position: Vector3.create(textureTweenBaseX + 5, 2.5, ttRow2Z),
-    scale: Vector3.create(4, 4, 0.2)
-  })
-  MeshRenderer.setPlane(texMoveDiag2)
-  Material.setPbrMaterial(texMoveDiag2, {
-    albedoColor: Color4.create(0.9, 0.9, 0.4, 1),
-    texture: Material.Texture.Common({
-      src: 'images/scene-thumbnail.png',
-      wrapMode: TextureWrapMode.TWM_REPEAT
-    })
-  })
-  Tween.setTextureMove(texMoveDiag2, Vector2.create(0, 0), Vector2.create(1, 1), 4000)
-  createLabel('Diagonal', Vector3.create(textureTweenBaseX + 5, 6, ttRow2Z), 0.9)
+  createLoopingTextureMove(
+    Vector3.create(textureTweenBaseX + 5, 2.5, ttRow2Z),
+    Color4.create(0.9, 0.9, 0.4, 1),
+    Vector2.create(0, 0),
+    Vector2.create(1, 1),
+    4000,
+    'Diagonal'
+  )
 
   // T2.4 TextureMove X reverse
-  const texMoveXRev = engine.addEntity()
-  Transform.create(texMoveXRev, {
-    position: Vector3.create(textureTweenBaseX + 15, 2.5, ttRow2Z),
-    scale: Vector3.create(4, 4, 0.2)
-  })
-  MeshRenderer.setPlane(texMoveXRev)
-  Material.setPbrMaterial(texMoveXRev, {
-    albedoColor: Color4.create(0.4, 0.9, 0.4, 1),
-    texture: Material.Texture.Common({
-      src: 'images/scene-thumbnail.png',
-      wrapMode: TextureWrapMode.TWM_REPEAT
-    })
-  })
-  Tween.setTextureMove(texMoveXRev, Vector2.create(1, 0), Vector2.create(0, 0), 4000)
-  createLabel('X: 1→0', Vector3.create(textureTweenBaseX + 15, 6, ttRow2Z), 0.9)
+  createLoopingTextureMove(
+    Vector3.create(textureTweenBaseX + 15, 2.5, ttRow2Z),
+    Color4.create(0.4, 0.9, 0.4, 1),
+    Vector2.create(1, 0),
+    Vector2.create(0, 0),
+    4000,
+    'X: 1→0'
+  )
 
   // T2.5 TextureMove Y reverse
-  const texMoveYRev = engine.addEntity()
-  Transform.create(texMoveYRev, {
-    position: Vector3.create(textureTweenBaseX + 25, 2.5, ttRow2Z),
-    scale: Vector3.create(4, 4, 0.2)
-  })
-  MeshRenderer.setPlane(texMoveYRev)
-  Material.setPbrMaterial(texMoveYRev, {
-    albedoColor: Color4.create(0.9, 0.5, 0.2, 1),
-    texture: Material.Texture.Common({
-      src: 'images/scene-thumbnail.png',
-      wrapMode: TextureWrapMode.TWM_REPEAT
-    })
-  })
-  Tween.setTextureMove(texMoveYRev, Vector2.create(0, 1), Vector2.create(0, 0), 4000)
-  createLabel('Y: 1→0', Vector3.create(textureTweenBaseX + 25, 6, ttRow2Z), 0.9)
-
-  // Store texture move entities for restart system
-  const textureMoveEntities = [
-    { entity: texMoveX, start: Vector2.create(0, 0), end: Vector2.create(1, 0), duration: 4000 },
-    { entity: texMoveY, start: Vector2.create(0, 0), end: Vector2.create(0, 1), duration: 4000 },
-    { entity: texMoveDiag2, start: Vector2.create(0, 0), end: Vector2.create(1, 1), duration: 4000 },
-    { entity: texMoveXRev, start: Vector2.create(1, 0), end: Vector2.create(0, 0), duration: 4000 },
-    { entity: texMoveYRev, start: Vector2.create(0, 1), end: Vector2.create(0, 0), duration: 4000 }
-  ]
+  createLoopingTextureMove(
+    Vector3.create(textureTweenBaseX + 25, 2.5, ttRow2Z),
+    Color4.create(0.9, 0.5, 0.2, 1),
+    Vector2.create(0, 1),
+    Vector2.create(0, 0),
+    4000,
+    'Y: 1→0'
+  )
 
   // System to restart TextureMove tweens when they complete
   engine.addSystem(() => {
-    for (const item of textureMoveEntities) {
-      if (tweenSystem.tweenCompleted(item.entity)) {
-        Tween.setTextureMove(item.entity, item.start, item.end, item.duration)
+    for (const [entity] of engine.getEntitiesWith(TextureMoveLoop, Tween)) {
+      if (tweenSystem.tweenCompleted(entity)) {
+        const loopData = TextureMoveLoop.get(entity)
+        const start = Vector2.create(loopData.startX, loopData.startY)
+        const end = Vector2.create(loopData.endX, loopData.endY)
+
+        // Delete old tween and create new one
+        Tween.deleteFrom(entity)
+        Tween.setTextureMove(entity, start, end, loopData.duration)
       }
     }
   })

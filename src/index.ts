@@ -14,6 +14,7 @@ import { setupTriggersTest } from './tests/test08-triggers'
 import { setupTeleportTest } from './tests/test09-teleport'
 import { setupContinuousTweensTest } from './tests/test10-continuous-tweens'
 import { setupTextureTweensTest } from './tests/test11-texture-tweens'
+import { setupBoundaryTriggerTest } from './tests/test13-boundary-trigger'
 
 // ============================================================================
 // MAIN SCENE
@@ -71,6 +72,9 @@ export function main() {
   // TEST 11: Texture Tweens (ADR-255)
   setupTextureTweensTest()
 
+  // TEST 13: Boundary Trigger Test
+  setupBoundaryTriggerTest()
+
   console.log('All test platforms created')
-  console.log('Tests: Staircase, Gap Jumps, Descend, Step Heights, Ramps, Corridor Width, Control Mapping, Trigger Areas, Wall Teleport, Continuous Tweens (ADR-285), Texture Tweens (ADR-255)')
+  console.log('Tests: Staircase, Gap Jumps, Descend, Step Heights, Ramps, Corridor Width, Control Mapping, Trigger Areas, Wall Teleport, Continuous Tweens, Texture Tweens, Boundary Trigger')
 }

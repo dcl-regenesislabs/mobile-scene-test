@@ -1,6 +1,6 @@
 import ReactEcs, { ReactEcsRenderer, UiEntity, Label } from '@dcl/sdk/react-ecs'
 import { Color4 } from '@dcl/sdk/math'
-import { engine, Transform, PlayerIdentityData } from '@dcl/sdk/ecs'
+import { engine, Transform } from '@dcl/sdk/ecs'
 
 // ============================================================================
 // TRACKING STATE
@@ -229,56 +229,57 @@ export function setupUI() {
 
   ReactEcsRenderer.setUiRenderer(AltitudePanel)
 
+  // Use engine.PlayerEntity to get LOCAL player position (not other players)
   engine.addSystem(() => {
-    for (const [entity] of engine.getEntitiesWith(Transform, PlayerIdentityData)) {
-      const transform = Transform.get(entity)
-      if (transform && transform.position) {
-        const newY = transform.position.y
-        const newX = transform.position.x
+    if (!Transform.has(engine.PlayerEntity)) return
 
-        currentAltitude = newY
-        currentX = newX
+    const transform = Transform.get(engine.PlayerEntity)
+    if (transform && transform.position) {
+      const newY = transform.position.y
+      const newX = transform.position.x
 
-        // Track max altitude
-        if (currentAltitude > maxAltitude) {
-          maxAltitude = currentAltitude
-        }
+      currentAltitude = newY
+      currentX = newX
 
-        // Jump detection: player is rising and not on ground
-        const isRising = newY > lastY + 0.01
-        const isFalling = newY < lastY - 0.01
-        const onGround = newY < 1.8 && !isRising && !isFalling
-
-        if (!isJumping && isRising && lastY < 1.8) {
-          // Jump started
-          isJumping = true
-          jumpStartX = newX
-          jumpStartY = newY
-          jumpDeltaX = 0
-          jumpDeltaY = 0
-        }
-
-        if (isJumping) {
-          // Update jump deltas
-          jumpDeltaY = newY - jumpStartY
-          jumpDeltaX = Math.abs(newX - jumpStartX)
-
-          // Track max for this jump
-          if (jumpDeltaY > maxJumpHeight) {
-            maxJumpHeight = jumpDeltaY
-          }
-          if (jumpDeltaX > maxJumpDistance) {
-            maxJumpDistance = jumpDeltaX
-          }
-
-          // Check if landed
-          if (onGround || (isFalling && newY <= jumpStartY)) {
-            isJumping = false
-          }
-        }
-
-        lastY = newY
+      // Track max altitude
+      if (currentAltitude > maxAltitude) {
+        maxAltitude = currentAltitude
       }
+
+      // Jump detection: player is rising and not on ground
+      const isRising = newY > lastY + 0.01
+      const isFalling = newY < lastY - 0.01
+      const onGround = newY < 1.8 && !isRising && !isFalling
+
+      if (!isJumping && isRising && lastY < 1.8) {
+        // Jump started
+        isJumping = true
+        jumpStartX = newX
+        jumpStartY = newY
+        jumpDeltaX = 0
+        jumpDeltaY = 0
+      }
+
+      if (isJumping) {
+        // Update jump deltas
+        jumpDeltaY = newY - jumpStartY
+        jumpDeltaX = Math.abs(newX - jumpStartX)
+
+        // Track max for this jump
+        if (jumpDeltaY > maxJumpHeight) {
+          maxJumpHeight = jumpDeltaY
+        }
+        if (jumpDeltaX > maxJumpDistance) {
+          maxJumpDistance = jumpDeltaX
+        }
+
+        // Check if landed
+        if (onGround || (isFalling && newY <= jumpStartY)) {
+          isJumping = false
+        }
+      }
+
+      lastY = newY
     }
   })
 }

@@ -6,7 +6,8 @@ import {
   Tween,
   EasingFunction,
   TweenSequence,
-  TweenLoop
+  TweenLoop,
+  Entity
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
@@ -266,4 +267,127 @@ export function setupContinuousTweensTest() {
   })
   TweenSequence.create(moveCircle, { loop: TweenLoop.TL_YOYO, sequence: [] })
   createLabel('X+Y Arc\nEased', Vector3.create(continuousTweenBaseX + 27, 8, ctRow3Z), 0.9)
+
+  // =========================================================================
+  // ROW 4: MoveContinuous - Bullet spawner (create, move, delete)
+  // =========================================================================
+  const ctRow4Z = continuousTweenBaseZ + 24
+
+  createLabel('ROW 4: MoveContinuous (bullet spawner)', Vector3.create(continuousTweenBaseX - 25, 3, ctRow4Z), 1)
+
+  // Bullet spawner state (direction is normalized, speed is m/s)
+  const bulletSpawners = [
+    {
+      spawnPos: Vector3.create(continuousTweenBaseX - 15, 2, ctRow4Z),
+      direction: Vector3.create(1, 0, 0),  // +X direction
+      speed: 8,
+      color: Color4.create(1, 0.3, 0.1, 1),
+      label: '+X Direction\n8 m/s',
+      interval: 1.5,
+      lifetime: 3
+    },
+    {
+      spawnPos: Vector3.create(continuousTweenBaseX - 5, 2, ctRow4Z),
+      direction: Vector3.create(0, 0, 1),  // +Z direction
+      speed: 5,
+      color: Color4.create(0.1, 1, 0.3, 1),
+      label: '+Z Direction\n5 m/s',
+      interval: 2,
+      lifetime: 4
+    },
+    {
+      spawnPos: Vector3.create(continuousTweenBaseX + 5, 2, ctRow4Z),
+      direction: Vector3.normalize(Vector3.create(5, 3, 0)),  // Diagonal up
+      speed: 6,
+      color: Color4.create(0.3, 0.5, 1, 1),
+      label: 'Diagonal Up\n6 m/s',
+      interval: 1,
+      lifetime: 2.5
+    },
+    {
+      spawnPos: Vector3.create(continuousTweenBaseX + 15, 2, ctRow4Z),
+      direction: Vector3.normalize(Vector3.create(-6, 0, 3)),  // -X +Z
+      speed: 7,
+      color: Color4.create(1, 1, 0.2, 1),
+      label: '-X +Z\n7 m/s',
+      interval: 0.8,
+      lifetime: 2
+    },
+    {
+      spawnPos: Vector3.create(continuousTweenBaseX + 25, 2, ctRow4Z),
+      direction: Vector3.create(0, 1, 0),  // +Y up
+      speed: 10,
+      color: Color4.create(1, 0.2, 1, 1),
+      label: '+Y Up\n10 m/s',
+      interval: 0.5,
+      lifetime: 1.5
+    }
+  ]
+
+  // Track active bullets
+  const activeBullets: { entity: Entity, deathTime: number }[] = []
+  const spawnerTimers: number[] = bulletSpawners.map(() => 0)
+
+  // Create labels for spawners
+  bulletSpawners.forEach((spawner, index) => {
+    // Spawn point marker
+    const marker = engine.addEntity()
+    Transform.create(marker, {
+      position: spawner.spawnPos,
+      scale: Vector3.create(0.5, 0.5, 0.5)
+    })
+    MeshRenderer.setBox(marker)
+    Material.setPbrMaterial(marker, {
+      albedoColor: Color4.create(0.3, 0.3, 0.3, 1)
+    })
+    createLabel(spawner.label, Vector3.create(spawner.spawnPos.x, 5, spawner.spawnPos.z), 0.8)
+  })
+
+  // System to spawn and manage bullets
+  let globalTime = 0
+  engine.addSystem((dt: number) => {
+    globalTime += dt
+
+    // Spawn new bullets
+    bulletSpawners.forEach((spawner, index) => {
+      spawnerTimers[index] += dt
+      if (spawnerTimers[index] >= spawner.interval) {
+        spawnerTimers[index] = 0
+
+        // Create bullet entity
+        const bullet = engine.addEntity()
+        Transform.create(bullet, {
+          position: Vector3.create(spawner.spawnPos.x, spawner.spawnPos.y, spawner.spawnPos.z),
+          scale: Vector3.create(0.4, 0.4, 0.4)
+        })
+        MeshRenderer.setSphere(bullet)
+        Material.setPbrMaterial(bullet, {
+          albedoColor: spawner.color
+        })
+
+        // Use MoveContinuous - moves indefinitely in the direction at given speed
+        Tween.setMoveContinuous(bullet, spawner.direction, spawner.speed)
+
+        // Track bullet for deletion
+        activeBullets.push({
+          entity: bullet,
+          deathTime: globalTime + spawner.lifetime
+        })
+      }
+    })
+
+    // Delete expired bullets
+    for (let i = activeBullets.length - 1; i >= 0; i--) {
+      if (globalTime >= activeBullets[i].deathTime) {
+        engine.removeEntity(activeBullets[i].entity)
+        activeBullets.splice(i, 1)
+      }
+    }
+  })
+
+  createLabel(
+    'Bullets spawn, move continuously,\nthen delete after lifetime',
+    Vector3.create(continuousTweenBaseX, 1, ctRow4Z - 6),
+    0.7
+  )
 }

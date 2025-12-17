@@ -24,15 +24,15 @@ import { createPlatform, createLabel, TriggerVisual, TRIGGER_COLOR_OUTSIDE, TRIG
  * Located in negative X parcels - comprehensive test of all use cases
  */
 export function setupTriggersTest() {
-  const triggerBaseX = -40
+  const triggerBaseX = -48
   const triggerBaseZ = 8
 
   createLabel('TRIGGER AREA TEST (ADR-258)\nComprehensive Test Suite', Vector3.create(triggerBaseX, 8, triggerBaseZ - 12), 1.5)
 
   // Platform floor for trigger area test
   createPlatform(
-    Vector3.create(-32, 0.05, 24),
-    Vector3.create(64, 0.1, 80),
+    Vector3.create(-40, 0.05, 33),
+    Vector3.create(64, 0.1, 90),
     Color4.create(0.2, 0.2, 0.2, 1)
   )
 
@@ -41,7 +41,7 @@ export function setupTriggersTest() {
   // =========================================================================
   const row1Z = triggerBaseZ
 
-  // 1. Box Trigger (CL_PLAYER)
+  // 1. Box Trigger (CL_PLAYER - any player)
   const boxTrigger = engine.addEntity()
   Transform.create(boxTrigger, {
     position: Vector3.create(triggerBaseX + 30, 2, row1Z),
@@ -60,7 +60,7 @@ export function setupTriggersTest() {
       albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
-    console.log('BOX (CL_PLAYER): Enter')
+    console.log('ANY PLAYER TRIGGER: Enter')
   })
   triggerAreaEventsSystem.onTriggerExit(boxTrigger, () => {
     TriggerVisual.getMutable(boxTrigger).isPlayerInside = false
@@ -68,9 +68,50 @@ export function setupTriggersTest() {
       albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
-    console.log('BOX (CL_PLAYER): Exit')
+    console.log('ANY PLAYER TRIGGER: Exit')
   })
-  createLabel('BOX\n(CL_PLAYER)', Vector3.create(triggerBaseX + 30, 5, row1Z), 1)
+  createLabel('ANY PLAYER\nTRIGGER AREA', Vector3.create(triggerBaseX + 30, 5, row1Z), 1)
+
+  // 1b. Box Trigger (ONLY engine.PlayerEntity - checks result.trigger.entity)
+  const localPlayerTrigger = engine.addEntity()
+  Transform.create(localPlayerTrigger, {
+    position: Vector3.create(triggerBaseX + 40, 2, row1Z),
+    scale: Vector3.create(4, 4, 4)
+  })
+  MeshRenderer.setBox(localPlayerTrigger)
+  Material.setPbrMaterial(localPlayerTrigger, {
+    albedoColor: Color4.create(0.2, 0.5, 0.8, 0.3),
+    transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+  })
+  TriggerArea.setBox(localPlayerTrigger)
+  TriggerVisual.create(localPlayerTrigger, { isPlayerInside: false })
+
+  triggerAreaEventsSystem.onTriggerEnter(localPlayerTrigger, (result) => {
+    // Check if the triggering entity is engine.PlayerEntity (local player only)
+    if (result.trigger?.entity !== engine.PlayerEntity) {
+      console.log(`PLAYER ENTITY ONLY: Ignored entity ${result.trigger?.entity} (not engine.PlayerEntity)`)
+      return
+    }
+    TriggerVisual.getMutable(localPlayerTrigger).isPlayerInside = true
+    Material.setPbrMaterial(localPlayerTrigger, {
+      albedoColor: Color4.create(0.2, 1.0, 0.8, 0.3),
+      transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+    })
+    console.log('PLAYER ENTITY ONLY: engine.PlayerEntity entered')
+  })
+  triggerAreaEventsSystem.onTriggerExit(localPlayerTrigger, (result) => {
+    // Check if the exiting entity is engine.PlayerEntity (local player only)
+    if (result.trigger?.entity !== engine.PlayerEntity) {
+      return
+    }
+    TriggerVisual.getMutable(localPlayerTrigger).isPlayerInside = false
+    Material.setPbrMaterial(localPlayerTrigger, {
+      albedoColor: Color4.create(0.2, 0.5, 0.8, 0.3),
+      transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+    })
+    console.log('PLAYER ENTITY ONLY: engine.PlayerEntity exited')
+  })
+  createLabel('ONLY PLAYER\nENTITY', Vector3.create(triggerBaseX + 40, 5, row1Z), 1)
 
   // 2. Sphere Trigger (CL_PLAYER)
   const sphereTrigger = engine.addEntity()
@@ -719,6 +760,180 @@ export function setupTriggersTest() {
   })
   createLabel('PLAYER + BALL\n(both trigger)', Vector3.create(triggerBaseX + 30, 4.5, row6Z), 0.8)
 
+  // =========================================================================
+  // ROW 7: Trigger Layer Change Test
+  // Testing what happens when a TriggerArea's collision layer changes dynamically
+  // =========================================================================
+  const row7Z = triggerBaseZ + 58
+
+  createLabel('TRIGGER LAYER CHANGE TEST\nDynamic collision layer switching', Vector3.create(triggerBaseX + 15, 8, row7Z - 5), 1.2)
+
+  // Layer cycle configuration
+  const layerConfigs = [
+    { layer: ColliderLayer.CL_PLAYER, name: 'CL_PLAYER', color: Color4.create(0.2, 0.8, 0.2, 0.3) },
+    { layer: ColliderLayer.CL_PHYSICS, name: 'CL_PHYSICS', color: Color4.create(0.8, 0.8, 0.2, 0.3) },
+    { layer: ColliderLayer.CL_POINTER, name: 'CL_POINTER', color: Color4.create(0.2, 0.2, 0.8, 0.3) },
+    { layer: [ColliderLayer.CL_PLAYER, ColliderLayer.CL_PHYSICS], name: 'PLAYER|PHYSICS', color: Color4.create(0.8, 0.2, 0.8, 0.3) }
+  ]
+  let currentLayerIdx = 0
+  let layerTimer = 0
+  const LAYER_INTERVAL = 5
+
+  // Main trigger area that changes layers
+  const layerChangeTrigger = engine.addEntity()
+  Transform.create(layerChangeTrigger, {
+    position: Vector3.create(triggerBaseX + 15, 3, row7Z),
+    scale: Vector3.create(8, 6, 8)
+  })
+  MeshRenderer.setBox(layerChangeTrigger)
+  Material.setPbrMaterial(layerChangeTrigger, {
+    albedoColor: layerConfigs[0].color,
+    transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+  })
+  TriggerArea.setBox(layerChangeTrigger, layerConfigs[0].layer)
+
+  // Current layer label
+  const layerNameLabel = engine.addEntity()
+  Transform.create(layerNameLabel, {
+    position: Vector3.create(triggerBaseX + 15, 8, row7Z)
+  })
+  TextShape.create(layerNameLabel, {
+    text: `Current Layer: ${layerConfigs[0].name}`,
+    fontSize: 3,
+    textColor: Color4.White(),
+    outlineWidth: 0.2,
+    outlineColor: Color3.Black()
+  })
+  Billboard.create(layerNameLabel)
+
+  // Timer label
+  const layerTimerLabel = engine.addEntity()
+  Transform.create(layerTimerLabel, {
+    position: Vector3.create(triggerBaseX + 15, 7, row7Z)
+  })
+  TextShape.create(layerTimerLabel, {
+    text: `Next change in: ${LAYER_INTERVAL}s`,
+    fontSize: 2,
+    textColor: Color4.Yellow(),
+    outlineWidth: 0.2,
+    outlineColor: Color3.Black()
+  })
+  Billboard.create(layerTimerLabel)
+
+  // Event log label
+  const layerEventLog = engine.addEntity()
+  Transform.create(layerEventLog, {
+    position: Vector3.create(triggerBaseX + 28, 5, row7Z)
+  })
+  TextShape.create(layerEventLog, {
+    text: 'EVENT LOG:\n(waiting...)',
+    fontSize: 1.2,
+    textColor: Color4.White(),
+    outlineWidth: 0.2,
+    outlineColor: Color3.Black()
+  })
+  Billboard.create(layerEventLog)
+
+  // Event log storage
+  const layerEvents: string[] = []
+  const MAX_EVENTS = 8
+
+  function addLayerEvent(event: string) {
+    const timestamp = Math.floor(layerTimer * 10) / 10
+    layerEvents.unshift(`[${timestamp}s] ${event}`)
+    if (layerEvents.length > MAX_EVENTS) {
+      layerEvents.pop()
+    }
+    TextShape.getMutable(layerEventLog).text = 'EVENT LOG:\n' + layerEvents.join('\n')
+  }
+
+  // Trigger events
+  triggerAreaEventsSystem.onTriggerEnter(layerChangeTrigger, () => {
+    const layerName = layerConfigs[currentLayerIdx].name
+    addLayerEvent(`ENTER (${layerName})`)
+    Material.setPbrMaterial(layerChangeTrigger, {
+      albedoColor: Color4.create(
+        layerConfigs[currentLayerIdx].color.r + 0.3,
+        layerConfigs[currentLayerIdx].color.g + 0.3,
+        layerConfigs[currentLayerIdx].color.b + 0.3,
+        0.5
+      ),
+      transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+    })
+  })
+
+  triggerAreaEventsSystem.onTriggerExit(layerChangeTrigger, () => {
+    const layerName = layerConfigs[currentLayerIdx].name
+    addLayerEvent(`EXIT (${layerName})`)
+    Material.setPbrMaterial(layerChangeTrigger, {
+      albedoColor: layerConfigs[currentLayerIdx].color,
+      transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+    })
+  })
+
+  // Physics ball for CL_PHYSICS testing (moves through trigger)
+  const layerTestBall = engine.addEntity()
+  Transform.create(layerTestBall, {
+    position: Vector3.create(triggerBaseX + 5, 2, row7Z - 6),
+    scale: Vector3.create(1.5, 1.5, 1.5)
+  })
+  MeshRenderer.setSphere(layerTestBall)
+  MeshCollider.setSphere(layerTestBall, ColliderLayer.CL_PHYSICS)
+  Material.setPbrMaterial(layerTestBall, {
+    albedoColor: Color4.Yellow()
+  })
+  Tween.create(layerTestBall, {
+    mode: Tween.Mode.Move({
+      start: Vector3.create(triggerBaseX + 5, 2, row7Z - 6),
+      end: Vector3.create(triggerBaseX + 25, 2, row7Z + 6)
+    }),
+    duration: 6000,
+    easingFunction: EasingFunction.EF_LINEAR
+  })
+  TweenSequence.create(layerTestBall, {
+    loop: TweenLoop.TL_YOYO,
+    sequence: []
+  })
+  createLabel('Physics Ball', Vector3.create(triggerBaseX + 5, 4.5, row7Z - 6), 0.8)
+
+  // Layer change system
+  engine.addSystem((dt: number) => {
+    layerTimer += dt
+    const timeUntilChange = LAYER_INTERVAL - (layerTimer % LAYER_INTERVAL)
+    TextShape.getMutable(layerTimerLabel).text = `Next change in: ${timeUntilChange.toFixed(1)}s`
+
+    if (layerTimer >= LAYER_INTERVAL) {
+      layerTimer = 0
+
+      const prevName = layerConfigs[currentLayerIdx].name
+      currentLayerIdx = (currentLayerIdx + 1) % layerConfigs.length
+      const newConfig = layerConfigs[currentLayerIdx]
+
+      addLayerEvent(`LAYER: ${prevName} -> ${newConfig.name}`)
+
+      // Update trigger collision layer
+      TriggerArea.deleteFrom(layerChangeTrigger)
+      if (Array.isArray(newConfig.layer)) {
+        TriggerArea.setBox(layerChangeTrigger, newConfig.layer)
+      } else {
+        TriggerArea.setBox(layerChangeTrigger, newConfig.layer)
+      }
+
+      // Update visuals
+      Material.setPbrMaterial(layerChangeTrigger, {
+        albedoColor: newConfig.color,
+        transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
+      })
+      TextShape.getMutable(layerNameLabel).text = `Current Layer: ${newConfig.name}`
+    }
+  })
+
+  createLabel(
+    'INSTRUCTIONS:\n1. Stand inside the trigger\n2. Watch layer cycle every 5s\n3. Check ENTER/EXIT events on change',
+    Vector3.create(triggerBaseX, 1, row7Z - 8),
+    0.8
+  )
+
   // Row labels
   createLabel('ROW 1: Basic Shapes', Vector3.create(triggerBaseX - 15, 3, row1Z), 1)
   createLabel('ROW 2: Collision Layers', Vector3.create(triggerBaseX - 15, 3, row2Z), 1)
@@ -726,4 +941,5 @@ export function setupTriggersTest() {
   createLabel('ROW 4: Special Cases', Vector3.create(triggerBaseX - 15, 3, row4Z), 1)
   createLabel('ROW 5: Moving Triggers', Vector3.create(triggerBaseX - 15, 3, row5Z), 1)
   createLabel('ROW 6: Physics Ball Track', Vector3.create(triggerBaseX - 15, 3, row6Z), 1)
+  createLabel('ROW 7: Layer Change', Vector3.create(triggerBaseX - 15, 3, row7Z), 1)
 }

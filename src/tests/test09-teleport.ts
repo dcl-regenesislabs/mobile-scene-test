@@ -14,6 +14,17 @@ import { Vector3, Color4 } from '@dcl/sdk/math'
 import { movePlayerTo } from '~system/RestrictedActions'
 import { createPlatform, createLabel } from '../utils/helpers'
 
+// Helper to get LOCAL player position (engine.PlayerEntity is the local player)
+function getLocalPlayerPosition(): Vector3 | null {
+  if (Transform.has(engine.PlayerEntity)) {
+    const transform = Transform.get(engine.PlayerEntity)
+    if (transform && transform.position) {
+      return transform.position
+    }
+  }
+  return null
+}
+
 /**
  * TEST 9: WALL TELEPORT TEST - Testing movePlayerTo into solid objects
  * Located in negative Z parcels
@@ -151,4 +162,145 @@ export function setupTeleportTest() {
       }
     }
   })
+
+  // =========================================================================
+  // BOX MOVES TO YOU TEST
+  // Testing what happens when a solid box moves onto the player
+  // (inverse of teleporting player into box)
+  // =========================================================================
+  const moveBoxTestZ = wallTestZ - 15
+  const moveBoxSize = 4
+  const moveBoxOriginalPos = Vector3.create(wallTestX - 10, moveBoxSize / 2, moveBoxTestZ)
+
+  createLabel('BOX TELEPORTS ONTO YOU\n(instant teleport test)', Vector3.create(wallTestX, 6, moveBoxTestZ), 1.2)
+
+  // Platform for this test area
+  createPlatform(
+    Vector3.create(wallTestX, 0.05, moveBoxTestZ),
+    Vector3.create(30, 0.1, 15),
+    Color4.create(0.25, 0.2, 0.3, 1)
+  )
+
+  // The movable solid box
+  const moveBox = engine.addEntity()
+  Transform.create(moveBox, {
+    position: moveBoxOriginalPos,
+    scale: Vector3.create(moveBoxSize, moveBoxSize, moveBoxSize)
+  })
+  MeshRenderer.setBox(moveBox)
+  MeshCollider.setBox(moveBox)
+  Material.setPbrMaterial(moveBox, {
+    albedoColor: Color4.create(0.6, 0.3, 0.6, 1)
+  })
+  createLabel('MOVABLE BOX', Vector3.create(moveBoxOriginalPos.x, moveBoxSize + 1, moveBoxOriginalPos.z), 0.8)
+
+  // Standing spot marker (where player should stand)
+  const standSpot = Vector3.create(wallTestX + 5, 0.1, moveBoxTestZ)
+  const standMarker = engine.addEntity()
+  Transform.create(standMarker, {
+    position: standSpot,
+    scale: Vector3.create(2, 0.1, 2)
+  })
+  MeshRenderer.setBox(standMarker)
+  Material.setPbrMaterial(standMarker, {
+    albedoColor: Color4.create(0.8, 0.8, 0.2, 1)
+  })
+  createLabel('STAND HERE', Vector3.create(standSpot.x, 1, standSpot.z), 0.8)
+
+  // Button to trigger box movement
+  const moveBoxButton = engine.addEntity()
+  Transform.create(moveBoxButton, {
+    position: Vector3.create(wallTestX + 10, 0.5, moveBoxTestZ),
+    scale: Vector3.create(2, 1, 2)
+  })
+  MeshRenderer.setBox(moveBoxButton)
+  MeshCollider.setBox(moveBoxButton)
+  Material.setPbrMaterial(moveBoxButton, {
+    albedoColor: Color4.create(0.8, 0.2, 0.2, 1)
+  })
+  PointerEvents.create(moveBoxButton, {
+    pointerEvents: [
+      {
+        eventType: PointerEventType.PET_DOWN,
+        eventInfo: {
+          button: InputAction.IA_POINTER,
+          hoverText: 'Teleport box onto you!'
+        }
+      }
+    ]
+  })
+  createLabel('CLICK TO\nTELEPORT BOX\nONTO YOU', Vector3.create(wallTestX + 10, 2.5, moveBoxTestZ), 0.7)
+
+  // State tracking for box teleport
+  let boxTeleported = false
+  let boxReturnTimer = 0
+
+  // System to handle box teleport
+  engine.addSystem((dt: number) => {
+    // Check for button click
+    const moveCmd = inputSystem.getInputCommand(
+      InputAction.IA_POINTER,
+      PointerEventType.PET_DOWN,
+      moveBoxButton
+    )
+
+    if (moveCmd && !boxTeleported) {
+      // Get LOCAL player position and TELEPORT box there instantly
+      const playerPos = getLocalPlayerPosition()
+      if (playerPos) {
+        console.log(`TELEPORTING box onto player at: ${playerPos.x.toFixed(2)}, ${playerPos.z.toFixed(2)}`)
+
+        // Instantly teleport box to player position
+        const transform = Transform.getMutable(moveBox)
+        transform.position = Vector3.create(playerPos.x, moveBoxSize / 2, playerPos.z)
+
+        boxTeleported = true
+        boxReturnTimer = 0
+
+        // Change button color to indicate active
+        Material.setPbrMaterial(moveBoxButton, {
+          albedoColor: Color4.create(0.4, 0.4, 0.4, 1)
+        })
+
+        // Change box color to indicate teleported
+        Material.setPbrMaterial(moveBox, {
+          albedoColor: Color4.create(0.9, 0.3, 0.3, 1)
+        })
+      }
+    }
+
+    // Handle return timer
+    if (boxTeleported) {
+      boxReturnTimer += dt
+
+      // After 2 seconds, teleport box back to original position
+      if (boxReturnTimer >= 2) {
+        console.log('Teleporting box back to original position')
+
+        // Instantly teleport box back
+        const transform = Transform.getMutable(moveBox)
+        transform.position = Vector3.create(moveBoxOriginalPos.x, moveBoxOriginalPos.y, moveBoxOriginalPos.z)
+
+        boxTeleported = false
+        boxReturnTimer = 0
+
+        // Reset button color
+        Material.setPbrMaterial(moveBoxButton, {
+          albedoColor: Color4.create(0.8, 0.2, 0.2, 1)
+        })
+
+        // Reset box color
+        Material.setPbrMaterial(moveBox, {
+          albedoColor: Color4.create(0.6, 0.3, 0.6, 1)
+        })
+      }
+    }
+  })
+
+  // Instructions
+  createLabel(
+    'TEST: Stand on yellow marker,\nclick button, box TELEPORTS onto you.\nDo you get stuck inside? Pushed out?',
+    Vector3.create(wallTestX, 0.5, moveBoxTestZ + 6),
+    0.7
+  )
 }
