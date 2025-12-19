@@ -28,7 +28,7 @@ export function setupTriggersTest() {
   const triggerBaseX = -48
   const triggerBaseZ = 8
 
-  createLabel('TRIGGER AREA TEST (ADR-258)\nComprehensive Test Suite', Vector3.create(triggerBaseX, 8, triggerBaseZ - 12), 1.5)
+  createLabel('TRIGGER AREA TEST (ADR-258)\nComprehensive Test Suite', Vector3.create(triggerBaseX, 8, triggerBaseZ - 12), 3)
 
   // Platform floor for trigger area test
   createPlatform(
@@ -71,7 +71,7 @@ export function setupTriggersTest() {
     })
     console.log('ANY PLAYER TRIGGER: Exit')
   })
-  createLabel('ANY PLAYER\nTRIGGER AREA', Vector3.create(triggerBaseX + 30, 5, row1Z), 1)
+  createLabel('ANY PLAYER\nTRIGGER AREA', Vector3.create(triggerBaseX + 30, 5, row1Z), 2)
 
   // 1b. Box Trigger (ONLY engine.PlayerEntity - checks result.trigger.entity)
   const localPlayerTrigger = engine.addEntity()
@@ -81,7 +81,7 @@ export function setupTriggersTest() {
   })
   MeshRenderer.setBox(localPlayerTrigger)
   Material.setPbrMaterial(localPlayerTrigger, {
-    albedoColor: Color4.create(0.2, 0.5, 0.8, 0.3),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(localPlayerTrigger)
@@ -95,7 +95,7 @@ export function setupTriggersTest() {
     }
     TriggerVisual.getMutable(localPlayerTrigger).isPlayerInside = true
     Material.setPbrMaterial(localPlayerTrigger, {
-      albedoColor: Color4.create(0.2, 1.0, 0.8, 0.3),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('PLAYER ENTITY ONLY: engine.PlayerEntity entered')
@@ -107,12 +107,12 @@ export function setupTriggersTest() {
     }
     TriggerVisual.getMutable(localPlayerTrigger).isPlayerInside = false
     Material.setPbrMaterial(localPlayerTrigger, {
-      albedoColor: Color4.create(0.2, 0.5, 0.8, 0.3),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('PLAYER ENTITY ONLY: engine.PlayerEntity exited')
   })
-  createLabel('ONLY PLAYER\nENTITY', Vector3.create(triggerBaseX + 40, 5, row1Z), 1)
+  createLabel('ONLY PLAYER\nENTITY', Vector3.create(triggerBaseX + 40, 5, row1Z), 2)
 
   // 2. Sphere Trigger (CL_PLAYER)
   const sphereTrigger = engine.addEntity()
@@ -143,7 +143,7 @@ export function setupTriggersTest() {
     })
     console.log('SPHERE (CL_PLAYER): Exit')
   })
-  createLabel('SPHERE\n(CL_PLAYER)', Vector3.create(triggerBaseX + 20, 5, row1Z), 1)
+  createLabel('SPHERE\n(CL_PLAYER)', Vector3.create(triggerBaseX + 20, 5, row1Z), 2)
 
   // =========================================================================
   // ROW 2: Collision Layer Tests
@@ -158,25 +158,25 @@ export function setupTriggersTest() {
   })
   MeshRenderer.setBox(pointerTrigger)
   Material.setPbrMaterial(pointerTrigger, {
-    albedoColor: Color4.create(0.0, 0.0, 1.0, 0.3),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(pointerTrigger, ColliderLayer.CL_POINTER)
   triggerAreaEventsSystem.onTriggerEnter(pointerTrigger, () => {
     Material.setPbrMaterial(pointerTrigger, {
-      albedoColor: Color4.create(0.0, 1.0, 1.0, 0.3),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('POINTER TRIGGER: Hover Enter')
   })
   triggerAreaEventsSystem.onTriggerExit(pointerTrigger, () => {
     Material.setPbrMaterial(pointerTrigger, {
-      albedoColor: Color4.create(0.0, 0.0, 1.0, 0.3),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('POINTER TRIGGER: Hover Exit')
   })
-  createLabel('POINTER HOVER\n(CL_POINTER)', Vector3.create(triggerBaseX + 30, 5, row2Z), 1)
+  createLabel('POINTER HOVER\n(CL_POINTER)', Vector3.create(triggerBaseX + 30, 5, row2Z), 2)
 
   // 4. Multiple Layers Trigger (CL_PLAYER | CL_POINTER)
   const multiLayerTrigger = engine.addEntity()
@@ -186,25 +186,25 @@ export function setupTriggersTest() {
   })
   MeshRenderer.setBox(multiLayerTrigger)
   Material.setPbrMaterial(multiLayerTrigger, {
-    albedoColor: Color4.create(1.0, 0.5, 0.0, 0.3),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(multiLayerTrigger, [ColliderLayer.CL_PLAYER, ColliderLayer.CL_POINTER])
   triggerAreaEventsSystem.onTriggerEnter(multiLayerTrigger, (result) => {
     Material.setPbrMaterial(multiLayerTrigger, {
-      albedoColor: Color4.create(1.0, 1.0, 0.0, 0.3),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('MULTI-LAYER: Enter - layers:', result.trigger?.layers)
   })
   triggerAreaEventsSystem.onTriggerExit(multiLayerTrigger, () => {
     Material.setPbrMaterial(multiLayerTrigger, {
-      albedoColor: Color4.create(1.0, 0.5, 0.0, 0.3),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('MULTI-LAYER: Exit')
   })
-  createLabel('MULTI-LAYER\n(PLAYER|POINTER)', Vector3.create(triggerBaseX + 20, 5, row2Z), 1)
+  createLabel('MULTI-LAYER\n(PLAYER|POINTER)', Vector3.create(triggerBaseX + 20, 5, row2Z), 2)
 
   // 5. Physics Layer Trigger (CL_PHYSICS)
   const physicsTrigger = engine.addEntity()
@@ -214,25 +214,25 @@ export function setupTriggersTest() {
   })
   MeshRenderer.setBox(physicsTrigger)
   Material.setPbrMaterial(physicsTrigger, {
-    albedoColor: Color4.create(0.5, 0.0, 0.5, 0.3),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(physicsTrigger, ColliderLayer.CL_PHYSICS)
   triggerAreaEventsSystem.onTriggerEnter(physicsTrigger, () => {
     Material.setPbrMaterial(physicsTrigger, {
-      albedoColor: Color4.create(1.0, 0.0, 1.0, 0.3),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('PHYSICS TRIGGER: Physics object entered')
   })
   triggerAreaEventsSystem.onTriggerExit(physicsTrigger, () => {
     Material.setPbrMaterial(physicsTrigger, {
-      albedoColor: Color4.create(0.5, 0.0, 0.5, 0.3),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('PHYSICS TRIGGER: Physics object exited')
   })
-  createLabel('PHYSICS\n(CL_PHYSICS)', Vector3.create(triggerBaseX + 10, 5, row2Z), 1)
+  createLabel('PHYSICS\n(CL_PHYSICS)', Vector3.create(triggerBaseX + 10, 5, row2Z), 2)
 
   // =========================================================================
   // ROW 3: Event Type Tests
@@ -247,7 +247,7 @@ export function setupTriggersTest() {
   })
   MeshRenderer.setBox(stayTrigger)
   Material.setPbrMaterial(stayTrigger, {
-    albedoColor: Color4.create(0.0, 0.5, 0.5, 0.3),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(stayTrigger)
@@ -258,7 +258,7 @@ export function setupTriggersTest() {
   })
   TextShape.create(stayCounterLabel, {
     text: 'Stay: 0',
-    fontSize: 2,
+    fontSize: 4,
     textColor: Color4.White(),
     outlineWidth: 0.2,
     outlineColor: Color3.Black()
@@ -269,7 +269,7 @@ export function setupTriggersTest() {
   triggerAreaEventsSystem.onTriggerEnter(stayTrigger, () => {
     stayCounter = 0
     Material.setPbrMaterial(stayTrigger, {
-      albedoColor: Color4.create(0.0, 1.0, 0.5, 0.3),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('STAY TRIGGER: Enter')
@@ -280,12 +280,12 @@ export function setupTriggersTest() {
   })
   triggerAreaEventsSystem.onTriggerExit(stayTrigger, () => {
     Material.setPbrMaterial(stayTrigger, {
-      albedoColor: Color4.create(0.0, 0.5, 0.5, 0.3),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log(`STAY TRIGGER: Exit after ${stayCounter} frames`)
   })
-  createLabel('onTriggerStay\n(counter)', Vector3.create(triggerBaseX + 30, 5, row3Z), 1)
+  createLabel('onTriggerStay\n(counter)', Vector3.create(triggerBaseX + 30, 5, row3Z), 2)
 
   // =========================================================================
   // ROW 4: Special Cases from ADR
@@ -301,25 +301,25 @@ export function setupTriggersTest() {
   MeshRenderer.setBox(blockedTrigger)
   MeshCollider.setBox(blockedTrigger)
   Material.setPbrMaterial(blockedTrigger, {
-    albedoColor: Color4.create(0.5, 0.5, 0.5, 0.5),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(blockedTrigger)
   triggerAreaEventsSystem.onTriggerEnter(blockedTrigger, () => {
     Material.setPbrMaterial(blockedTrigger, {
-      albedoColor: Color4.create(0.0, 1.0, 0.0, 0.5),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('BLOCKED TRIGGER: Entered (unexpected!)')
   })
   triggerAreaEventsSystem.onTriggerExit(blockedTrigger, () => {
     Material.setPbrMaterial(blockedTrigger, {
-      albedoColor: Color4.create(0.5, 0.5, 0.5, 0.5),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('BLOCKED TRIGGER: Exit')
   })
-  createLabel('BLOCKED\n(collider same shape)', Vector3.create(triggerBaseX + 30, 5, row4Z), 0.9)
+  createLabel('BLOCKED\n(collider same shape)', Vector3.create(triggerBaseX + 30, 5, row4Z), 1.8)
 
   // 8. Rotating Trigger Box
   const rotatingTrigger = engine.addEntity()
@@ -379,7 +379,7 @@ export function setupTriggersTest() {
     })
     console.log('ROTATING TRIGGER: Exit')
   })
-  createLabel('ROTATING\nTRIGGER', Vector3.create(triggerBaseX + 20, 5, row4Z), 1)
+  createLabel('ROTATING\nTRIGGER', Vector3.create(triggerBaseX + 20, 5, row4Z), 2)
 
   // =========================================================================
   // ROW 5: Moving Triggers
@@ -429,7 +429,7 @@ export function setupTriggersTest() {
     })
     console.log('MOVING BOX: Exit')
   })
-  createLabel('MOVING BOX\n(horizontal)', Vector3.create(triggerBaseX + 30, 5, row5Z), 1)
+  createLabel('MOVING BOX\n(horizontal)', Vector3.create(triggerBaseX + 30, 5, row5Z), 2)
 
   // 10. Moving Sphere Trigger (vertical)
   const movingSphereTrigger = engine.addEntity()
@@ -474,7 +474,7 @@ export function setupTriggersTest() {
     })
     console.log('MOVING SPHERE: Exit')
   })
-  createLabel('MOVING SPHERE\n(vertical)', Vector3.create(triggerBaseX + 20, 8, row5Z), 1)
+  createLabel('MOVING SPHERE\n(vertical)', Vector3.create(triggerBaseX + 20, 8, row5Z), 2)
 
   // 11. Scaling Box Trigger (balloon effect)
   const scalingBoxTrigger = engine.addEntity()
@@ -486,7 +486,7 @@ export function setupTriggersTest() {
   })
   MeshRenderer.setBox(scalingBoxTrigger)
   Material.setPbrMaterial(scalingBoxTrigger, {
-    albedoColor: Color4.create(1.0, 0.3, 0.5, 0.3),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(scalingBoxTrigger, ColliderLayer.CL_PLAYER)
@@ -506,7 +506,7 @@ export function setupTriggersTest() {
   triggerAreaEventsSystem.onTriggerEnter(scalingBoxTrigger, () => {
     TriggerVisual.getMutable(scalingBoxTrigger).isPlayerInside = true
     Material.setPbrMaterial(scalingBoxTrigger, {
-      albedoColor: Color4.create(0.3, 1.0, 0.5, 0.3),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('SCALING BOX: Enter')
@@ -514,12 +514,12 @@ export function setupTriggersTest() {
   triggerAreaEventsSystem.onTriggerExit(scalingBoxTrigger, () => {
     TriggerVisual.getMutable(scalingBoxTrigger).isPlayerInside = false
     Material.setPbrMaterial(scalingBoxTrigger, {
-      albedoColor: Color4.create(1.0, 0.3, 0.5, 0.3),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('SCALING BOX: Exit')
   })
-  createLabel('SCALING BOX\n(balloon)', Vector3.create(triggerBaseX + 10, 6, row5Z), 1)
+  createLabel('SCALING BOX\n(balloon)', Vector3.create(triggerBaseX + 10, 6, row5Z), 2)
 
   // 12. Create/Delete Loop Test
   const createDeletePos = Vector3.create(triggerBaseX, 2, row5Z)
@@ -586,7 +586,7 @@ export function setupTriggersTest() {
     }
   })
 
-  createLabel('CREATE/DELETE\n(1s loop)', Vector3.create(triggerBaseX, 6, row5Z), 1)
+  createLabel('CREATE/DELETE\n(1s loop)', Vector3.create(triggerBaseX, 6, row5Z), 2)
 
   // =========================================================================
   // ROW 6: Physics Ball Test Track
@@ -595,7 +595,7 @@ export function setupTriggersTest() {
   const ballTrackStartX = triggerBaseX - 10
   const ballTrackEndX = triggerBaseX + 40
 
-  createLabel('PHYSICS BALL TRACK\n(ball triggers obstacles)', Vector3.create(triggerBaseX + 15, 8, row6Z - 5), 1.2)
+  createLabel('PHYSICS BALL TRACK\n(ball triggers obstacles)', Vector3.create(triggerBaseX + 15, 8, row6Z - 5), 2.4)
 
   // Physics ball
   const physicsBall = engine.addEntity()
@@ -620,7 +620,7 @@ export function setupTriggersTest() {
     loop: TweenLoop.TL_YOYO,
     sequence: []
   })
-  createLabel('YELLOW BALL\n(CL_PHYSICS)', Vector3.create(ballTrackStartX, 4.5, row6Z), 0.8)
+  createLabel('YELLOW BALL\n(CL_PHYSICS)', Vector3.create(ballTrackStartX, 4.5, row6Z), 1.6)
 
   // Obstacle 1: Box Trigger (CL_PHYSICS only)
   const obsBox = engine.addEntity()
@@ -630,24 +630,24 @@ export function setupTriggersTest() {
   })
   MeshRenderer.setBox(obsBox)
   Material.setPbrMaterial(obsBox, {
-    albedoColor: Color4.create(0.8, 0.4, 0.0, 0.3),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(obsBox, ColliderLayer.CL_PHYSICS)
   triggerAreaEventsSystem.onTriggerEnter(obsBox, () => {
     Material.setPbrMaterial(obsBox, {
-      albedoColor: Color4.create(0.0, 1.0, 0.0, 0.3),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('OBS BOX: Ball entered')
   })
   triggerAreaEventsSystem.onTriggerExit(obsBox, () => {
     Material.setPbrMaterial(obsBox, {
-      albedoColor: Color4.create(0.8, 0.4, 0.0, 0.3),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
   })
-  createLabel('BOX\n(ball only)', Vector3.create(triggerBaseX, 4.5, row6Z), 0.8)
+  createLabel('BOX\n(ball only)', Vector3.create(triggerBaseX, 4.5, row6Z), 1.6)
 
   // Obstacle 2: Sphere Trigger (CL_PHYSICS only)
   const obsSphere = engine.addEntity()
@@ -657,24 +657,24 @@ export function setupTriggersTest() {
   })
   MeshRenderer.setSphere(obsSphere)
   Material.setPbrMaterial(obsSphere, {
-    albedoColor: Color4.create(0.0, 0.6, 0.8, 0.3),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setSphere(obsSphere, ColliderLayer.CL_PHYSICS)
   triggerAreaEventsSystem.onTriggerEnter(obsSphere, () => {
     Material.setPbrMaterial(obsSphere, {
-      albedoColor: Color4.create(0.0, 1.0, 0.0, 0.3),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('OBS SPHERE: Ball entered')
   })
   triggerAreaEventsSystem.onTriggerExit(obsSphere, () => {
     Material.setPbrMaterial(obsSphere, {
-      albedoColor: Color4.create(0.0, 0.6, 0.8, 0.3),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
   })
-  createLabel('SPHERE\n(ball only)', Vector3.create(triggerBaseX + 10, 4.5, row6Z), 0.8)
+  createLabel('SPHERE\n(ball only)', Vector3.create(triggerBaseX + 10, 4.5, row6Z), 1.6)
 
   // Obstacle 3: Jumping Box Trigger (CL_PHYSICS)
   const obsJumpingBox = engine.addEntity()
@@ -686,7 +686,7 @@ export function setupTriggersTest() {
   })
   MeshRenderer.setBox(obsJumpingBox)
   Material.setPbrMaterial(obsJumpingBox, {
-    albedoColor: Color4.create(0.8, 0.0, 0.8, 0.3),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(obsJumpingBox, ColliderLayer.CL_PHYSICS)
@@ -704,18 +704,18 @@ export function setupTriggersTest() {
   })
   triggerAreaEventsSystem.onTriggerEnter(obsJumpingBox, () => {
     Material.setPbrMaterial(obsJumpingBox, {
-      albedoColor: Color4.create(0.0, 1.0, 0.0, 0.3),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log('JUMPING BOX: Ball entered')
   })
   triggerAreaEventsSystem.onTriggerExit(obsJumpingBox, () => {
     Material.setPbrMaterial(obsJumpingBox, {
-      albedoColor: Color4.create(0.8, 0.0, 0.8, 0.3),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
   })
-  createLabel('JUMPING BOX\n(ball only)', Vector3.create(triggerBaseX + 20, 6, row6Z), 0.8)
+  createLabel('JUMPING BOX\n(ball only)', Vector3.create(triggerBaseX + 20, 6, row6Z), 1.6)
 
   // Obstacle 4: Multi-collision trigger (CL_PLAYER | CL_PHYSICS)
   const obsMulti = engine.addEntity()
@@ -725,7 +725,7 @@ export function setupTriggersTest() {
   })
   MeshRenderer.setBox(obsMulti)
   Material.setPbrMaterial(obsMulti, {
-    albedoColor: Color4.create(1.0, 0.5, 0.0, 0.3),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(obsMulti, [ColliderLayer.CL_PLAYER, ColliderLayer.CL_PHYSICS])
@@ -736,7 +736,7 @@ export function setupTriggersTest() {
   })
   TextShape.create(multiHitLabel, {
     text: 'Hits: 0',
-    fontSize: 2,
+    fontSize: 4,
     textColor: Color4.White(),
     outlineWidth: 0.2,
     outlineColor: Color3.Black()
@@ -748,18 +748,18 @@ export function setupTriggersTest() {
     multiHitCount++
     TextShape.getMutable(multiHitLabel).text = `Hits: ${multiHitCount}`
     Material.setPbrMaterial(obsMulti, {
-      albedoColor: Color4.create(0.0, 1.0, 0.0, 0.3),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log(`MULTI TRIGGER: Enter (layer: ${result.trigger?.layers}) - Total: ${multiHitCount}`)
   })
   triggerAreaEventsSystem.onTriggerExit(obsMulti, () => {
     Material.setPbrMaterial(obsMulti, {
-      albedoColor: Color4.create(1.0, 0.5, 0.0, 0.3),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
   })
-  createLabel('PLAYER + BALL\n(both trigger)', Vector3.create(triggerBaseX + 30, 4.5, row6Z), 0.8)
+  createLabel('PLAYER + BALL\n(both trigger)', Vector3.create(triggerBaseX + 30, 4.5, row6Z), 1.6)
 
   // =========================================================================
   // ROW 7: Trigger Layer Change Test
@@ -767,14 +767,14 @@ export function setupTriggersTest() {
   // =========================================================================
   const row7Z = triggerBaseZ + 58
 
-  createLabel('TRIGGER LAYER CHANGE TEST\nDynamic collision layer switching', Vector3.create(triggerBaseX + 15, 8, row7Z - 5), 1.2)
+  createLabel('TRIGGER LAYER CHANGE TEST\nDynamic collision layer switching', Vector3.create(triggerBaseX + 15, 8, row7Z - 5), 2.4)
 
   // Layer cycle configuration
   const layerConfigs = [
-    { layer: ColliderLayer.CL_PLAYER, name: 'CL_PLAYER', color: Color4.create(0.2, 0.8, 0.2, 0.3) },
-    { layer: ColliderLayer.CL_PHYSICS, name: 'CL_PHYSICS', color: Color4.create(0.8, 0.8, 0.2, 0.3) },
-    { layer: ColliderLayer.CL_POINTER, name: 'CL_POINTER', color: Color4.create(0.2, 0.2, 0.8, 0.3) },
-    { layer: [ColliderLayer.CL_PLAYER, ColliderLayer.CL_PHYSICS], name: 'PLAYER|PHYSICS', color: Color4.create(0.8, 0.2, 0.8, 0.3) }
+    { layer: ColliderLayer.CL_PLAYER, name: 'CL_PLAYER', color: Color4.create(0.2, 0.8, 0.2, 0.5) },
+    { layer: ColliderLayer.CL_PHYSICS, name: 'CL_PHYSICS', color: Color4.create(0.8, 0.8, 0.2, 0.5) },
+    { layer: ColliderLayer.CL_POINTER, name: 'CL_POINTER', color: Color4.create(0.2, 0.2, 0.8, 0.5) },
+    { layer: [ColliderLayer.CL_PLAYER, ColliderLayer.CL_PHYSICS], name: 'PLAYER|PHYSICS', color: Color4.create(0.8, 0.2, 0.8, 0.5) }
   ]
   let currentLayerIdx = 0
   let layerTimer = 0
@@ -800,7 +800,7 @@ export function setupTriggersTest() {
   })
   TextShape.create(layerNameLabel, {
     text: `Current Layer: ${layerConfigs[0].name}`,
-    fontSize: 3,
+    fontSize: 6,
     textColor: Color4.White(),
     outlineWidth: 0.2,
     outlineColor: Color3.Black()
@@ -814,7 +814,7 @@ export function setupTriggersTest() {
   })
   TextShape.create(layerTimerLabel, {
     text: `Next change in: ${LAYER_INTERVAL}s`,
-    fontSize: 2,
+    fontSize: 4,
     textColor: Color4.Yellow(),
     outlineWidth: 0.2,
     outlineColor: Color3.Black()
@@ -828,7 +828,7 @@ export function setupTriggersTest() {
   })
   TextShape.create(layerEventLog, {
     text: 'EVENT LOG:\n(waiting...)',
-    fontSize: 1.2,
+    fontSize: 2.4,
     textColor: Color4.White(),
     outlineWidth: 0.2,
     outlineColor: Color3.Black()
@@ -895,7 +895,7 @@ export function setupTriggersTest() {
     loop: TweenLoop.TL_YOYO,
     sequence: []
   })
-  createLabel('Physics Ball', Vector3.create(triggerBaseX + 5, 4.5, row7Z - 6), 0.8)
+  createLabel('Physics Ball', Vector3.create(triggerBaseX + 5, 4.5, row7Z - 6), 1.6)
 
   // Layer change system
   engine.addSystem((dt: number) => {
@@ -932,7 +932,7 @@ export function setupTriggersTest() {
   createLabel(
     'INSTRUCTIONS:\n1. Stand inside the trigger\n2. Watch layer cycle every 5s\n3. Check ENTER/EXIT events on change',
     Vector3.create(triggerBaseX, 1, row7Z - 8),
-    0.8
+    1.6
   )
 
   // =========================================================================
@@ -941,7 +941,7 @@ export function setupTriggersTest() {
   // =========================================================================
   const row8Z = triggerBaseZ + 74
 
-  createLabel('AVATARSHAPE NPC TEST\nDoes CL_PLAYER detect NPCs?', Vector3.create(triggerBaseX + 15, 8, row8Z - 5), 1.2)
+  createLabel('AVATARSHAPE NPC TEST\nDoes CL_PLAYER detect NPCs?', Vector3.create(triggerBaseX + 15, 8, row8Z - 5), 2.4)
 
   // Trigger area for NPC to walk through
   const npcTrigger = engine.addEntity()
@@ -963,7 +963,7 @@ export function setupTriggersTest() {
   })
   TextShape.create(npcTriggerStatus, {
     text: 'NPC TRIGGER: Waiting...',
-    fontSize: 2,
+    fontSize: 4,
     textColor: Color4.White(),
     outlineWidth: 0.2,
     outlineColor: Color3.Black()
@@ -1040,22 +1040,22 @@ export function setupTriggersTest() {
   })
 
   // Label for NPC start position
-  createLabel('NPC Start\n(AvatarShape)', Vector3.create(triggerBaseX, 3, row8Z), 0.8)
-  createLabel('NPC End', Vector3.create(triggerBaseX + 30, 3, row8Z), 0.8)
+  createLabel('NPC Start\n(AvatarShape)', Vector3.create(triggerBaseX, 3, row8Z), 1.6)
+  createLabel('NPC End', Vector3.create(triggerBaseX + 30, 3, row8Z), 1.6)
 
   createLabel(
-    'TEST: AvatarShape NPC walks through\nCL_PLAYER trigger. Does it detect?',
+    'TEST: AvatarShape NPC walks through CL_PLAYER trigger.\nIT SHOULD NOT TRIGGER (no MeshCollider)',
     Vector3.create(triggerBaseX + 15, 1, row8Z + 6),
-    0.7
+    1.4
   )
 
   // Row labels
-  createLabel('ROW 1: Basic Shapes', Vector3.create(triggerBaseX - 15, 3, row1Z), 1)
-  createLabel('ROW 2: Collision Layers', Vector3.create(triggerBaseX - 15, 3, row2Z), 1)
-  createLabel('ROW 3: Event Types', Vector3.create(triggerBaseX - 15, 3, row3Z), 1)
-  createLabel('ROW 4: Special Cases', Vector3.create(triggerBaseX - 15, 3, row4Z), 1)
-  createLabel('ROW 5: Moving Triggers', Vector3.create(triggerBaseX - 15, 3, row5Z), 1)
-  createLabel('ROW 6: Physics Ball Track', Vector3.create(triggerBaseX - 15, 3, row6Z), 1)
-  createLabel('ROW 7: Layer Change', Vector3.create(triggerBaseX - 15, 3, row7Z), 1)
-  createLabel('ROW 8: AvatarShape NPC', Vector3.create(triggerBaseX - 15, 3, row8Z), 1)
+  createLabel('ROW 1: Basic Shapes', Vector3.create(triggerBaseX - 15, 3, row1Z), 2)
+  createLabel('ROW 2: Collision Layers', Vector3.create(triggerBaseX - 15, 3, row2Z), 2)
+  createLabel('ROW 3: Event Types', Vector3.create(triggerBaseX - 15, 3, row3Z), 2)
+  createLabel('ROW 4: Special Cases', Vector3.create(triggerBaseX - 15, 3, row4Z), 2)
+  createLabel('ROW 5: Moving Triggers', Vector3.create(triggerBaseX - 15, 3, row5Z), 2)
+  createLabel('ROW 6: Physics Ball Track', Vector3.create(triggerBaseX - 15, 3, row6Z), 2)
+  createLabel('ROW 7: Layer Change', Vector3.create(triggerBaseX - 15, 3, row7Z), 2)
+  createLabel('ROW 8: AvatarShape NPC', Vector3.create(triggerBaseX - 15, 3, row8Z), 2)
 }

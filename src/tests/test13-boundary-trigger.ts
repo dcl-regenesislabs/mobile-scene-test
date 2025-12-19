@@ -10,7 +10,7 @@ import {
   MaterialTransparencyMode
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3 } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { createPlatform, createLabel, TRIGGER_COLOR_OUTSIDE, TRIGGER_COLOR_INSIDE } from '../utils/helpers'
 
 /**
  * TEST 13: BOUNDARY TRIGGER TEST
@@ -24,7 +24,7 @@ export function setupBoundaryTriggerTest() {
   const baseX = -144
   const baseZ = -144
 
-  createLabel('BOUNDARY TRIGGER TEST\n48x48m trigger at scene edge', Vector3.create(baseX + 8, 10, baseZ + 8), 1.5)
+  createLabel('BOUNDARY TRIGGER TEST\n48x48m trigger at scene edge', Vector3.create(baseX + 8, 10, baseZ + 8), 3)
 
   // Small platform at the corner so player can stand
   createPlatform(
@@ -47,7 +47,7 @@ export function setupBoundaryTriggerTest() {
   })
   MeshRenderer.setBox(giantTrigger)
   Material.setPbrMaterial(giantTrigger, {
-    albedoColor: Color4.create(1.0, 0.3, 0.3, 0.15),
+    albedoColor: TRIGGER_COLOR_OUTSIDE,
     transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
   })
   TriggerArea.setBox(giantTrigger)
@@ -59,7 +59,7 @@ export function setupBoundaryTriggerTest() {
   })
   TextShape.create(statusLabel, {
     text: 'TRIGGER STATUS:\nWaiting...',
-    fontSize: 3,
+    fontSize: 6,
     textColor: Color4.White(),
     outlineWidth: 0.2,
     outlineColor: Color3.Black()
@@ -75,7 +75,7 @@ export function setupBoundaryTriggerTest() {
     TextShape.getMutable(statusLabel).text = `TRIGGER STATUS:\nINSIDE\nEnters: ${enterCount} | Exits: ${exitCount}`
     TextShape.getMutable(statusLabel).textColor = Color4.Green()
     Material.setPbrMaterial(giantTrigger, {
-      albedoColor: Color4.create(0.3, 1.0, 0.3, 0.25),
+      albedoColor: TRIGGER_COLOR_INSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log(`BOUNDARY TRIGGER: ENTER #${enterCount}`)
@@ -86,7 +86,7 @@ export function setupBoundaryTriggerTest() {
     TextShape.getMutable(statusLabel).text = `TRIGGER STATUS:\nOUTSIDE\nEnters: ${enterCount} | Exits: ${exitCount}`
     TextShape.getMutable(statusLabel).textColor = Color4.Red()
     Material.setPbrMaterial(giantTrigger, {
-      albedoColor: Color4.create(1.0, 0.3, 0.3, 0.15),
+      albedoColor: TRIGGER_COLOR_OUTSIDE,
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND
     })
     console.log(`BOUNDARY TRIGGER: EXIT #${exitCount}`)
@@ -110,14 +110,14 @@ export function setupBoundaryTriggerTest() {
     Material.setPbrMaterial(marker, {
       albedoColor: Color4.create(1, 0.5, 0.2, 1)
     })
-    createLabel(corner.label, Vector3.create(corner.x, 2.5, corner.z), 0.7)
+    createLabel(corner.label, Vector3.create(corner.x, 2.5, corner.z), 1.4)
   })
 
   // Info text
   createLabel(
     `TEST: Giant 48x48m trigger at parcel -9,-9\nCentered at (${baseX}, ${baseZ})\nExtends 24m in each direction`,
     Vector3.create(baseX + 8, 1, baseZ + 12),
-    0.7
+    1.4
   )
 
   // Boundary line markers around the trigger area
@@ -145,5 +145,5 @@ export function setupBoundaryTriggerTest() {
     })
   }
 
-  createLabel('TEST 13: Boundary Trigger\n(Parcel -9,-9)', Vector3.create(baseX - 5, 3, baseZ + 4), 1)
+  createLabel('TEST 13: Boundary Trigger\n(Parcel -9,-9)', Vector3.create(baseX - 5, 3, baseZ + 4), 2)
 }

@@ -85,8 +85,8 @@ export const ScalingTrigger = engine.defineComponent('ScalingTrigger', {
 // COLORS
 // ============================================================================
 
-export const TRIGGER_COLOR_OUTSIDE = Color4.create(1.0, 0.0, 0.0, 0.2)
-export const TRIGGER_COLOR_INSIDE = Color4.create(0.0, 1.0, 0.0, 0.2)
+export const TRIGGER_COLOR_OUTSIDE = Color4.create(1.0, 0.0, 0.0, 0.5)
+export const TRIGGER_COLOR_INSIDE = Color4.create(0.0, 1.0, 0.0, 0.5)
 
 // ============================================================================
 // HELPER FUNCTIONS
