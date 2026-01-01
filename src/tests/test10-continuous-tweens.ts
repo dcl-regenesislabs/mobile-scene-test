@@ -106,156 +106,159 @@ export function setupContinuousTweensTest() {
   )
 
   // =========================================================================
-  // ROW 1: RotateContinuous - Infinite rotation (different axes)
+  // ROW 1: Single axis rotations (Y, X, Z) and their inverses
+  // Using Quaternion.fromEulerDegrees() as per rotating-platforms reference
   // =========================================================================
   const ctRow1Z = continuousTweenBaseZ - 12
+  const rotationSpeed = 45 // degrees per second
 
-  createLabel('ROW 1: RotateContinuous (different axes)', Vector3.create(continuousTweenBaseX - 25, 3, ctRow1Z), 1)
+  createLabel('ROW 1: Single Axis Rotations', Vector3.create(continuousTweenBaseX - 25, 3, ctRow1Z), 1)
 
-  // 1.1 Rotate Y-axis at 30 deg/sec
-  const rotateY30 = engine.addEntity()
-  Transform.create(rotateY30, {
-    position: Vector3.create(continuousTweenBaseX - 15, 2, ctRow1Z),
+  // 1.1 Rotate Y-axis (positive)
+  const rotateY = engine.addEntity()
+  Transform.create(rotateY, {
+    position: Vector3.create(continuousTweenBaseX - 20, 2, ctRow1Z),
     scale: Vector3.create(1, 1, 1)
   })
-  MeshRenderer.setBox(rotateY30)
-  Material.setPbrMaterial(rotateY30, {
-    albedoColor: Color4.create(0.8, 0.3, 0.3, 1)
-  })
-  addOrientationMarkers(rotateY30, 1)
-  Tween.setRotateContinuous(rotateY30, Quaternion.create(0, 1, 0, 0), 30)
-  createLabel('Y-Axis\n30°/sec', Vector3.create(continuousTweenBaseX - 15, 5, ctRow1Z), 0.9)
+  MeshRenderer.setBox(rotateY)
+  Material.setPbrMaterial(rotateY, { albedoColor: Color4.create(0.8, 0.3, 0.3, 1) })
+  addOrientationMarkers(rotateY, 1)
+  Tween.setRotateContinuous(rotateY, Quaternion.fromEulerDegrees(0, 90, 0), rotationSpeed)
+  createLabel('Y', Vector3.create(continuousTweenBaseX - 20, 4, ctRow1Z), 0.9)
 
-  // 1.2 Rotate Y-axis at 90 deg/sec
-  const rotateY90 = engine.addEntity()
-  Transform.create(rotateY90, {
-    position: Vector3.create(continuousTweenBaseX - 5, 2, ctRow1Z),
+  // 1.2 Rotate Y-axis (inverse/negative)
+  const rotateInvY = engine.addEntity()
+  Transform.create(rotateInvY, {
+    position: Vector3.create(continuousTweenBaseX - 12, 2, ctRow1Z),
     scale: Vector3.create(1, 1, 1)
   })
-  MeshRenderer.setBox(rotateY90)
-  Material.setPbrMaterial(rotateY90, {
-    albedoColor: Color4.create(0.8, 0.5, 0.3, 1)
-  })
-  addOrientationMarkers(rotateY90, 1)
-  Tween.setRotateContinuous(rotateY90, Quaternion.create(0, 1, 0, 0), 90)
-  createLabel('Y-Axis\n90°/sec', Vector3.create(continuousTweenBaseX - 5, 5, ctRow1Z), 0.9)
+  MeshRenderer.setBox(rotateInvY)
+  Material.setPbrMaterial(rotateInvY, { albedoColor: Color4.create(0.5, 0.2, 0.2, 1) })
+  addOrientationMarkers(rotateInvY, 1)
+  Tween.setRotateContinuous(rotateInvY, Quaternion.fromEulerDegrees(0, -90, 0), rotationSpeed)
+  createLabel('-Y', Vector3.create(continuousTweenBaseX - 12, 4, ctRow1Z), 0.9)
 
-  // 1.3 Rotate X-axis at 45 deg/sec
-  const rotateX45 = engine.addEntity()
-  Transform.create(rotateX45, {
-    position: Vector3.create(continuousTweenBaseX + 5, 2, ctRow1Z),
+  // 1.3 Rotate X-axis (positive) - uses Z euler for X rotation per reference
+  const rotateX = engine.addEntity()
+  Transform.create(rotateX, {
+    position: Vector3.create(continuousTweenBaseX - 4, 2, ctRow1Z),
     scale: Vector3.create(1, 1, 1)
   })
-  MeshRenderer.setBox(rotateX45)
-  Material.setPbrMaterial(rotateX45, {
-    albedoColor: Color4.create(0.3, 0.8, 0.3, 1)
-  })
-  addOrientationMarkers(rotateX45, 1)
-  Tween.setRotateContinuous(rotateX45, Quaternion.create(1, 0, 0, 0), 45)
-  createLabel('X-Axis\n45°/sec', Vector3.create(continuousTweenBaseX + 5, 5, ctRow1Z), 0.9)
+  MeshRenderer.setBox(rotateX)
+  Material.setPbrMaterial(rotateX, { albedoColor: Color4.create(0.3, 0.8, 0.3, 1) })
+  addOrientationMarkers(rotateX, 1)
+  Tween.setRotateContinuous(rotateX, Quaternion.fromEulerDegrees(0, 0, 90), rotationSpeed)
+  createLabel('X', Vector3.create(continuousTweenBaseX - 4, 4, ctRow1Z), 0.9)
 
-  // 1.4 Rotate Z-axis at 60 deg/sec
-  const rotateZ60 = engine.addEntity()
-  Transform.create(rotateZ60, {
-    position: Vector3.create(continuousTweenBaseX + 15, 2, ctRow1Z),
+  // 1.4 Rotate X-axis (inverse/negative)
+  const rotateInvX = engine.addEntity()
+  Transform.create(rotateInvX, {
+    position: Vector3.create(continuousTweenBaseX + 4, 2, ctRow1Z),
     scale: Vector3.create(1, 1, 1)
   })
-  MeshRenderer.setBox(rotateZ60)
-  Material.setPbrMaterial(rotateZ60, {
-    albedoColor: Color4.create(0.3, 0.3, 0.8, 1)
-  })
-  addOrientationMarkers(rotateZ60, 1)
-  Tween.setRotateContinuous(rotateZ60, Quaternion.create(0, 0, 1, 0), 60)
-  createLabel('Z-Axis\n60°/sec', Vector3.create(continuousTweenBaseX + 15, 5, ctRow1Z), 0.9)
+  MeshRenderer.setBox(rotateInvX)
+  Material.setPbrMaterial(rotateInvX, { albedoColor: Color4.create(0.2, 0.5, 0.2, 1) })
+  addOrientationMarkers(rotateInvX, 1)
+  Tween.setRotateContinuous(rotateInvX, Quaternion.fromEulerDegrees(0, 0, -90), rotationSpeed)
+  createLabel('-X', Vector3.create(continuousTweenBaseX + 4, 4, ctRow1Z), 0.9)
 
-  // 1.5 Multi-axis rotation
-  const rotateMulti = engine.addEntity()
-  Transform.create(rotateMulti, {
-    position: Vector3.create(continuousTweenBaseX + 25, 2, ctRow1Z),
+  // 1.5 Rotate Z-axis (positive) - uses X euler for Z rotation per reference
+  const rotateZ = engine.addEntity()
+  Transform.create(rotateZ, {
+    position: Vector3.create(continuousTweenBaseX + 12, 2, ctRow1Z),
     scale: Vector3.create(1, 1, 1)
   })
-  MeshRenderer.setBox(rotateMulti)
-  Material.setPbrMaterial(rotateMulti, {
-    albedoColor: Color4.create(0.8, 0.3, 0.8, 1)
+  MeshRenderer.setBox(rotateZ)
+  Material.setPbrMaterial(rotateZ, { albedoColor: Color4.create(0.3, 0.3, 0.8, 1) })
+  addOrientationMarkers(rotateZ, 1)
+  Tween.setRotateContinuous(rotateZ, Quaternion.fromEulerDegrees(90, 0, 0), rotationSpeed)
+  createLabel('Z', Vector3.create(continuousTweenBaseX + 12, 4, ctRow1Z), 0.9)
+
+  // 1.6 Rotate Z-axis (inverse/negative)
+  const rotateInvZ = engine.addEntity()
+  Transform.create(rotateInvZ, {
+    position: Vector3.create(continuousTweenBaseX + 20, 2, ctRow1Z),
+    scale: Vector3.create(1, 1, 1)
   })
-  addOrientationMarkers(rotateMulti, 1)
-  Tween.setRotateContinuous(rotateMulti, Quaternion.create(0.707, 0.707, 0, 0), 40)
-  createLabel('X+Y Axis\n40°/sec', Vector3.create(continuousTweenBaseX + 25, 5, ctRow1Z), 0.9)
+  MeshRenderer.setBox(rotateInvZ)
+  Material.setPbrMaterial(rotateInvZ, { albedoColor: Color4.create(0.2, 0.2, 0.5, 1) })
+  addOrientationMarkers(rotateInvZ, 1)
+  Tween.setRotateContinuous(rotateInvZ, Quaternion.fromEulerDegrees(-90, 0, 0), rotationSpeed)
+  createLabel('-Z', Vector3.create(continuousTweenBaseX + 20, 4, ctRow1Z), 0.9)
 
   // =========================================================================
-  // ROW 2: RotateContinuous - Different speeds
+  // ROW 2: Two-axis combinations
   // =========================================================================
   const ctRow2Z = continuousTweenBaseZ
 
-  createLabel('ROW 2: RotateContinuous (different speeds)', Vector3.create(continuousTweenBaseX - 25, 3, ctRow2Z), 1)
+  createLabel('ROW 2: Two-Axis Combinations', Vector3.create(continuousTweenBaseX - 25, 3, ctRow2Z), 1)
 
-  // 2.1 Very slow rotation 10 deg/sec
-  const rotateSlow = engine.addEntity()
-  Transform.create(rotateSlow, {
-    position: Vector3.create(continuousTweenBaseX - 15, 2, ctRow2Z),
+  // 2.1 X + Y combination
+  const rotateXY = engine.addEntity()
+  Transform.create(rotateXY, {
+    position: Vector3.create(continuousTweenBaseX - 16, 2, ctRow2Z),
     scale: Vector3.create(1, 1, 1)
   })
-  MeshRenderer.setBox(rotateSlow)
-  Material.setPbrMaterial(rotateSlow, {
-    albedoColor: Color4.create(0.9, 0.6, 0.2, 1)
-  })
-  addOrientationMarkers(rotateSlow, 1)
-  Tween.setRotateContinuous(rotateSlow, Quaternion.create(0, 1, 0, 0), 10)
-  createLabel('Y-Axis\n10°/sec', Vector3.create(continuousTweenBaseX - 15, 5, ctRow2Z), 0.9)
+  MeshRenderer.setBox(rotateXY)
+  Material.setPbrMaterial(rotateXY, { albedoColor: Color4.create(0.8, 0.8, 0.3, 1) })
+  addOrientationMarkers(rotateXY, 1)
+  Tween.setRotateContinuous(rotateXY, Quaternion.fromEulerDegrees(0, 90, 90), rotationSpeed)
+  createLabel('X+Y', Vector3.create(continuousTweenBaseX - 16, 4, ctRow2Z), 0.9)
 
-  // 2.2 Medium rotation 60 deg/sec
-  const rotateMedium = engine.addEntity()
-  Transform.create(rotateMedium, {
-    position: Vector3.create(continuousTweenBaseX - 5, 2, ctRow2Z),
+  // 2.2 X + Z combination
+  const rotateXZ = engine.addEntity()
+  Transform.create(rotateXZ, {
+    position: Vector3.create(continuousTweenBaseX - 8, 2, ctRow2Z),
     scale: Vector3.create(1, 1, 1)
   })
-  MeshRenderer.setBox(rotateMedium)
-  Material.setPbrMaterial(rotateMedium, {
-    albedoColor: Color4.create(0.2, 0.9, 0.6, 1)
-  })
-  addOrientationMarkers(rotateMedium, 1)
-  Tween.setRotateContinuous(rotateMedium, Quaternion.create(0, 1, 0, 0), 60)
-  createLabel('Y-Axis\n60°/sec', Vector3.create(continuousTweenBaseX - 5, 5, ctRow2Z), 0.9)
+  MeshRenderer.setBox(rotateXZ)
+  Material.setPbrMaterial(rotateXZ, { albedoColor: Color4.create(0.3, 0.8, 0.8, 1) })
+  addOrientationMarkers(rotateXZ, 1)
+  Tween.setRotateContinuous(rotateXZ, Quaternion.fromEulerDegrees(90, 0, 90), rotationSpeed)
+  createLabel('X+Z', Vector3.create(continuousTweenBaseX - 8, 4, ctRow2Z), 0.9)
 
-  // 2.3 Fast rotation 180 deg/sec
-  const rotateFast = engine.addEntity()
-  Transform.create(rotateFast, {
-    position: Vector3.create(continuousTweenBaseX + 5, 2, ctRow2Z),
+  // 2.3 Y + Z combination
+  const rotateYZ = engine.addEntity()
+  Transform.create(rotateYZ, {
+    position: Vector3.create(continuousTweenBaseX, 2, ctRow2Z),
     scale: Vector3.create(1, 1, 1)
   })
-  MeshRenderer.setBox(rotateFast)
-  Material.setPbrMaterial(rotateFast, {
-    albedoColor: Color4.create(0.6, 0.2, 0.9, 1)
-  })
-  addOrientationMarkers(rotateFast, 1)
-  Tween.setRotateContinuous(rotateFast, Quaternion.create(0, 1, 0, 0), 180)
-  createLabel('Y-Axis\n180°/sec', Vector3.create(continuousTweenBaseX + 5, 5, ctRow2Z), 0.9)
-
-  // 2.4 Very fast rotation 360 deg/sec
-  const rotateVeryFast = engine.addEntity()
-  Transform.create(rotateVeryFast, {
-    position: Vector3.create(continuousTweenBaseX + 15, 2, ctRow2Z),
-    scale: Vector3.create(1, 1, 1)
-  })
-  MeshRenderer.setBox(rotateVeryFast)
-  Material.setPbrMaterial(rotateVeryFast, {
-    albedoColor: Color4.create(0.9, 0.2, 0.6, 1)
-  })
-  addOrientationMarkers(rotateVeryFast, 1)
-  Tween.setRotateContinuous(rotateVeryFast, Quaternion.create(0, 1, 0, 0), 360)
-  createLabel('Y-Axis\n360°/sec', Vector3.create(continuousTweenBaseX + 15, 5, ctRow2Z), 0.9)
+  MeshRenderer.setBox(rotateYZ)
+  Material.setPbrMaterial(rotateYZ, { albedoColor: Color4.create(0.8, 0.3, 0.8, 1) })
+  addOrientationMarkers(rotateYZ, 1)
+  Tween.setRotateContinuous(rotateYZ, Quaternion.fromEulerDegrees(90, 90, 0), rotationSpeed)
+  createLabel('Y+Z', Vector3.create(continuousTweenBaseX, 4, ctRow2Z), 0.9)
 
   // =========================================================================
-  // ROW 3: MoveContinuous - Bullet spawner (create, move, delete)
+  // ROW 3: All three axes combined
   // =========================================================================
-  const ctRow3Z = continuousTweenBaseZ + 12
+  const ctRow3Z = continuousTweenBaseZ + 8
 
-  createLabel('ROW 3: MoveContinuous (bullet spawner)', Vector3.create(continuousTweenBaseX - 25, 3, ctRow3Z), 1)
+  createLabel('ROW 3: All Axes Combined', Vector3.create(continuousTweenBaseX - 25, 3, ctRow3Z), 1)
+
+  // 3.1 X + Y + Z combination
+  const rotateXYZ = engine.addEntity()
+  Transform.create(rotateXYZ, {
+    position: Vector3.create(continuousTweenBaseX - 8, 2, ctRow3Z),
+    scale: Vector3.create(1, 1, 1)
+  })
+  MeshRenderer.setBox(rotateXYZ)
+  Material.setPbrMaterial(rotateXYZ, { albedoColor: Color4.create(1, 1, 1, 1) })
+  addOrientationMarkers(rotateXYZ, 1)
+  Tween.setRotateContinuous(rotateXYZ, Quaternion.fromEulerDegrees(90, 90, 90), rotationSpeed)
+  createLabel('X+Y+Z', Vector3.create(continuousTweenBaseX - 8, 4, ctRow3Z), 0.9)
+
+  // =========================================================================
+  // ROW 4: MoveContinuous - Bullet spawner (create, move, delete)
+  // =========================================================================
+  const ctRow4Z = continuousTweenBaseZ + 20
+
+  createLabel('ROW 4: MoveContinuous (bullet spawner)', Vector3.create(continuousTweenBaseX - 25, 3, ctRow4Z), 1)
 
   // Bullet spawner state (direction is normalized, speed is m/s)
   const bulletSpawners = [
     {
-      spawnPos: Vector3.create(continuousTweenBaseX - 15, 2, ctRow3Z),
+      spawnPos: Vector3.create(continuousTweenBaseX - 15, 2, ctRow4Z),
       direction: Vector3.create(1, 0, 0),  // +X direction
       speed: 8,
       color: Color4.create(1, 0.3, 0.1, 1),
@@ -264,7 +267,7 @@ export function setupContinuousTweensTest() {
       lifetime: 3
     },
     {
-      spawnPos: Vector3.create(continuousTweenBaseX - 5, 2, ctRow3Z),
+      spawnPos: Vector3.create(continuousTweenBaseX - 5, 2, ctRow4Z),
       direction: Vector3.create(0, 0, 1),  // +Z direction
       speed: 5,
       color: Color4.create(0.1, 1, 0.3, 1),
@@ -273,7 +276,7 @@ export function setupContinuousTweensTest() {
       lifetime: 4
     },
     {
-      spawnPos: Vector3.create(continuousTweenBaseX + 5, 2, ctRow3Z),
+      spawnPos: Vector3.create(continuousTweenBaseX + 5, 2, ctRow4Z),
       direction: Vector3.normalize(Vector3.create(5, 3, 0)),  // Diagonal up
       speed: 6,
       color: Color4.create(0.3, 0.5, 1, 1),
@@ -282,7 +285,7 @@ export function setupContinuousTweensTest() {
       lifetime: 2.5
     },
     {
-      spawnPos: Vector3.create(continuousTweenBaseX + 15, 2, ctRow3Z),
+      spawnPos: Vector3.create(continuousTweenBaseX + 15, 2, ctRow4Z),
       direction: Vector3.normalize(Vector3.create(-6, 0, 3)),  // -X +Z
       speed: 7,
       color: Color4.create(1, 1, 0.2, 1),
@@ -291,7 +294,7 @@ export function setupContinuousTweensTest() {
       lifetime: 2
     },
     {
-      spawnPos: Vector3.create(continuousTweenBaseX + 25, 2, ctRow3Z),
+      spawnPos: Vector3.create(continuousTweenBaseX + 25, 2, ctRow4Z),
       direction: Vector3.create(0, 1, 0),  // +Y up
       speed: 10,
       color: Color4.create(1, 0.2, 1, 1),
@@ -364,7 +367,7 @@ export function setupContinuousTweensTest() {
 
   createLabel(
     'Bullets spawn, move continuously,\nthen delete after lifetime',
-    Vector3.create(continuousTweenBaseX, 1, ctRow3Z - 6),
+    Vector3.create(continuousTweenBaseX, 1, ctRow4Z - 6),
     0.7
   )
 }
