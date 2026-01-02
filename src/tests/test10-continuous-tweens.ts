@@ -245,14 +245,26 @@ export function setupContinuousTweensTest() {
   // 3.1 XYZ space diagonal - axis is (1,1,1) normalized = (0.577, 0.577, 0.577)
   const rotateXYZ = engine.addEntity()
   Transform.create(rotateXYZ, {
-    position: Vector3.create(continuousTweenBaseX - 8, 2, ctRow3Z),
+    position: Vector3.create(continuousTweenBaseX - 12, 2, ctRow3Z),
     scale: Vector3.create(1, 1, 1)
   })
   MeshRenderer.setBox(rotateXYZ)
   Material.setPbrMaterial(rotateXYZ, { albedoColor: Color4.create(1, 1, 1, 1) })
   addOrientationMarkers(rotateXYZ, 1)
   Tween.setRotateContinuous(rotateXYZ, Quaternion.create(1, 1, 1, 1), rotationSpeed)
-  createLabel('XYZ diag', Vector3.create(continuousTweenBaseX - 8, 4, ctRow3Z), 0.9)
+  createLabel('XYZ diag', Vector3.create(continuousTweenBaseX - 12, 4, ctRow3Z), 0.9)
+
+  // 3.2 Zero quaternion - edge case test (0,0,0,0)
+  const rotateZero = engine.addEntity()
+  Transform.create(rotateZero, {
+    position: Vector3.create(continuousTweenBaseX, 2, ctRow3Z),
+    scale: Vector3.create(1, 1, 1)
+  })
+  MeshRenderer.setBox(rotateZero)
+  Material.setPbrMaterial(rotateZero, { albedoColor: Color4.create(0.5, 0.5, 0.5, 1) })
+  addOrientationMarkers(rotateZero, 1)
+  Tween.setRotateContinuous(rotateZero, Quaternion.create(0, 0, 0, 0), rotationSpeed)
+  createLabel('(0,0,0,0)', Vector3.create(continuousTweenBaseX, 4, ctRow3Z), 0.9)
 
   // =========================================================================
   // ROW 4: MoveContinuous - Bullet spawner (create, move, delete)
