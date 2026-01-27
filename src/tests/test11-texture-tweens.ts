@@ -19,6 +19,31 @@ const TextureMoveReadback = engine.defineComponent('TextureMoveReadback', {
   entity: Schemas.Entity
 })
 
+function setupTextureMoveContinuousEntity(
+  label: string,
+  x: number,
+  z: number,
+  direction: Vector2,
+  color: Color4
+): Entity {
+  const entity = engine.addEntity()
+  Transform.create(entity, {
+    position: Vector3.create(x, 2.5, z),
+    scale: Vector3.create(4, 4, 0.2)
+  })
+  MeshRenderer.setPlane(entity)
+  Material.setPbrMaterial(entity, {
+    albedoColor: color,
+    texture: Material.Texture.Common({
+      src: 'images/scene-thumbnail.png',
+      wrapMode: TextureWrapMode.TWM_REPEAT
+    })
+  })
+  Tween.setTextureMoveContinuous(entity, direction, 0.2)
+  createLabel(label, Vector3.create(x, 6, z), 0.9)
+  return entity;
+}
+
 /**
  * TEST 11: TEXTURE TWEENS TEST (ADR-255)
  * Testing TextureMove and TextureMoveContinuous
@@ -44,89 +69,49 @@ export function setupTextureTweensTest() {
   createLabel('ROW 1: TextureMoveContinuous (continuous loop)', Vector3.create(textureTweenBaseX - 25, 3, ttRow1Z), 1)
 
   // T1.1 Scroll right continuously
-  const texScrollRight = engine.addEntity()
-  Transform.create(texScrollRight, {
-    position: Vector3.create(textureTweenBaseX - 15, 2.5, ttRow1Z),
-    scale: Vector3.create(4, 4, 0.2)
-  })
-  MeshRenderer.setPlane(texScrollRight)
-  Material.setPbrMaterial(texScrollRight, {
-    albedoColor: Color4.create(0.3, 0.5, 0.9, 1),
-    texture: Material.Texture.Common({
-      src: 'images/scene-thumbnail.png',
-      wrapMode: TextureWrapMode.TWM_REPEAT
-    })
-  })
-  Tween.setTextureMoveContinuous(texScrollRight, Vector2.create(0.5, 0), 5000)
-  createLabel('Scroll Right\nContinuous', Vector3.create(textureTweenBaseX - 15, 6, ttRow1Z), 0.9)
+  const texScrollRight = setupTextureMoveContinuousEntity(
+    'Scroll Right\nContinuous',
+    textureTweenBaseX - 15,
+    ttRow1Z,
+    Vector2.create(0.5, 0),
+    Color4.create(0.3, 0.5, 0.9, 1)
+  )
 
   // T1.2 Scroll left continuously
-  const texScrollLeft = engine.addEntity()
-  Transform.create(texScrollLeft, {
-    position: Vector3.create(textureTweenBaseX - 5, 2.5, ttRow1Z),
-    scale: Vector3.create(4, 4, 0.2)
-  })
-  MeshRenderer.setPlane(texScrollLeft)
-  Material.setPbrMaterial(texScrollLeft, {
-    albedoColor: Color4.create(0.5, 0.5, 0.5, 1),
-    texture: Material.Texture.Common({
-      src: 'images/scene-thumbnail.png',
-      wrapMode: TextureWrapMode.TWM_REPEAT
-    })
-  })
-  Tween.setTextureMoveContinuous(texScrollLeft, Vector2.create(-0.5, 0), 5000)
-  createLabel('Scroll Left\nContinuous', Vector3.create(textureTweenBaseX - 5, 6, ttRow1Z), 0.9)
+  const texScrollLeft = setupTextureMoveContinuousEntity(
+    'Scroll Left\nContinuous',
+    textureTweenBaseX - 5,
+    ttRow1Z,
+    Vector2.create(-0.5, 0),
+    Color4.create(0.5, 0.5, 0.5, 1)
+  )
 
   // T1.3 Scroll up continuously
-  const texScrollUp = engine.addEntity()
-  Transform.create(texScrollUp, {
-    position: Vector3.create(textureTweenBaseX + 5, 2.5, ttRow1Z),
-    scale: Vector3.create(4, 4, 0.2)
-  })
-  MeshRenderer.setPlane(texScrollUp)
-  Material.setPbrMaterial(texScrollUp, {
-    albedoColor: Color4.create(0.9, 0.7, 0.3, 1),
-    texture: Material.Texture.Common({
-      src: 'images/scene-thumbnail.png',
-      wrapMode: TextureWrapMode.TWM_REPEAT
-    })
-  })
-  Tween.setTextureMoveContinuous(texScrollUp, Vector2.create(0, 0.5), 5000)
-  createLabel('Scroll Up\nContinuous', Vector3.create(textureTweenBaseX + 5, 6, ttRow1Z), 0.9)
+  const texScrollUp = setupTextureMoveContinuousEntity(
+    'Scroll Up\nContinuous',
+    textureTweenBaseX + 5,
+    ttRow1Z,
+    Vector2.create(0, 0.5),
+    Color4.create(0.9, 0.7, 0.3, 1)
+  )
 
   // T1.4 Scroll down continuously
-  const texScrollDown = engine.addEntity()
-  Transform.create(texScrollDown, {
-    position: Vector3.create(textureTweenBaseX + 15, 2.5, ttRow1Z),
-    scale: Vector3.create(4, 4, 0.2)
-  })
-  MeshRenderer.setPlane(texScrollDown)
-  Material.setPbrMaterial(texScrollDown, {
-    albedoColor: Color4.create(0.3, 0.9, 0.7, 1),
-    texture: Material.Texture.Common({
-      src: 'images/scene-thumbnail.png',
-      wrapMode: TextureWrapMode.TWM_REPEAT
-    })
-  })
-  Tween.setTextureMoveContinuous(texScrollDown, Vector2.create(0, -0.5), 5000)
-  createLabel('Scroll Down\nContinuous', Vector3.create(textureTweenBaseX + 15, 6, ttRow1Z), 0.9)
+  const texScrollDown = setupTextureMoveContinuousEntity(
+    'Scroll Down\nContinuous',
+    textureTweenBaseX + 15,
+    ttRow1Z,
+    Vector2.create(0, -0.5),
+    Color4.create(0.3, 0.9, 0.7, 1)
+  )
 
   // T1.5 Diagonal scroll continuously
-  const texScrollDiag = engine.addEntity()
-  Transform.create(texScrollDiag, {
-    position: Vector3.create(textureTweenBaseX + 25, 2.5, ttRow1Z),
-    scale: Vector3.create(4, 4, 0.2)
-  })
-  MeshRenderer.setPlane(texScrollDiag)
-  Material.setPbrMaterial(texScrollDiag, {
-    albedoColor: Color4.create(0.9, 0.3, 0.5, 1),
-    texture: Material.Texture.Common({
-      src: 'images/scene-thumbnail.png',
-      wrapMode: TextureWrapMode.TWM_REPEAT
-    })
-  })
-  Tween.setTextureMoveContinuous(texScrollDiag, Vector2.create(0.3, 0.3), 5000)
-  createLabel('Diagonal\nContinuous', Vector3.create(textureTweenBaseX + 25, 6, ttRow1Z), 0.9)
+  const texScrollDiag = setupTextureMoveContinuousEntity(
+    'Diagonal\nContinuous',
+    textureTweenBaseX + 25,
+    ttRow1Z,
+    Vector2.create(0, -0.5),
+    Color4.create(0.3, 0.9, 0.5, 1)
+  )
 
   // =========================================================================
   // ROW 2: TextureMove with looping via component tracking
