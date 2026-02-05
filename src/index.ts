@@ -1,4 +1,4 @@
-import { engine, Transform, TextShape } from '@dcl/sdk/ecs'
+import { engine, Transform, TextShape, AvatarAttach, MeshRenderer, PBAvatarAttach, AvatarAnchorPointType, Material, Entity } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3, Quaternion } from '@dcl/sdk/math'
 import { setupUI } from './ui'
 import { createPlatform, createLabel } from './utils/helpers'
@@ -24,6 +24,8 @@ import { setupMaterialsTest } from './tests/test17-materials'
 import { setupGltfModelsTest } from './tests/test18-gltf-models'
 import { setupAnimationsTest } from './tests/test19-animations'
 import { setupMorphTargetsTest } from './tests/test20-morph-targets'
+import { getConnectedPlayers } from '~system/Players'
+import { setupAttachPointsTest } from './tests/test21-anchor-points'
 
 // ============================================================================
 // MAIN SCENE
@@ -122,6 +124,9 @@ export function main() {
 
   // TEST 20: Morph Targets
   setupMorphTargetsTest()
+
+  // TEST 21: Attach Points
+  setupAttachPointsTest()
 
   console.log('All test platforms created')
   console.log('Tests: Staircase, Gap Jumps, Descend, Step Heights, Ramps, Corridor Width, Control Mapping, Trigger Areas, Wall Teleport, Continuous Tweens, Texture Tweens, Boundary Trigger, Video Streaming, MISC, Meshes, Materials, GLTF Models, Animations, Morph Targets')
