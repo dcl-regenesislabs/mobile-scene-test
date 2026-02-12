@@ -26,6 +26,7 @@ import { setupAnimationsTest } from './tests/test19-animations'
 import { setupMorphTargetsTest } from './tests/test20-morph-targets'
 import { getConnectedPlayers } from '~system/Players'
 import { setupAttachPointsTest } from './tests/test21-anchor-points'
+import { setupSkyboxTimeZones } from './tests/test22-skybox-time'
 
 // ============================================================================
 // MAIN SCENE
@@ -127,6 +128,9 @@ export function main() {
 
   // TEST 21: Attach Points
   setupAttachPointsTest()
+
+  // TEST 22: SkyboxTime
+  setupSkyboxTimeZones()
 
   console.log('All test platforms created')
   console.log('Tests: Staircase, Gap Jumps, Descend, Step Heights, Ramps, Corridor Width, Control Mapping, Trigger Areas, Wall Teleport, Continuous Tweens, Texture Tweens, Boundary Trigger, Video Streaming, MISC, Meshes, Materials, GLTF Models, Animations, Morph Targets')
