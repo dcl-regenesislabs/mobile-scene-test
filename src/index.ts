@@ -1,7 +1,7 @@
 import { engine, Transform, TextShape, AvatarAttach, MeshRenderer, PBAvatarAttach, AvatarAnchorPointType, Material, VideoPlayer, Entity } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3, Quaternion } from '@dcl/sdk/math'
 import { initAssetPacks } from '@dcl/asset-packs/dist/scene-entrypoint'
-import { getComponents, AdminPermissions } from '@dcl/asset-packs'
+import { getComponents, AdminPermissions, MediaSource } from '@dcl/asset-packs'
 import { setupUI } from './ui'
 import { createPlatform, createLabel } from './utils/helpers'
 import { SCENE_VERSION } from './version'
@@ -79,9 +79,17 @@ export function main() {
   })
 
   // -------------------------------------------------------------------------
-  // ADMIN TOOLS smart item
+  // ADMIN TOOLS smart item + VideoScreen on livekit entity
   // -------------------------------------------------------------------------
-  const { AdminTools } = getComponents(engine)
+  const { AdminTools, VideoScreen } = getComponents(engine as any)
+
+  // Tag the livekit screen as a VideoScreen smart item so Admin Tools can manage it
+  VideoScreen.create(livekitScreen, {
+    thumbnail: '',
+    defaultMediaSource: MediaSource.LiveStream,
+    defaultURL: 'livekit-video://current-stream'
+  })
+
   const adminEntity = engine.addEntity()
   Transform.create(adminEntity, {
     position: Vector3.create(0, 0, 0)
