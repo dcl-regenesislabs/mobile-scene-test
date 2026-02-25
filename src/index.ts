@@ -1,5 +1,7 @@
-import { engine, Transform, TextShape, AvatarAttach, MeshRenderer, PBAvatarAttach, AvatarAnchorPointType, Material, Entity } from '@dcl/sdk/ecs'
+import { engine, Transform, TextShape, AvatarAttach, MeshRenderer, PBAvatarAttach, AvatarAnchorPointType, Material, VideoPlayer, Entity } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3, Quaternion } from '@dcl/sdk/math'
+import { initAssetPacks } from '@dcl/asset-packs/dist/scene-entrypoint'
+import { getComponents, AdminPermissions } from '@dcl/asset-packs'
 import { setupUI } from './ui'
 import { createPlatform, createLabel } from './utils/helpers'
 import { SCENE_VERSION } from './version'
@@ -33,6 +35,9 @@ import { setupSkyboxTimeZones } from './tests/test22-skybox-time'
 // ============================================================================
 
 export function main() {
+  // Initialize asset packs (enables Admin Tools and other smart items)
+  initAssetPacks(engine)
+
   setupUI()
 
   // Version label on the floor at origin
@@ -50,6 +55,72 @@ export function main() {
   })
 
   console.log('Mobile Test Scene Initialized')
+
+  // -------------------------------------------------------------------------
+  // LIVEKIT VIDEO at scene center (0, 0, 0)
+  // -------------------------------------------------------------------------
+  const livekitScreen = engine.addEntity()
+
+  MeshRenderer.setPlane(livekitScreen)
+
+  Transform.create(livekitScreen, {
+    position: Vector3.create(0, 1, 0)
+  })
+
+  VideoPlayer.create(livekitScreen, {
+    src: 'livekit-video://current-stream',
+    playing: true
+  })
+
+  const livekitVideoTexture = Material.Texture.Video({ videoPlayerEntity: livekitScreen })
+
+  Material.setBasicMaterial(livekitScreen, {
+    texture: livekitVideoTexture
+  })
+
+  // -------------------------------------------------------------------------
+  // ADMIN TOOLS smart item
+  // -------------------------------------------------------------------------
+  const { AdminTools } = getComponents(engine)
+  const adminEntity = engine.addEntity()
+  Transform.create(adminEntity, {
+    position: Vector3.create(0, 0, 0)
+  })
+  AdminTools.create(adminEntity, {
+    adminPermissions: AdminPermissions.PUBLIC,
+    authorizedAdminUsers: {
+      me: true,
+      sceneOwners: true,
+      allowList: false,
+      adminAllowList: []
+    },
+    moderationControl: {
+      isEnabled: true,
+      kickCoordinates: { x: 0, y: 0, z: 0 },
+      allowNonOwnersManageAdminAllowList: false
+    },
+    textAnnouncementControl: {
+      isEnabled: true,
+      playSoundOnEachAnnouncement: true,
+      showAuthorOnEachAnnouncement: true
+    },
+    videoControl: {
+      isEnabled: true,
+      disableVideoPlayersSound: false,
+      showAuthorOnVideoPlayers: false,
+      linkAllVideoPlayers: true,
+      videoPlayers: []
+    },
+    smartItemsControl: {
+      isEnabled: false,
+      linkAllSmartItems: false,
+      smartItems: []
+    },
+    rewardsControl: {
+      isEnabled: false,
+      rewardItems: []
+    }
+  })
 
   // -------------------------------------------------------------------------
   // GROUND PLATFORM (Starting area)
