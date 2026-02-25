@@ -13,9 +13,7 @@
     "@dcl/js-runtime": "^7.20.3",
     "@dcl/sdk": "^7.20.3"
   },
-  "overrides": {
-    "@dcl/asset-packs": "2.11.7"
-  },
+  "overrides": {},
   "engines": {
     "node": ">=16.0.0",
     "npm": ">=6.0.0"
