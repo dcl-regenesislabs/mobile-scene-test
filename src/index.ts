@@ -86,7 +86,7 @@ export function main() {
     defaultMediaSource: MediaSource.VideoURL,
     defaultURL: DEFAULT_VIDEO_URL
   })
-  SyncComponents.create(livekitScreen, { componentIds: [1043] })
+  SyncComponents.create(livekitScreen, { componentIds: [VideoPlayer.componentId, VideoScreen.componentId] })
   NetworkEntity.create(livekitScreen, { networkId: 0, entityId: 8004 as Entity })
 
   // -------------------------------------------------------------------------
