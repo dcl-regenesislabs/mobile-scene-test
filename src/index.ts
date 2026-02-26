@@ -55,16 +55,18 @@ export function main() {
   })
 
   console.log('Mobile Test Scene Initialized')
+  console.log('VIDEO_DEBUG_ENABLED')
 
   // -------------------------------------------------------------------------
   // VIDEO SCREEN at scene center (0, 0, 0)
   // Default: plays a video URL. Admin Tools can switch to LiveKit streaming.
   // -------------------------------------------------------------------------
-  const DEFAULT_VIDEO_URL = 'https://player.vimeo.com/external/552481870.m3u8?s=c312c8533f97e808fccc92b0510b085c8122a875'
+  const DEFAULT_VIDEO_URL = 'https://vz-7c61c1b5-d59.b-cdn.net/ccea595a-b910-4de6-b160-092819db021d/play_480p.mp4'
 
   const { AdminTools, VideoScreen } = getComponents(engine as any)
 
   const livekitScreen = engine.addEntity()
+  console.log(`[VIDEO DEBUG] Video Screen entity ID: ${livekitScreen}`)
   Name.create(livekitScreen, { value: 'Video Screen' })
   Transform.create(livekitScreen, {
     position: Vector3.create(0, 3.5, 0),
@@ -78,8 +80,17 @@ export function main() {
     volume: 1,
     loop: true
   })
-  Material.setBasicMaterial(livekitScreen, {
-    texture: Material.Texture.Video({ videoPlayerEntity: livekitScreen })
+  // Use unlit material (matching StreamerTeather composite setup)
+  Material.create(livekitScreen, {
+    material: {
+      $case: 'unlit' as const,
+      unlit: {
+        texture: Material.Texture.Video({ videoPlayerEntity: livekitScreen }),
+        diffuseColor: Color4.White(),
+        alphaTest: 0.5,
+        castShadows: true
+      }
+    }
   })
   VideoScreen.create(livekitScreen, {
     thumbnail: '',
@@ -90,10 +101,44 @@ export function main() {
   NetworkEntity.create(livekitScreen, { networkId: 0, entityId: 8004 as Entity })
 
   // -------------------------------------------------------------------------
+  // DEBUG: Monitor VideoPlayer changes on the video screen
+  // -------------------------------------------------------------------------
+  let lastSrc = DEFAULT_VIDEO_URL
+  let lastPlaying = true
+  let debugFrameCount = 0
+  engine.addSystem(() => {
+    debugFrameCount++
+    if (!VideoPlayer.has(livekitScreen)) {
+      if (debugFrameCount % 300 === 0) {
+        console.log(`[VIDEO DEBUG] WARNING: VideoPlayer component missing from entity ${livekitScreen}!`)
+      }
+      return
+    }
+    const vp = VideoPlayer.get(livekitScreen)
+    if (vp.src !== lastSrc) {
+      console.log(`[VIDEO DEBUG] VideoPlayer.src CHANGED: "${lastSrc}" -> "${vp.src}"`)
+      lastSrc = vp.src
+    }
+    if (vp.playing !== lastPlaying) {
+      console.log(`[VIDEO DEBUG] VideoPlayer.playing CHANGED: ${lastPlaying} -> ${vp.playing}`)
+      lastPlaying = vp.playing ?? false
+    }
+    // Log full state every 10 seconds (at ~30fps = 300 frames)
+    if (debugFrameCount % 300 === 0) {
+      console.log(`[VIDEO DEBUG] Current state: src="${vp.src}", playing=${vp.playing}, volume=${vp.volume}, loop=${vp.loop}`)
+    }
+  })
+
+  // -------------------------------------------------------------------------
   // ADMIN TOOLS smart item
   // Matches StreamerTeather's Admin Tools pattern
   // -------------------------------------------------------------------------
   const adminEntity = engine.addEntity()
+  console.log(`[VIDEO DEBUG] Admin Tools entity ID: ${adminEntity}`)
+  console.log(`[VIDEO DEBUG] VideoPlayer.componentId: ${VideoPlayer.componentId}`)
+  console.log(`[VIDEO DEBUG] VideoScreen componentId: ${VideoScreen.componentId}`)
+  console.log(`[VIDEO DEBUG] AdminTools componentId: ${AdminTools.componentId}`)
+  console.log(`[VIDEO DEBUG] livekitScreen entity stored in videoPlayers: ${livekitScreen}`)
   Name.create(adminEntity, { value: 'Admin Tools' })
   Transform.create(adminEntity, {
     position: Vector3.create(0, 0, 0)

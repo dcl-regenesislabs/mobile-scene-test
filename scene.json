@@ -67,7 +67,8 @@
     "ALLOW_MEDIA_HOSTNAMES"
   ],
   "allowedMediaHostnames": [
-    "player.vimeo.com"
+    "player.vimeo.com",
+    "vz-7c61c1b5-d59.b-cdn.net"
   ],
   "featureToggles": {
     "voiceChat": "enabled",
