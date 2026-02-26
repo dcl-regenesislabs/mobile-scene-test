@@ -57,9 +57,11 @@ export function main() {
   console.log('Mobile Test Scene Initialized')
 
   // -------------------------------------------------------------------------
-  // LIVEKIT VIDEO SCREEN at scene center (0, 0, 0)
-  // Matches StreamerTeather's VideoScreen pattern
+  // VIDEO SCREEN at scene center (0, 0, 0)
+  // Default: plays a video URL. Admin Tools can switch to LiveKit streaming.
   // -------------------------------------------------------------------------
+  const DEFAULT_VIDEO_URL = 'https://player.vimeo.com/external/552481870.m3u8?s=c312c8533f97e808fccc92b0510b085c8122a875'
+
   const { AdminTools, VideoScreen } = getComponents(engine as any)
 
   const livekitScreen = engine.addEntity()
@@ -70,7 +72,7 @@ export function main() {
   MeshRenderer.setPlane(livekitScreen)
   MeshCollider.setPlane(livekitScreen)
   VideoPlayer.create(livekitScreen, {
-    src: 'livekit-video://current-stream',
+    src: DEFAULT_VIDEO_URL,
     playing: true,
     volume: 1,
     loop: true
@@ -80,8 +82,8 @@ export function main() {
   })
   VideoScreen.create(livekitScreen, {
     thumbnail: '',
-    defaultMediaSource: MediaSource.LiveStream,
-    defaultURL: 'livekit-video://current-stream'
+    defaultMediaSource: MediaSource.VideoURL,
+    defaultURL: DEFAULT_VIDEO_URL
   })
   SyncComponents.create(livekitScreen, { componentIds: [1043] })
   NetworkEntity.create(livekitScreen, { networkId: 0, entityId: 8004 as Entity })

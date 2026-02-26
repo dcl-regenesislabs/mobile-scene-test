@@ -63,6 +63,12 @@
       }
     }
   ],
+  "requiredPermissions": [
+    "ALLOW_MEDIA_HOSTNAMES"
+  ],
+  "allowedMediaHostnames": [
+    "player.vimeo.com"
+  ],
   "featureToggles": {
     "voiceChat": "enabled",
     "portableExperiences": "enabled"
