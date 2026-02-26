@@ -67,7 +67,8 @@ export function main() {
   const livekitScreen = engine.addEntity()
   Name.create(livekitScreen, { value: 'Video Screen' })
   Transform.create(livekitScreen, {
-    position: Vector3.create(0, 1, 0)
+    position: Vector3.create(0, 3.5, 0),
+    scale: Vector3.create(8, 4.5, 1)
   })
   MeshRenderer.setPlane(livekitScreen)
   MeshCollider.setPlane(livekitScreen)
