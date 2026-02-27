@@ -39,8 +39,10 @@ const C = {
 }
 
 // ============================================================================
-// VIDEO SOURCE PANEL (top-left)
+// VIDEO SOURCE PANEL (top-center, collapsible)
 // ============================================================================
+
+let panelOpen = false
 
 function VideoSourcePanel() {
   const isVideo = videoState.sourceType === VideoSourceType.VIDEO_URL
@@ -49,118 +51,145 @@ function VideoSourcePanel() {
   return (
     <UiEntity
       uiTransform={{
-        width: 340,
+        width: 360,
         height: 'auto',
         positionType: 'absolute',
-        position: { top: 16, left: 16 },
-        padding: 12,
+        position: { top: 8, left: '50%' },
+        margin: { left: -180 },
         flexDirection: 'column'
       }}
-      uiBackground={{ color: C.bg }}
     >
-      {/* Two big buttons: VIDEO PLAYER | STREAM */}
-      <UiEntity uiTransform={{ width: '100%', flexDirection: 'row', margin: { bottom: 10 } }}>
-        <UiEntity
-          uiTransform={{
-            width: '50%',
-            height: 52,
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: { right: 3 }
-          }}
-          uiBackground={{ color: isVideo ? C.active : C.inactive }}
-          onMouseDown={() => videoState.setSourceType(VideoSourceType.VIDEO_URL)}
-        >
-          <Label value="VIDEO PLAYER" fontSize={16} color={C.text} />
-        </UiEntity>
-        <UiEntity
-          uiTransform={{
-            width: '50%',
-            height: 52,
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: { left: 3 }
-          }}
-          uiBackground={{ color: isStream ? C.active : C.inactive }}
-          onMouseDown={() => videoState.setSourceType(VideoSourceType.LIVEKIT)}
-        >
-          <Label value="STREAM" fontSize={16} color={C.text} />
-        </UiEntity>
-      </UiEntity>
-
-      {/* Active mode indicator */}
+      {/* Toggle button - always visible */}
       <UiEntity
-        uiTransform={{ width: '100%', padding: { top: 4, bottom: 4, left: 8, right: 8 }, margin: { bottom: 8 } }}
-        uiBackground={{ color: C.dark }}
+        uiTransform={{
+          width: '100%',
+          height: 40,
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'row'
+        }}
+        uiBackground={{ color: panelOpen ? C.active : C.inactive }}
+        onMouseDown={() => { panelOpen = !panelOpen }}
       >
-        <Label
-          value={isVideo ? 'Big Buck Bunny (Blender Foundation)' : 'livekit-video://current-stream'}
-          fontSize={12}
-          color={C.muted}
-        />
+        <Label value={panelOpen ? 'VIDEO CONTROLS  ▲' : 'VIDEO CONTROLS  ▼'} fontSize={15} color={C.text} />
       </UiEntity>
 
-      {/* Stream section (only when STREAM is active) */}
-      {isStream && (
-        <UiEntity uiTransform={{ width: '100%', flexDirection: 'column' }}>
-          {/* Refresh / Reset row */}
-          <UiEntity uiTransform={{ width: '100%', flexDirection: 'row', margin: { bottom: 8 } }}>
+      {/* Panel content - only when open */}
+      {panelOpen ? (
+        <UiEntity
+          uiTransform={{
+            width: '100%',
+            height: 'auto',
+            padding: 12,
+            flexDirection: 'column'
+          }}
+          uiBackground={{ color: C.bg }}
+        >
+          {/* Two big buttons: VIDEO PLAYER | STREAM */}
+          <UiEntity uiTransform={{ width: '100%', flexDirection: 'row', margin: { bottom: 10 } }}>
             <UiEntity
-              uiTransform={{ width: '50%', height: 40, alignItems: 'center', justifyContent: 'center', margin: { right: 3 } }}
-              uiBackground={{ color: C.green }}
-              onMouseDown={() => fetchStreamKeyInfo()}
+              uiTransform={{
+                width: '50%',
+                height: 52,
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: { right: 3 }
+              }}
+              uiBackground={{ color: isVideo ? C.active : C.inactive }}
+              onMouseDown={() => videoState.setSourceType(VideoSourceType.VIDEO_URL)}
             >
-              <Label value={videoState.streamKeyLoading ? 'Loading...' : 'Get Key'} fontSize={14} color={C.text} />
+              <Label value="VIDEO PLAYER" fontSize={16} color={C.text} />
             </UiEntity>
             <UiEntity
-              uiTransform={{ width: '50%', height: 40, alignItems: 'center', justifyContent: 'center', margin: { left: 3 } }}
-              uiBackground={{ color: C.orange }}
-              onMouseDown={() => {
-                resetStreamKey().then(([error, data]) => {
-                  if (data) {
-                    videoState.setStreamKeyInfo(data.streamingUrl, data.streamingKey, data.endsAt)
-                  } else if (error) {
-                    videoState.setStreamKeyError(error)
-                  }
-                })
+              uiTransform={{
+                width: '50%',
+                height: 52,
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: { left: 3 }
               }}
+              uiBackground={{ color: isStream ? C.active : C.inactive }}
+              onMouseDown={() => videoState.setSourceType(VideoSourceType.LIVEKIT)}
             >
-              <Label value="Reset Key" fontSize={14} color={C.text} />
+              <Label value="STREAM" fontSize={16} color={C.text} />
             </UiEntity>
           </UiEntity>
 
-          {/* Error */}
-          {videoState.streamKeyError ? (
-            <UiEntity
-              uiTransform={{ width: '100%', padding: 8, margin: { bottom: 8 } }}
-              uiBackground={{ color: C.red }}
-            >
-              <Label value={videoState.streamKeyError} fontSize={12} color={C.text} />
-            </UiEntity>
-          ) : null}
+          {/* Active mode indicator */}
+          <UiEntity
+            uiTransform={{ width: '100%', padding: { top: 4, bottom: 4, left: 8, right: 8 }, margin: { bottom: 8 } }}
+            uiBackground={{ color: C.dark }}
+          >
+            <Label
+              value={isVideo ? 'Big Buck Bunny (Blender Foundation)' : 'livekit-video://current-stream'}
+              fontSize={12}
+              color={C.muted}
+            />
+          </UiEntity>
 
-          {/* Stream key info */}
-          {videoState.streamingKey ? (
+          {/* Stream section (only when STREAM is active) */}
+          {isStream ? (
             <UiEntity uiTransform={{ width: '100%', flexDirection: 'column' }}>
-              <Label value="RTMP Server:" fontSize={12} color={C.muted} uiTransform={{ margin: { bottom: 2 } }} />
-              <UiEntity
-                uiTransform={{ width: '100%', padding: 8, margin: { bottom: 8 } }}
-                uiBackground={{ color: C.dark }}
-              >
-                <Label value={videoState.streamingUrl || 'N/A'} fontSize={12} color={C.text} />
+              {/* Refresh / Reset row */}
+              <UiEntity uiTransform={{ width: '100%', flexDirection: 'row', margin: { bottom: 8 } }}>
+                <UiEntity
+                  uiTransform={{ width: '50%', height: 40, alignItems: 'center', justifyContent: 'center', margin: { right: 3 } }}
+                  uiBackground={{ color: C.green }}
+                  onMouseDown={() => fetchStreamKeyInfo()}
+                >
+                  <Label value={videoState.streamKeyLoading ? 'Loading...' : 'Get Key'} fontSize={14} color={C.text} />
+                </UiEntity>
+                <UiEntity
+                  uiTransform={{ width: '50%', height: 40, alignItems: 'center', justifyContent: 'center', margin: { left: 3 } }}
+                  uiBackground={{ color: C.orange }}
+                  onMouseDown={() => {
+                    resetStreamKey().then(([error, data]) => {
+                      if (data) {
+                        videoState.setStreamKeyInfo(data.streamingUrl, data.streamingKey, data.endsAt)
+                      } else if (error) {
+                        videoState.setStreamKeyError(error)
+                      }
+                    })
+                  }}
+                >
+                  <Label value="Reset Key" fontSize={14} color={C.text} />
+                </UiEntity>
               </UiEntity>
 
-              <Label value="Stream Key:" fontSize={12} color={C.muted} uiTransform={{ margin: { bottom: 2 } }} />
-              <UiEntity
-                uiTransform={{ width: '100%', padding: 8 }}
-                uiBackground={{ color: C.dark }}
-              >
-                <Label value={videoState.streamingKey} fontSize={12} color={C.orange} />
-              </UiEntity>
+              {/* Error */}
+              {videoState.streamKeyError ? (
+                <UiEntity
+                  uiTransform={{ width: '100%', padding: 8, margin: { bottom: 8 } }}
+                  uiBackground={{ color: C.red }}
+                >
+                  <Label value={videoState.streamKeyError} fontSize={12} color={C.text} />
+                </UiEntity>
+              ) : null}
+
+              {/* Stream key info */}
+              {videoState.streamingKey ? (
+                <UiEntity uiTransform={{ width: '100%', flexDirection: 'column' }}>
+                  <Label value="RTMP Server:" fontSize={12} color={C.muted} uiTransform={{ margin: { bottom: 2 } }} />
+                  <UiEntity
+                    uiTransform={{ width: '100%', padding: 8, margin: { bottom: 8 } }}
+                    uiBackground={{ color: C.dark }}
+                  >
+                    <Label value={videoState.streamingUrl || 'N/A'} fontSize={12} color={C.text} />
+                  </UiEntity>
+
+                  <Label value="Stream Key:" fontSize={12} color={C.muted} uiTransform={{ margin: { bottom: 2 } }} />
+                  <UiEntity
+                    uiTransform={{ width: '100%', padding: 8 }}
+                    uiBackground={{ color: C.dark }}
+                  >
+                    <Label value={videoState.streamingKey} fontSize={12} color={C.orange} />
+                  </UiEntity>
+                </UiEntity>
+              ) : null}
             </UiEntity>
           ) : null}
         </UiEntity>
-      )}
+      ) : null}
     </UiEntity>
   )
 }
