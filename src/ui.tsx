@@ -121,7 +121,7 @@ function VideoSourcePanel() {
             uiBackground={{ color: C.dark }}
           >
             <Label
-              value={isVideo ? 'Big Buck Bunny (Blender Foundation)' : 'livekit-video://current-stream'}
+              value={isVideo ? 'Big Buck Bunny (Blender Foundation)' : isStream ? 'livekit-video://current-stream' : 'Select a source above'}
               fontSize={12}
               color={C.muted}
             />
