@@ -51,12 +51,10 @@ function VideoSourcePanel() {
   return (
     <UiEntity
       uiTransform={{
-        width: '100%',
-        height: 'auto',
         positionType: 'absolute',
-        position: { top: 8, left: 0 },
-        alignItems: 'center',
-        flexDirection: 'column'
+        position: { top: 8, left: 0, right: 0 },
+        flexDirection: 'row',
+        justifyContent: 'center'
       }}
     >
     <UiEntity
