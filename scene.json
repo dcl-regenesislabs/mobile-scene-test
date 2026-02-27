@@ -64,12 +64,8 @@
     }
   ],
   "requiredPermissions": [
-    "ALLOW_MEDIA_HOSTNAMES"
-  ],
-  "allowedMediaHostnames": [
-    "player.vimeo.com",
-    "vz-7c61c1b5-d59.b-cdn.net",
-    "commondatastorage.googleapis.com"
+    "ALLOW_TO_TRIGGER_AVATAR_EMOTE",
+    "ALLOW_TO_MOVE_PLAYER_INSIDE_SCENE"
   ],
   "featureToggles": {
     "voiceChat": "enabled",

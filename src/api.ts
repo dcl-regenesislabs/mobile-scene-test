@@ -61,20 +61,23 @@ async function wrapSignedFetch<T>(
   }
 
   try {
+    console.log(`[STREAM API] ${method || 'GET'} ${url}`)
     const response = await signedFetch({
       url,
       init: { method: method || 'GET', headers: {} }
     })
+    console.log(`[STREAM API] Response ok=${response.ok} body=${response.body}`)
 
     if (!response.ok) {
-      console.log(`[STREAM API] Error: ${response.body || 'Unknown error'}`)
-      return [response.body || 'Request failed', null]
+      const errMsg = response.body || 'Request failed'
+      console.log(`[STREAM API] Error: ${errMsg}`)
+      return [errMsg, null]
     }
 
     const body = JSON.parse(response.body || '{}')
     return [null, toCamelCase<T>(body)]
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? error.message : String(error)
     console.log(`[STREAM API] Exception: ${message}`)
     return [message, null]
   }
