@@ -64,8 +64,8 @@ export function main() {
   MeshRenderer.setPlane(videoScreen)
   MeshCollider.setPlane(videoScreen)
   VideoPlayer.create(videoScreen, {
-    src: '',
-    playing: false,
+    src: 'livekit-video://current-stream',
+    playing: true,
     volume: 1,
     loop: true
   })
