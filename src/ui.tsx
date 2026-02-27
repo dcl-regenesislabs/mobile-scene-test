@@ -3,6 +3,7 @@ import { Color4 } from '@dcl/sdk/math'
 import { engine, Transform } from '@dcl/sdk/ecs'
 import { videoState, VideoSourceType } from './state'
 import { fetchStreamKeyInfo, resetStreamKey } from './api'
+import { copyToClipboard } from '~system/RestrictedActions'
 
 // ============================================================================
 // TRACKING STATE
@@ -167,19 +168,37 @@ function VideoSourcePanelContent() {
               {videoState.streamingKey ? (
                 <UiEntity uiTransform={{ width: '100%', flexDirection: 'column' }}>
                   <Label value="RTMP Server:" fontSize={12} color={C.muted} uiTransform={{ margin: { bottom: 2 } }} />
-                  <UiEntity
-                    uiTransform={{ width: '100%', padding: 8, margin: { bottom: 8 } }}
-                    uiBackground={{ color: C.dark }}
-                  >
-                    <Label value={videoState.streamingUrl || 'N/A'} fontSize={12} color={C.text} />
+                  <UiEntity uiTransform={{ width: '100%', flexDirection: 'row', margin: { bottom: 8 } }}>
+                    <UiEntity
+                      uiTransform={{ flexGrow: 1, padding: 8 }}
+                      uiBackground={{ color: C.dark }}
+                    >
+                      <Label value={videoState.streamingUrl || 'N/A'} fontSize={12} color={C.text} />
+                    </UiEntity>
+                    <UiEntity
+                      uiTransform={{ width: 50, height: '100%', alignItems: 'center', justifyContent: 'center', margin: { left: 3 } }}
+                      uiBackground={{ color: C.active }}
+                      onMouseDown={() => copyToClipboard({ text: videoState.streamingUrl })}
+                    >
+                      <Label value="COPY" fontSize={11} color={C.text} />
+                    </UiEntity>
                   </UiEntity>
 
                   <Label value="Stream Key:" fontSize={12} color={C.muted} uiTransform={{ margin: { bottom: 2 } }} />
-                  <UiEntity
-                    uiTransform={{ width: '100%', padding: 8 }}
-                    uiBackground={{ color: C.dark }}
-                  >
-                    <Label value={videoState.streamingKey} fontSize={12} color={C.orange} />
+                  <UiEntity uiTransform={{ width: '100%', flexDirection: 'row' }}>
+                    <UiEntity
+                      uiTransform={{ flexGrow: 1, padding: 8 }}
+                      uiBackground={{ color: C.dark }}
+                    >
+                      <Label value={videoState.streamingKey} fontSize={12} color={C.orange} />
+                    </UiEntity>
+                    <UiEntity
+                      uiTransform={{ width: 50, height: '100%', alignItems: 'center', justifyContent: 'center', margin: { left: 3 } }}
+                      uiBackground={{ color: C.active }}
+                      onMouseDown={() => copyToClipboard({ text: videoState.streamingKey })}
+                    >
+                      <Label value="COPY" fontSize={11} color={C.text} />
+                    </UiEntity>
                   </UiEntity>
                 </UiEntity>
               ) : null}
