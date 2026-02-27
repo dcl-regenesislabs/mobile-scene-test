@@ -111,29 +111,37 @@ export async function resetStreamKey(): Promise<Result<StreamKeyResponse, string
 
 // Fetch and update stream key info in state
 export async function fetchStreamKeyInfo() {
+  videoState.streamKeyLoading = true
+  videoState.streamKeyError = ''
   console.log('[STREAM API] Fetching stream key...')
 
-  const [error, data] = await getStreamKey()
+  try {
+    const [error, data] = await getStreamKey()
 
-  if (error) {
-    console.log('[STREAM API] No existing key, generating new one...')
-    const [genError, genData] = await generateStreamKey()
+    if (error) {
+      console.log('[STREAM API] No existing key, generating new one...')
+      const [genError, genData] = await generateStreamKey()
 
-    if (genError) {
-      console.log(`[STREAM API] Failed to get stream key: ${genError}`)
-      videoState.setStreamKeyError(genError)
+      if (genError) {
+        console.log(`[STREAM API] Failed to get stream key: ${genError}`)
+        videoState.setStreamKeyError(genError)
+        return
+      }
+
+      if (genData) {
+        videoState.setStreamKeyInfo(genData.streamingUrl, genData.streamingKey, genData.endsAt)
+        console.log('[STREAM API] Stream key generated successfully')
+      }
       return
     }
 
-    if (genData) {
-      videoState.setStreamKeyInfo(genData.streamingUrl, genData.streamingKey, genData.endsAt)
-      console.log('[STREAM API] Stream key generated successfully')
+    if (data) {
+      videoState.setStreamKeyInfo(data.streamingUrl, data.streamingKey, data.endsAt)
+      console.log('[STREAM API] Stream key loaded successfully')
     }
-    return
-  }
-
-  if (data) {
-    videoState.setStreamKeyInfo(data.streamingUrl, data.streamingKey, data.endsAt)
-    console.log('[STREAM API] Stream key loaded successfully')
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Unknown error'
+    console.log(`[STREAM API] Exception: ${msg}`)
+    videoState.setStreamKeyError(msg)
   }
 }

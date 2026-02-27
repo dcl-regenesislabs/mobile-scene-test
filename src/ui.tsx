@@ -11,7 +11,9 @@ import { copyToClipboard } from '~system/RestrictedActions'
 
 let currentAltitude = 0
 let currentX = 0
+let currentZ = 0
 let maxAltitude = 0
+let nearScreen = false
 
 let isJumping = false
 let jumpStartX = 0
@@ -141,16 +143,20 @@ function VideoSourcePanelContent() {
                   uiTransform={{ width: '50%', height: 40, alignItems: 'center', justifyContent: 'center', margin: { left: 3 } }}
                   uiBackground={{ color: C.orange }}
                   onMouseDown={() => {
+                    videoState.streamKeyLoading = true
+                    videoState.streamKeyError = ''
                     resetStreamKey().then(([error, data]) => {
                       if (data) {
                         videoState.setStreamKeyInfo(data.streamingUrl, data.streamingKey, data.endsAt)
                       } else if (error) {
                         videoState.setStreamKeyError(error)
                       }
+                    }).catch((e: Error) => {
+                      videoState.setStreamKeyError(e.message || 'Reset failed')
                     })
                   }}
                 >
-                  <Label value="Reset Key" fontSize={14} color={C.text} />
+                  <Label value={videoState.streamKeyLoading ? 'Loading...' : 'Reset Key'} fontSize={14} color={C.text} />
                 </UiEntity>
               </UiEntity>
 
@@ -296,10 +302,12 @@ function MainUI() {
         alignItems: 'center'
       }}
     >
-      {/* Video panel — centered by parent flex */}
-      <UiEntity uiTransform={{ margin: { top: 8 } }}>
-        <VideoSourcePanelContent />
-      </UiEntity>
+      {/* Video panel — centered by parent flex, visible only near screen */}
+      {nearScreen ? (
+        <UiEntity uiTransform={{ margin: { top: 8 } }}>
+          <VideoSourcePanelContent />
+        </UiEntity>
+      ) : null}
 
       {/* Altitude panel — absolute top-right */}
       <AltitudePanel />
@@ -321,9 +329,15 @@ export function setupUI() {
     if (transform && transform.position) {
       const newY = transform.position.y
       const newX = transform.position.x
+      const newZ = transform.position.z
 
       currentAltitude = newY
       currentX = newX
+      currentZ = newZ
+
+      // Show video controls only when near the screen (within 8m of center)
+      const distFromCenter = Math.sqrt(newX * newX + newZ * newZ)
+      nearScreen = distFromCenter < 8
 
       if (currentAltitude > maxAltitude) {
         maxAltitude = currentAltitude
