@@ -1,5 +1,6 @@
 import { signedFetch } from '~system/SignedFetch'
 import { getRealm } from '~system/Runtime'
+import { videoState } from './state'
 
 // Result type for API operations
 type Success<T> = [null, T]
@@ -7,7 +8,7 @@ type Failure<E> = [E, null]
 type Result<T, E = Error> = Success<T> | Failure<E>
 
 // Stream key response type
-export type StreamKeyResponse = {
+type StreamKeyResponse = {
   streamingUrl: string
   streamingKey: string
   createdAt: number
@@ -108,10 +109,8 @@ export async function resetStreamKey(): Promise<Result<StreamKeyResponse, string
   return wrapSignedFetch<StreamKeyResponse>(getStreamKeyUrl(), 'PUT')
 }
 
-// Fetch and auto-generate stream key info, updating videoState
-export async function fetchStreamKeyInfo(): Promise<StreamKeyResponse | null> {
-  const { videoState } = await import('./state')
-  videoState.streamKeyLoading = true
+// Fetch and update stream key info in state
+export async function fetchStreamKeyInfo() {
   console.log('[STREAM API] Fetching stream key...')
 
   const [error, data] = await getStreamKey()
@@ -123,23 +122,18 @@ export async function fetchStreamKeyInfo(): Promise<StreamKeyResponse | null> {
     if (genError) {
       console.log(`[STREAM API] Failed to get stream key: ${genError}`)
       videoState.setStreamKeyError(genError)
-      return null
+      return
     }
 
     if (genData) {
-      console.log('[STREAM API] Stream key generated successfully')
       videoState.setStreamKeyInfo(genData.streamingUrl, genData.streamingKey, genData.endsAt)
-      return genData
+      console.log('[STREAM API] Stream key generated successfully')
     }
-    videoState.setStreamKeyError('No data returned')
-    return null
+    return
   }
 
   if (data) {
-    console.log('[STREAM API] Stream key loaded successfully')
     videoState.setStreamKeyInfo(data.streamingUrl, data.streamingKey, data.endsAt)
-    return data
+    console.log('[STREAM API] Stream key loaded successfully')
   }
-  videoState.setStreamKeyError('No data returned')
-  return null
 }
