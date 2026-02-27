@@ -44,19 +44,11 @@ const C = {
 
 let panelOpen = false
 
-function VideoSourcePanel() {
+function VideoSourcePanelContent() {
   const isVideo = videoState.sourceType === VideoSourceType.VIDEO_URL
   const isStream = videoState.sourceType === VideoSourceType.LIVEKIT
 
   return (
-    <UiEntity
-      uiTransform={{
-        positionType: 'absolute',
-        position: { top: 8, left: 0, right: 0 },
-        flexDirection: 'row',
-        justifyContent: 'center'
-      }}
-    >
     <UiEntity
       uiTransform={{
         width: 360,
@@ -196,7 +188,6 @@ function VideoSourcePanel() {
         </UiEntity>
       ) : null}
     </UiEntity>
-    </UiEntity>
   )
 }
 
@@ -278,8 +269,20 @@ function AltitudePanel() {
 
 function MainUI() {
   return (
-    <UiEntity>
-      <VideoSourcePanel />
+    <UiEntity
+      uiTransform={{
+        width: '100%',
+        height: '100%',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}
+    >
+      {/* Video panel — centered by parent flex */}
+      <UiEntity uiTransform={{ margin: { top: 8 } }}>
+        <VideoSourcePanelContent />
+      </UiEntity>
+
+      {/* Altitude panel — absolute top-right */}
       <AltitudePanel />
     </UiEntity>
   )
