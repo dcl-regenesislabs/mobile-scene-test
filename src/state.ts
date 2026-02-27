@@ -16,9 +16,9 @@ class VideoState {
   // Video entity reference
   private _videoEntity: Entity | null = null
 
-  // Source state (starts on LiveKit stream)
-  sourceType: VideoSourceType = VideoSourceType.LIVEKIT
-  currentSource: string = LIVEKIT_SOURCE
+  // Source state (starts with video URL, user switches to livekit via UI)
+  sourceType: VideoSourceType = VideoSourceType.VIDEO_URL
+  currentSource: string = DEFAULT_VIDEO_URL
 
   // Stream key info (from LiveKit API)
   streamingUrl: string = ''

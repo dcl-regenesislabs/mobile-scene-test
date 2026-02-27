@@ -3,7 +3,7 @@ import { Vector3, Color4, Color3, Quaternion } from '@dcl/sdk/math'
 import { setupUI } from './ui'
 import { createPlatform, createLabel } from './utils/helpers'
 import { SCENE_VERSION } from './version'
-import { videoState } from './state'
+import { videoState, DEFAULT_VIDEO_URL } from './state'
 import { fetchStreamKeyInfo } from './api'
 
 // Import all test setup functions
@@ -64,8 +64,8 @@ export function main() {
   MeshRenderer.setPlane(videoScreen)
   MeshCollider.setPlane(videoScreen)
   VideoPlayer.create(videoScreen, {
-    src: 'livekit-video://current-stream',
-    playing: true,
+    src: DEFAULT_VIDEO_URL,
+    playing: false,
     volume: 1,
     loop: true
   })
