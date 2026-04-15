@@ -109,7 +109,7 @@ export function setupTextureTweensTest() {
     'Diagonal\nContinuous',
     textureTweenBaseX + 25,
     ttRow1Z,
-    Vector2.create(0, -0.5),
+    Vector2.create(-0.5, -0.5),
     Color4.create(0.3, 0.9, 0.5, 1)
   )
 
