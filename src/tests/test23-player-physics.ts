@@ -29,11 +29,18 @@ import { createPlatform, createLabel } from '../utils/helpers'
  *  - Transform.localToWorldDirection (rotating launcher)
  */
 export function setupPlayerPhysicsTest() {
-  const baseX = -48
-  const baseZ = -40
+  // Empty far-east strip — clear of all other sectors (triggers, materials,
+  // meshes, animations, morph, etc.). Parcels (5..7, -4..-1).
+  const baseX = 90
+  const baseZ = -50
   const floorY = 0.05
 
-  createLabel('PLAYER PHYSICS TEST\nImpulses, Forces, Knockback, Repulsion', Vector3.create(baseX + 15, 8, baseZ - 12), 3)
+  createLabel(
+    'PLAYER PHYSICS TEST\nImpulses, Forces, Knockback, Repulsion\n' +
+      'Impulse rows -> PBPhysicsCombinedImpulse\nForce rows -> PBPhysicsCombinedForce',
+    Vector3.create(baseX + 15, 9, baseZ - 12),
+    3
+  )
 
   // Shared platform floor
   createPlatform(
@@ -47,7 +54,7 @@ export function setupPlayerPhysicsTest() {
   // =========================================================================
   const row1Z = baseZ
 
-  createLabel('ROW 1: IMPULSES', Vector3.create(baseX - 15, 3, row1Z), 2)
+  createLabel('ROW 1: IMPULSES\nPBPhysicsCombinedImpulse', Vector3.create(baseX - 15, 3, row1Z), 2)
 
   // 1a. Vertical launch pad (vector overload)
   const launchPadVec = engine.addEntity()
@@ -63,7 +70,7 @@ export function setupPlayerPhysicsTest() {
     Physics.applyImpulseToPlayer(Vector3.create(0, 50, 0))
     console.log('[PHYSICS] Launch pad (vector): impulse (0, 50, 0)')
   })
-  createLabel('LAUNCH PAD\nimpulse (0,50,0)\nvector overload', Vector3.create(baseX + 5, 2.5, row1Z), 1.4)
+  createLabel('LAUNCH PAD\nimpulse (0,50,0)\nvector overload\n[PBPhysicsCombinedImpulse]', Vector3.create(baseX + 5, 2.5, row1Z), 1.4)
 
   // 1b. Forward dash pad (direction + magnitude overload)
   const dashPad = engine.addEntity()
@@ -79,7 +86,7 @@ export function setupPlayerPhysicsTest() {
     Physics.applyImpulseToPlayer(Vector3.create(1, 0.4, 0), 35)
     console.log('[PHYSICS] Dash pad: impulse dir (1,0.4,0) mag 35')
   })
-  createLabel('DASH PAD\ndir (1,0.4,0) mag 35\ndir+mag overload', Vector3.create(baseX + 15, 2.5, row1Z), 1.4)
+  createLabel('DASH PAD\ndir (1,0.4,0) mag 35\ndir+mag overload\n[PBPhysicsCombinedImpulse]', Vector3.create(baseX + 15, 2.5, row1Z), 1.4)
 
   // 1c. Multi-call accumulation pad (multiple impulses same frame)
   const stackPad = engine.addEntity()
@@ -96,7 +103,7 @@ export function setupPlayerPhysicsTest() {
     Physics.applyImpulseToPlayer(Vector3.create(0, 25, 0))
     console.log('[PHYSICS] Stack pad: two impulses (0,25,0) accumulate -> ~50 up')
   })
-  createLabel('STACK PAD\n2 impulses same frame\n(accumulate)', Vector3.create(baseX + 25, 2.5, row1Z), 1.4)
+  createLabel('STACK PAD\n2 impulses same frame\n(accumulate)\n[PBPhysicsCombinedImpulse]', Vector3.create(baseX + 25, 2.5, row1Z), 1.4)
 
   // 1d. Rotating launcher (localToWorldDirection)
   const rotatingLauncher = engine.addEntity()
@@ -146,14 +153,14 @@ export function setupPlayerPhysicsTest() {
     Physics.applyImpulseToPlayer(worldDir, 40)
     console.log(`[PHYSICS] Rotating launcher: localToWorldDirection -> (${worldDir.x.toFixed(2)}, ${worldDir.y.toFixed(2)}, ${worldDir.z.toFixed(2)}) mag 40`)
   })
-  createLabel('ROTATING LAUNCHER\nlocalToWorldDirection\n(arrow shows facing)', Vector3.create(baseX + 35, 3.5, row1Z), 1.4)
+  createLabel('ROTATING LAUNCHER\nlocalToWorldDirection\n(arrow shows facing)\n[PBPhysicsCombinedImpulse]', Vector3.create(baseX + 35, 3.5, row1Z), 1.4)
 
   // =========================================================================
   // ROW 2: KNOCKBACK — applyKnockbackToPlayer (all falloff modes + attraction)
   // =========================================================================
   const row2Z = baseZ + 15
 
-  createLabel('ROW 2: KNOCKBACK', Vector3.create(baseX - 15, 3, row2Z), 2)
+  createLabel('ROW 2: KNOCKBACK\nPBPhysicsCombinedImpulse\n(delegates to applyImpulse)', Vector3.create(baseX - 15, 3, row2Z), 2)
 
   // Each knockback uses a step plate trigger so the player can step in/out without spam.
   const makeKnockbackPlate = (
@@ -175,7 +182,7 @@ export function setupPlayerPhysicsTest() {
       if (result.trigger?.entity !== engine.PlayerEntity) return
       onEnter()
     })
-    createLabel(label + '\n' + detail, Vector3.create(x, 2.5, row2Z), 1.3)
+    createLabel(label + '\n' + detail + '\n[PBPhysicsCombinedImpulse]', Vector3.create(x, 2.5, row2Z), 1.3)
   }
 
   // 2a. CONSTANT falloff — uniform within radius
@@ -252,7 +259,7 @@ export function setupPlayerPhysicsTest() {
   // =========================================================================
   const row3Z = baseZ + 30
 
-  createLabel('ROW 3: WIND TUNNEL', Vector3.create(baseX - 15, 3, row3Z), 2)
+  createLabel('ROW 3: WIND TUNNEL\nPBPhysicsCombinedForce', Vector3.create(baseX - 15, 3, row3Z), 2)
 
   // Visible tunnel walls (collision walls, leave the middle as a corridor)
   createPlatform(
@@ -289,7 +296,7 @@ export function setupPlayerPhysicsTest() {
     Physics.removeForceFromPlayer(windTunnel)
     console.log('[PHYSICS] Wind tunnel: removeForceFromPlayer')
   })
-  createLabel('WIND TUNNEL\napplyForceToPlayer +X\nremoved on exit', Vector3.create(baseX + 15, 4.5, row3Z), 1.5)
+  createLabel('WIND TUNNEL\napplyForceToPlayer +X\nremoved on exit\n[PBPhysicsCombinedForce]', Vector3.create(baseX + 15, 4.5, row3Z), 1.5)
 
   // 3b. Updraft (force separated direction + magnitude overload)
   const updraft = engine.addEntity()
@@ -313,14 +320,14 @@ export function setupPlayerPhysicsTest() {
     Physics.removeForceFromPlayer(updraft)
     console.log('[PHYSICS] Updraft: removed')
   })
-  createLabel('UPDRAFT\ndir/mag overload\nfloats player up', Vector3.create(baseX + 30, 4.5, row3Z), 1.5)
+  createLabel('UPDRAFT\ndir/mag overload\nfloats player up\n[PBPhysicsCombinedForce]', Vector3.create(baseX + 30, 4.5, row3Z), 1.5)
 
   // =========================================================================
   // ROW 4: TIME-LIMITED FORCE — applyForceToPlayerForDuration
   // =========================================================================
   const row4Z = baseZ + 45
 
-  createLabel('ROW 4: TIMED GUSTS', Vector3.create(baseX - 15, 3, row4Z), 2)
+  createLabel('ROW 4: TIMED GUSTS\nPBPhysicsCombinedForce', Vector3.create(baseX - 15, 3, row4Z), 2)
 
   // 4a. Gust upward — 1.5s
   const gustEntity = engine.addEntity()
@@ -336,7 +343,7 @@ export function setupPlayerPhysicsTest() {
     Physics.applyForceToPlayerForDuration(gustEntity, 1.5, Vector3.create(0, 50, 0))
     console.log('[PHYSICS] Gust UP 1.5s vector (0,50,0)')
   })
-  createLabel('GUST UP\n1.5s, vec (0,50,0)\nauto-removes', Vector3.create(baseX + 5, 2.5, row4Z), 1.4)
+  createLabel('GUST UP\n1.5s, vec (0,50,0)\nauto-removes\n[PBPhysicsCombinedForce]', Vector3.create(baseX + 5, 2.5, row4Z), 1.4)
 
   // 4b. Horizontal gust — 2s, dir+mag overload, timer resets on re-enter
   const horizGust = engine.addEntity()
@@ -352,7 +359,7 @@ export function setupPlayerPhysicsTest() {
     Physics.applyForceToPlayerForDuration(horizGust, 2, Vector3.create(1, 0, 0), 30)
     console.log('[PHYSICS] Horizontal gust 2s dir +X mag 30 (timer resets on re-enter)')
   })
-  createLabel('HORIZ GUST\n2s, dir +X mag 30\nresets on re-enter', Vector3.create(baseX + 15, 2.5, row4Z), 1.4)
+  createLabel('HORIZ GUST\n2s, dir +X mag 30\nresets on re-enter\n[PBPhysicsCombinedForce]', Vector3.create(baseX + 15, 2.5, row4Z), 1.4)
 
   // =========================================================================
   // ROW 5: REPULSION FORCE — applyRepulsionForceToPlayer
@@ -360,7 +367,7 @@ export function setupPlayerPhysicsTest() {
   // =========================================================================
   const row5Z = baseZ + 60
 
-  createLabel('ROW 5: REPULSION / VORTEX', Vector3.create(baseX - 15, 3, row5Z), 2)
+  createLabel('ROW 5: REPULSION / VORTEX\nPBPhysicsCombinedForce\n(removed with removeForceFromPlayer)', Vector3.create(baseX - 15, 3, row5Z), 2)
 
   // 5a. Repulsion pillar — pushes player outward continuously
   const repulsionPillar = engine.addEntity()
@@ -394,7 +401,7 @@ export function setupPlayerPhysicsTest() {
     Physics.removeForceFromPlayer(repulsionZone)
     console.log('[PHYSICS] Repulsion OFF')
   })
-  createLabel('REPULSION PILLAR\nmag 60, radius 8\nLINEAR falloff', Vector3.create(baseX + 10, 5, row5Z), 1.5)
+  createLabel('REPULSION PILLAR\nmag 60, radius 8\nLINEAR falloff\n[PBPhysicsCombinedForce]', Vector3.create(baseX + 10, 5, row5Z), 1.5)
 
   // 5b. Vortex / black hole — repulsion with negative magnitude pulls inward
   const vortexCore = engine.addEntity()
@@ -433,7 +440,7 @@ export function setupPlayerPhysicsTest() {
     Physics.removeForceFromPlayer(vortexZone)
     console.log('[PHYSICS] Vortex OFF')
   })
-  createLabel('VORTEX\nmag -45 (attract)\nINVERSE_SQUARE', Vector3.create(baseX + 30, 5, row5Z), 1.5)
+  createLabel('VORTEX\nmag -45 (attract)\nINVERSE_SQUARE\n[PBPhysicsCombinedForce]', Vector3.create(baseX + 30, 5, row5Z), 1.5)
 
   // =========================================================================
   // Instructions
