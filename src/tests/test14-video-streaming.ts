@@ -5,23 +5,90 @@ import {
   MeshCollider,
   Material,
   VideoPlayer,
+  VideoEvent,
+  VideoState,
   GltfContainer,
   PointerEvents,
   PointerEventType,
   InputAction,
   inputSystem,
   TextShape,
-  Billboard
+  Billboard,
+  Entity
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
+import { videoState, DEFAULT_VIDEO_URL } from '../state'
+import { fetchStreamKeyInfo } from '../api'
 
 /**
  * TEST 14: VIDEO STREAMING TEST
  * Testing VideoPlayer with a Blender Foundation movie.
  * Located at parcel 7,-7 (X = 112, Z = -112)
+ *
+ * Also sets up the UI-controlled video screen at scene origin (was in main()
+ * before the lobby refactor). When this scene is unloaded the videoState
+ * singleton is reset so the video UI panel has nothing to control.
  */
-export function setupVideoStreamingTest() {
+export function setupVideoStreamingTest(): TestSceneHandle {
+  return runScoped(t => {
+  const baseX_ui = 128  // test14 origin X + 16; lands ~16m east of stage center
+  const baseZ_ui = -104 // test14 origin Z
+  // -------------------------------------------------------------------------
+  // UI-CONTROLLED VIDEO SCREEN — controllable from the video UI panel.
+  // Positioned in the test14 coordinate space so the stage offset puts it
+  // beside the GLTF screen instead of at world origin.
+  // -------------------------------------------------------------------------
+  const uiVideoScreen = engine.addEntity()
+  Transform.create(uiVideoScreen, {
+    position: Vector3.create(baseX_ui, 3.5, baseZ_ui),
+    scale: Vector3.create(8, 4.5, 1)
+  })
+  MeshRenderer.setPlane(uiVideoScreen)
+  MeshCollider.setPlane(uiVideoScreen)
+  VideoPlayer.create(uiVideoScreen, {
+    src: DEFAULT_VIDEO_URL,
+    playing: false,
+    volume: 1,
+    loop: true
+  })
+  Material.setBasicMaterial(uiVideoScreen, {
+    texture: Material.Texture.Video({ videoPlayerEntity: uiVideoScreen })
+  })
+  videoState.setVideoEntity(uiVideoScreen)
+  fetchStreamKeyInfo()
+
+  // VideoEvent tracking system (logs state changes)
+  const VIDEO_STATE_NAMES: Record<number, string> = {
+    [VideoState.VS_NONE]: 'NONE',
+    [VideoState.VS_ERROR]: 'ERROR',
+    [VideoState.VS_LOADING]: 'LOADING',
+    [VideoState.VS_READY]: 'READY',
+    [VideoState.VS_PLAYING]: 'PLAYING',
+    [VideoState.VS_BUFFERING]: 'BUFFERING',
+    [VideoState.VS_SEEKING]: 'SEEKING',
+    [VideoState.VS_PAUSED]: 'PAUSED'
+  }
+  const lastEventTimestamps = new Map<Entity, number>()
+  engine.addSystem(() => {
+    for (const [entity, videoEvents] of engine.getEntitiesWith(VideoEvent)) {
+      const lastTimestamp = lastEventTimestamps.get(entity) ?? 0
+      for (const ev of videoEvents) {
+        if (ev.timestamp > lastTimestamp) {
+          lastEventTimestamps.set(entity, ev.timestamp)
+          const stateName = VIDEO_STATE_NAMES[ev.state] || `UNKNOWN(${ev.state})`
+          console.log(`[STREAM] Video state: ${stateName} | Time: ${ev.currentOffset?.toFixed(1)}s / ${ev.videoLength?.toFixed(1)}s`)
+        }
+      }
+    }
+  })
+
+  t.onDispose(() => videoState.reset())
+
+  // -------------------------------------------------------------------------
+  // ORIGINAL TEST 14 CONTENT
+  // -------------------------------------------------------------------------
   // Parcel 7,-7: 7 * 16 = 112, -7 * 16 = -112
   const baseX = 112
   const baseZ = -112
@@ -221,4 +288,5 @@ export function setupVideoStreamingTest() {
   )
 
   createLabel('TEST 14: Video Streaming\n(Parcel 7,-7)', Vector3.create(baseX - 2, 3, baseZ + 8), 2)
+  })
 }

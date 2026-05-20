@@ -4,6 +4,8 @@ import { engine, Transform } from '@dcl/sdk/ecs'
 import { videoState, VideoSourceType } from './state'
 import { fetchStreamKeyInfo, resetStreamKey } from './api'
 import { copyToClipboard } from '~system/RestrictedActions'
+import { sceneManager } from './lobby/scene-manager'
+import { PHYSICS_SCENES } from './lobby/scene-registry'
 
 // ============================================================================
 // TRACKING STATE
@@ -13,7 +15,6 @@ let currentAltitude = 0
 let currentX = 0
 let currentZ = 0
 let maxAltitude = 0
-let nearScreen = false
 
 let isJumping = false
 let jumpStartX = 0
@@ -293,6 +294,10 @@ function AltitudePanel() {
 // ============================================================================
 
 function MainUI() {
+  const activeId = sceneManager.activeId
+  const showVideoPanel = activeId === 'videoStreaming'
+  const showAltitudePanel = activeId !== null && PHYSICS_SCENES.has(activeId)
+
   return (
     <UiEntity
       uiTransform={{
@@ -302,15 +307,13 @@ function MainUI() {
         alignItems: 'center'
       }}
     >
-      {/* Video panel — centered by parent flex, visible only near screen */}
-      {nearScreen ? (
+      {showVideoPanel ? (
         <UiEntity uiTransform={{ margin: { top: 8 } }}>
           <VideoSourcePanelContent />
         </UiEntity>
       ) : null}
 
-      {/* Altitude panel — absolute top-right */}
-      <AltitudePanel />
+      {showAltitudePanel ? <AltitudePanel /> : null}
     </UiEntity>
   )
 }
@@ -334,10 +337,6 @@ export function setupUI() {
       currentAltitude = newY
       currentX = newX
       currentZ = newZ
-
-      // Show video controls only when near the screen (within 8m of center)
-      const distFromCenter = Math.sqrt(newX * newX + newZ * newZ)
-      nearScreen = distFromCenter < 8
 
       if (currentAltitude > maxAltitude) {
         maxAltitude = currentAltitude

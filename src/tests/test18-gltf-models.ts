@@ -5,13 +5,15 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 /**
  * TEST 18: GLTF/GLB Models (Static)
  * Display static GLTF/GLB models including sample scenes and simple models
  * Location: X:-65, Z:-115 (Row 3, spanning both columns of visual test grid)
  */
-export function setupGltfModelsTest() {
+export function setupGltfModelsTest(): TestSceneHandle {
+  return runScoped(() => {
   // Grid position: Row 3, spanning full width
   const baseX = -65
   const baseZ = -115
@@ -75,4 +77,5 @@ export function setupGltfModelsTest() {
   createLabel('GltfContainer:\nSampleScene_03.glb\n(full size, scale=1)', Vector3.create(baseX + 35, 6, baseZ + 4), 0.4)
 
   console.log('Test 18: GLTF/GLB Models initialized at X:', baseX, 'Z:', baseZ)
+  })
 }

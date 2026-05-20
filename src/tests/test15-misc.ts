@@ -16,6 +16,7 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 // State tracking
 let virtualCameraActive = false
@@ -26,7 +27,23 @@ let orbitingCameraActive = false
  * TEST 15: MISC TEST - VirtualCamera and InputModifier
  * Located in parcel 3,2 (X = 48 to 64, Z = 32 to 48)
  */
-export function setupMiscTest() {
+export function setupMiscTest(): TestSceneHandle {
+  return runScoped(t => {
+  // Reset module-level state in case the test is loaded a second time
+  virtualCameraActive = false
+  inputModifierActive = false
+  orbitingCameraActive = false
+
+  // Restore default camera + input on dispose, even if the user left a virtual
+  // camera or input modifier active when switching scenes.
+  t.onDispose(() => {
+    if (MainCamera.has(engine.CameraEntity)) MainCamera.deleteFrom(engine.CameraEntity)
+    if (InputModifier.has(engine.PlayerEntity)) InputModifier.deleteFrom(engine.PlayerEntity)
+    virtualCameraActive = false
+    inputModifierActive = false
+    orbitingCameraActive = false
+  })
+
   const miscCenterX = 56
   const miscCenterZ = 40
 
@@ -538,6 +555,7 @@ export function setupMiscTest() {
         }
       }
     )
+  })
   })
 }
 

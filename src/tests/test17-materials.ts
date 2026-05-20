@@ -7,13 +7,15 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 /**
  * TEST 17: PBR & Unlit Materials
  * Comprehensive display of PBR material properties and Unlit materials
  * Location: X:-90, Z:-75 (Row 2, Column 1 of visual test grid)
  */
-export function setupMaterialsTest() {
+export function setupMaterialsTest(): TestSceneHandle {
+  return runScoped(() => {
   // Grid position: Row 2, Column 1
   const baseX = -90
   const baseZ = -75
@@ -269,4 +271,5 @@ export function setupMaterialsTest() {
   createLabel('texture +\nalphaTexture\n(plane mesh)', Vector3.create(baseX + 12, yPos + 1.5, rowZ), 0.18)
 
   console.log('Test 17: PBR & Unlit Materials initialized at X:', baseX, 'Z:', baseZ)
+  })
 }

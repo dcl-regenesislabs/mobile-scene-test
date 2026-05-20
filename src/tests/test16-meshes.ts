@@ -7,13 +7,15 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 /**
  * TEST 16: Primitive Meshes
  * Display all primitive mesh types: Box, Sphere, Cylinder, Plane, Cone, Truncated Cylinder
  * Location: X:-90, Z:-35 (Row 1, Column 1 of visual test grid)
  */
-export function setupMeshesTest() {
+export function setupMeshesTest(): TestSceneHandle {
+  return runScoped(() => {
   // Grid position: Row 1, Column 1
   const baseX = -90
   const baseZ = -35
@@ -87,4 +89,5 @@ export function setupMeshesTest() {
   })
 
   console.log('Test 16: Primitive Meshes initialized at X:', baseX, 'Z:', baseZ)
+  })
 }

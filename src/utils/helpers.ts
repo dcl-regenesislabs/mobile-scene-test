@@ -9,7 +9,8 @@ import {
   PointerEvents,
   PointerEventType,
   InputAction,
-  Schemas
+  Schemas,
+  Entity
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
 
@@ -99,7 +100,7 @@ export function createPlatform(
   position: Vector3,
   scale: Vector3,
   color: Color4
-): number {
+): Entity {
   const platform = engine.addEntity()
 
   Transform.create(platform, {
@@ -125,7 +126,7 @@ export function createRamp(
   scale: Vector3,
   rotationDegrees: number,
   color: Color4
-): number {
+): Entity {
   const ramp = engine.addEntity()
 
   Transform.create(ramp, {
@@ -147,7 +148,7 @@ export function createRamp(
 /**
  * Creates a 3D text label that always faces the player
  */
-export function createLabel(text: string, position: Vector3, fontSize: number = 2): number {
+export function createLabel(text: string, position: Vector3, fontSize: number = 2): Entity {
   const label = engine.addEntity()
 
   Transform.create(label, {
@@ -199,7 +200,7 @@ export function createInputCube(
   scale: Vector3,
   actions: InputAction[],
   isMasterCube: boolean = false
-): number {
+): Entity {
   const cube = engine.addEntity()
 
   Transform.create(cube, {

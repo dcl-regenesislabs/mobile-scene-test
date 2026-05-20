@@ -11,6 +11,7 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 /**
  * TEST 10: CONTINUOUS TWEENS TEST (ADR-285)
@@ -88,7 +89,8 @@ function addOrientationMarkers(parentEntity: Entity, cubeScale: number) {
     emissiveIntensity: 2
   })
 }
-export function setupContinuousTweensTest() {
+export function setupContinuousTweensTest(): TestSceneHandle {
+  return runScoped(() => {
   const continuousTweenBaseX = 56
   const continuousTweenBaseZ = 104
 
@@ -419,4 +421,5 @@ export function setupContinuousTweensTest() {
     Vector3.create(continuousTweenBaseX, 1, ctRow4Z - 6),
     0.7
   )
+  })
 }

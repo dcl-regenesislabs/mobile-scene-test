@@ -1,8 +1,13 @@
 import { engine, Material, MaterialTransparencyMode, MeshRenderer, PBSkyboxTime, SkyboxTime, Transform, TransitionMode, TriggerArea, triggerAreaEventsSystem } from "@dcl/sdk/ecs"
 import { Color4, Vector3 } from "@dcl/sdk/math"
 import { createLabel, createPlatform, TRIGGER_COLOR_INSIDE, TRIGGER_COLOR_OUTSIDE, TriggerVisual } from "../utils/helpers"
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
-export function setupSkyboxTimeZones() {
+export function setupSkyboxTimeZones(): TestSceneHandle {
+    return runScoped(t => {
+    t.onDispose(() => {
+        if (SkyboxTime.has(engine.RootEntity)) SkyboxTime.deleteFrom(engine.RootEntity)
+    })
     const triggerBaseX = -76
     const triggerBaseZ = 0
 
@@ -45,6 +50,7 @@ export function setupSkyboxTimeZones() {
         'Day Skybox\nBackward',
         Color4.create(0.3, 0.2, 0.1, 1)
     )
+    })
 }
 
 function buildTrigger(

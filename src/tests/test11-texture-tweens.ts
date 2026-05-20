@@ -13,6 +13,7 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Vector2 } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 // Custom component to track texture move tween data
 const TextureMoveReadback = engine.defineComponent('TextureMoveReadback', {
@@ -48,7 +49,8 @@ function setupTextureMoveContinuousEntity(
  * TEST 11: TEXTURE TWEENS TEST (ADR-255)
  * Testing TextureMove and TextureMoveContinuous
  */
-export function setupTextureTweensTest() {
+export function setupTextureTweensTest(): TestSceneHandle {
+  return runScoped(() => {
   const textureTweenBaseX = 56
   const textureTweenBaseZ = 136
 
@@ -321,5 +323,6 @@ export function setupTextureTweensTest() {
         }
       }
     }
+  })
   })
 }

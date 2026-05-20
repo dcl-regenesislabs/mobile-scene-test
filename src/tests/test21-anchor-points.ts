@@ -1,7 +1,9 @@
 import { AvatarAnchorPointType, AvatarAttach, engine, Entity, Material, MeshRenderer, Transform } from "@dcl/sdk/ecs";
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math";
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
-export function setupAttachPointsTest() {
+export function setupAttachPointsTest(): TestSceneHandle {
+    return runScoped(() => {
     createAttachment(Color4.create(1, 0.75, 0), AvatarAnchorPointType.AAPT_HEAD);
     createAttachment(Color4.create(1, 0, 0.75), AvatarAnchorPointType.AAPT_NECK);
     createAttachment(Color4.create(1, 0.5, 0.5), AvatarAnchorPointType.AAPT_SPINE);
@@ -26,7 +28,7 @@ export function setupAttachPointsTest() {
     createAttachment(Color4.create(0.25, 0.25, 1), AvatarAnchorPointType.AAPT_RIGHT_LEG);
     createAttachment(Color4.create(0.75, 0.75, 1), AvatarAnchorPointType.AAPT_RIGHT_FOOT);
     createAttachment(Color4.create(0, 0, 1), AvatarAnchorPointType.AAPT_RIGHT_TOE_BASE);
-
+    })
 }
 
 function createAttachment(albedoColor: Color4, anchorPointId: AvatarAnchorPointType): Entity {

@@ -11,6 +11,7 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3 } from '@dcl/sdk/math'
 import { createPlatform, createLabel, TRIGGER_COLOR_OUTSIDE, TRIGGER_COLOR_INSIDE } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 /**
  * TEST 13: BOUNDARY TRIGGER TEST
@@ -19,7 +20,8 @@ import { createPlatform, createLabel, TRIGGER_COLOR_OUTSIDE, TRIGGER_COLOR_INSID
  * A giant 48x48m trigger area placed at parcel -9,-9
  * to test if scene limits properly clip/handle oversized triggers.
  */
-export function setupBoundaryTriggerTest() {
+export function setupBoundaryTriggerTest(): TestSceneHandle {
+  return runScoped(() => {
   // Position at parcel -9,-9 (each parcel = 16m, so -9 * 16 = -144)
   const baseX = -144
   const baseZ = -144
@@ -146,4 +148,5 @@ export function setupBoundaryTriggerTest() {
   }
 
   createLabel('TEST 13: Boundary Trigger\n(Parcel -9,-9)', Vector3.create(baseX - 5, 3, baseZ + 4), 2)
+  })
 }

@@ -17,6 +17,7 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 /**
  * TEST 23: PLAYER PHYSICS
@@ -28,7 +29,8 @@ import { createPlatform, createLabel } from '../utils/helpers'
  *  - applyRepulsionForceToPlayer (continuous repulsion + vortex/attraction)
  *  - Transform.localToWorldDirection (rotating launcher)
  */
-export function setupPlayerPhysicsTest() {
+export function setupPlayerPhysicsTest(): TestSceneHandle {
+  return runScoped(() => {
   // Empty far-east strip — clear of all other sectors (triggers, materials,
   // meshes, animations, morph, etc.). Parcels (5..7, -4..-1).
   const baseX = 90
@@ -450,4 +452,5 @@ export function setupPlayerPhysicsTest() {
     Vector3.create(baseX + 15, 1, baseZ - 6),
     1.6
   )
+  })
 }

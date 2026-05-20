@@ -13,6 +13,7 @@ import {
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { movePlayerTo } from '~system/RestrictedActions'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 // Helper to get LOCAL player position (engine.PlayerEntity is the local player)
 function getLocalPlayerPosition(): Vector3 | null {
@@ -29,7 +30,8 @@ function getLocalPlayerPosition(): Vector3 | null {
  * TEST 9: WALL TELEPORT TEST - Testing movePlayerTo into solid objects
  * Located in negative Z parcels
  */
-export function setupTeleportTest() {
+export function setupTeleportTest(): TestSceneHandle {
+  return runScoped(() => {
   const wallTestX = 8
   const wallTestZ = -40
   const wallSize = 6
@@ -303,4 +305,5 @@ export function setupTeleportTest() {
     Vector3.create(wallTestX, 0.5, moveBoxTestZ + 6),
     0.7
   )
+  })
 }

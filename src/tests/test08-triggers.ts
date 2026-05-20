@@ -19,12 +19,14 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
 import { createPlatform, createLabel, TriggerVisual, TRIGGER_COLOR_OUTSIDE, TRIGGER_COLOR_INSIDE } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 /**
  * TEST 8: TRIGGER AREAS - Testing TriggerArea feature (ADR-258)
  * Located in negative X parcels - comprehensive test of all use cases
  */
-export function setupTriggersTest() {
+export function setupTriggersTest(): TestSceneHandle {
+  return runScoped(() => {
   const triggerBaseX = -48
   const triggerBaseZ = 8
 
@@ -1058,4 +1060,5 @@ export function setupTriggersTest() {
   createLabel('ROW 6: Physics Ball Track', Vector3.create(triggerBaseX - 15, 3, row6Z), 2)
   createLabel('ROW 7: Layer Change', Vector3.create(triggerBaseX - 15, 3, row7Z), 2)
   createLabel('ROW 8: AvatarShape NPC', Vector3.create(triggerBaseX - 15, 3, row8Z), 2)
+  })
 }

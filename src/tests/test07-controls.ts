@@ -17,27 +17,27 @@ import {
   getActionColor,
   updateHoverText
 } from '../utils/helpers'
+import { createTracker, TestSceneHandle } from '../lobby/tracker'
 
 /**
  * TEST 7: CONTROL MAPPING TEST - Testing input actions
  * Located in parcel 2,1 (X = 32 to 48, Z = 16 to 32)
  */
-export function setupControlsTest() {
-  const controlCenterX = 40  // Center of parcel 2,1
+export function setupControlsTest(): TestSceneHandle {
+  const t = createTracker()
+  const controlCenterX = 40
   const controlCenterZ = 24
 
-  createLabel('CONTROL MAPPING TEST\n(test all input actions)', Vector3.create(controlCenterX, 4, controlCenterZ - 6), 1.2)
+  t.track(createLabel('CONTROL MAPPING TEST\n(test all input actions)', Vector3.create(controlCenterX, 4, controlCenterZ - 6), 1.2))
 
-  // Master cube - responds to ALL input actions
-  createInputCube(
+  t.track(createInputCube(
     Vector3.create(controlCenterX, 1.5, controlCenterZ),
     Vector3.create(2, 2, 2),
     INPUT_ACTIONS.map(a => a.action),
     true
-  )
-  createLabel('ALL ACTIONS', Vector3.create(controlCenterX, 4, controlCenterZ), 1.5)
+  ))
+  t.track(createLabel('ALL ACTIONS', Vector3.create(controlCenterX, 4, controlCenterZ), 1.5))
 
-  // Individual action cubes arranged in a circle
   const radius = 5
   const angleStep = (Math.PI * 2) / INPUT_ACTIONS.length
 
@@ -46,22 +46,21 @@ export function setupControlsTest() {
     const x = controlCenterX + Math.cos(angle) * radius
     const z = controlCenterZ + Math.sin(angle) * radius
 
-    createInputCube(
+    t.track(createInputCube(
       Vector3.create(x, 0.5, z),
       Vector3.create(1, 1, 1),
       [actionInfo.action],
       false
-    )
+    ))
 
-    createLabel(
+    t.track(createLabel(
       `${actionInfo.name}\n${actionInfo.key}`,
       Vector3.create(x, 2, z),
       0.7
-    )
+    ))
   })
 
-  // System: Handle pointer DOWN events
-  engine.addSystem(() => {
+  t.system(() => {
     for (const [entity] of engine.getEntitiesWith(CubeInputState, HoverState)) {
       const state = CubeInputState.get(entity)
 
@@ -91,8 +90,7 @@ export function setupControlsTest() {
     }
   })
 
-  // System: Handle pointer UP events
-  engine.addSystem(() => {
+  t.system(() => {
     for (const [entity] of engine.getEntitiesWith(CubeInputState, HoverState)) {
       const state = CubeInputState.get(entity)
 
@@ -118,8 +116,7 @@ export function setupControlsTest() {
     }
   })
 
-  // System: Handle HOVER_ENTER events
-  engine.addSystem(() => {
+  t.system(() => {
     for (const [entity] of engine.getEntitiesWith(CubeInputState, HoverState)) {
       const state = CubeInputState.get(entity)
 
@@ -149,8 +146,7 @@ export function setupControlsTest() {
     }
   })
 
-  // System: Handle HOVER_LEAVE events
-  engine.addSystem(() => {
+  t.system(() => {
     for (const [entity] of engine.getEntitiesWith(CubeInputState, HoverState)) {
       const hoverLeave = inputSystem.getInputCommand(
         InputAction.IA_POINTER,
@@ -174,4 +170,6 @@ export function setupControlsTest() {
       }
     }
   })
+
+  return t.handle
 }

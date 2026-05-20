@@ -5,13 +5,15 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 /**
  * TEST 20: Morph Targets
  * Display models with morph target (blend shape) animations
  * Location: X:-40, Z:-35 (Row 1, Column 2 of visual test grid)
  */
-export function setupMorphTargetsTest() {
+export function setupMorphTargetsTest(): TestSceneHandle {
+  return runScoped(() => {
   // Grid position: Row 1, Column 2
   const baseX = -40
   const baseZ = -35
@@ -52,4 +54,5 @@ export function setupMorphTargetsTest() {
   )
 
   console.log('Test 20: Morph Targets initialized at X:', baseX, 'Z:', baseZ)
+  })
 }

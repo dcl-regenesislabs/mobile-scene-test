@@ -6,13 +6,15 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { createPlatform, createLabel } from '../utils/helpers'
+import { runScoped, TestSceneHandle } from '../lobby/tracker'
 
 /**
  * TEST 19: GLTF Animations
  * Display animated GLTF models using the Animator component
  * Location: X:-40, Z:-75 (Row 2, Column 2 of visual test grid)
  */
-export function setupAnimationsTest() {
+export function setupAnimationsTest(): TestSceneHandle {
+  return runScoped(() => {
   // Grid position: Row 2, Column 2
   const baseX = -40
   const baseZ = -75
@@ -110,4 +112,5 @@ export function setupAnimationsTest() {
   )
 
   console.log('Test 19: GLTF Animations initialized at X:', baseX, 'Z:', baseZ)
+  })
 }
