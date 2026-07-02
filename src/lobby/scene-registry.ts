@@ -22,6 +22,7 @@ import { setupMorphTargetsTest } from '../tests/test20-morph-targets'
 import { setupAttachPointsTest } from '../tests/test21-anchor-points'
 import { setupSkyboxTimeZones } from '../tests/test22-skybox-time'
 import { setupPlayerPhysicsTest } from '../tests/test23-player-physics'
+import { setupMemoryStressTest } from '../tests/test24-memory-stress'
 
 export type SceneId =
   | 'staircase'
@@ -46,6 +47,7 @@ export type SceneId =
   | 'attachPoints'
   | 'skyboxTime'
   | 'playerPhysics'
+  | 'memoryStress'
 
 export type SceneEntry = {
   label: string
@@ -79,7 +81,8 @@ export const SCENE_REGISTRY: Record<SceneId, SceneEntry> = {
   morphTargets:     { label: '20 Morph Targets',     loader: setupMorphTargetsTest,      origin: Vector3.create(-40, 0, -35) },
   attachPoints:     { label: '21 Attach Points',     loader: setupAttachPointsTest,      origin: Vector3.Zero() },
   skyboxTime:       { label: '22 Skybox/Time',       loader: setupSkyboxTimeZones,       origin: Vector3.create(-76, 0, 12) },
-  playerPhysics:    { label: '23 Player Physics',    loader: setupPlayerPhysicsTest,     origin: Vector3.create(105, 0, -25) }
+  playerPhysics:    { label: '23 Player Physics',    loader: setupPlayerPhysicsTest,     origin: Vector3.create(105, 0, -25) },
+  memoryStress:     { label: '24 Memory Stress',     loader: setupMemoryStressTest,      origin: Vector3.Zero() }
 }
 
 export const SCENE_IDS: SceneId[] = Object.keys(SCENE_REGISTRY) as SceneId[]
