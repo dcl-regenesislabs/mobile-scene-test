@@ -14,7 +14,7 @@ function selectOption(index: number) {
             teleportTo({ worldCoordinates: Vector2.create(0, 4) })
             break
         case 3:
-            teleportTo({ worldCoordinates: Vector2.create(2, 2) })
+            teleportTo({ worldCoordinates: Vector2.create(1, 2) })
             break
         case 4:
             teleportTo({ worldCoordinates: Vector2.create(0, 3) })
