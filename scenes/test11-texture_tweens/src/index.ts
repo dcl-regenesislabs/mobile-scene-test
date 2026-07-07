@@ -12,7 +12,7 @@ import {
   TextureMovementType
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Vector2 } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { createPlatform, createLabel } from '../../../utils/helpers'
 
 // Custom component to track texture move tween data
 const TextureMoveReadback = engine.defineComponent('TextureMoveReadback', {
@@ -48,9 +48,9 @@ function setupTextureMoveContinuousEntity(
  * TEST 11: TEXTURE TWEENS TEST (ADR-255)
  * Testing TextureMove and TextureMoveContinuous
  */
-export function setupTextureTweensTest() {
-  const textureTweenBaseX = 56
-  const textureTweenBaseZ = 136
+export function main() {
+  const textureTweenBaseX = 32
+  const textureTweenBaseZ = 0
 
   createLabel('TEXTURE TWEENS TEST (ADR-255)\nAnimated textures', Vector3.create(textureTweenBaseX, 8, textureTweenBaseZ - 10), 1.5)
 
