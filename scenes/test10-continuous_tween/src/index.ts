@@ -10,12 +10,14 @@ import {
   TweenSequence
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
+
 
 /**
  * TEST 10: CONTINUOUS TWEENS TEST (ADR-285)
  * Testing RotateContinuous, MoveContinuous, TextureMoveContinuous
- * Located in positive Z parcels (2,5 to 5,7)
  */
 
 /**
@@ -88,11 +90,13 @@ function addOrientationMarkers(parentEntity: Entity, cubeScale: number) {
     emissiveIntensity: 2
   })
 }
-export function setupContinuousTweensTest() {
-  const continuousTweenBaseX = 56
-  const continuousTweenBaseZ = 104
+export function main() {
+  const continuousTweenBaseX = 32
+  const continuousTweenBaseZ = 8
 
   createLabel('CONTINUOUS TWEENS TEST (ADR-285)\nInfinite motion without reset', Vector3.create(continuousTweenBaseX, 8, continuousTweenBaseZ - 10), 1.5)
+
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
   // Orientation legend - helps users compare rotation direction across engines
   createLabel(
@@ -317,10 +321,10 @@ export function setupContinuousTweensTest() {
     },
     {
       spawnPos: Vector3.create(continuousTweenBaseX - 5, 2, ctRow4Z),
-      direction: Vector3.create(0, 0, 1),  // +Z direction
+      direction: Vector3.create(0, 0, -1),  // -Z direction
       speed: 5,
       color: Color4.create(0.1, 1, 0.3, 1),
-      label: '+Z Direction\n5 m/s',
+      label: '-Z Direction\n5 m/s',
       interval: 2,
       lifetime: 4
     },
@@ -335,10 +339,10 @@ export function setupContinuousTweensTest() {
     },
     {
       spawnPos: Vector3.create(continuousTweenBaseX + 15, 2, ctRow4Z),
-      direction: Vector3.normalize(Vector3.create(-6, 0, 3)),  // -X +Z
+      direction: Vector3.normalize(Vector3.create(-6, 0, -3)),  // -X -Z
       speed: 7,
       color: Color4.create(1, 1, 0.2, 1),
-      label: '-X +Z\n7 m/s',
+      label: '-X -Z\n7 m/s',
       interval: 0.8,
       lifetime: 2
     },
