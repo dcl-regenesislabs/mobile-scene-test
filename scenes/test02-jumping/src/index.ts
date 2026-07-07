@@ -1,11 +1,13 @@
 import { Vector3, Color4 } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 2: RUNNING JUMP DISTANCE - Long runway with increasing gaps
  * Testing horizontal jump distance while running
  */
-export function setupJumpingTest() {
+export function main() {
   const runwayZ = 10
 
   // Long runway to build up speed
@@ -15,6 +17,8 @@ export function setupJumpingTest() {
     Color4.create(0.4, 0.4, 0.4, 1)
   )
   createLabel('RUNWAY\n(build speed)', Vector3.create(2, 1.5, runwayZ), 1)
+
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
   // Gap test platforms with fine increments
   const gapSizes = [12.0, 12.5, 13.0, 13.5, 14.0, 14.5, 15.0, 15.5, 16.0]
