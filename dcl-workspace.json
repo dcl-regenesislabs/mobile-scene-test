@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test07-controls"
+    },
+    {
       "path": "scenes/test06-corridor"
     },
     {

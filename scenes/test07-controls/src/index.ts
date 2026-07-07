@@ -6,6 +6,7 @@ import {
   Material
 } from '@dcl/sdk/ecs'
 import { Vector3 } from '@dcl/sdk/math'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import {
   createLabel,
   createInputCube,
@@ -16,17 +17,19 @@ import {
   getActionName,
   getActionColor,
   updateHoverText
-} from '../utils/helpers'
+} from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 7: CONTROL MAPPING TEST - Testing input actions
- * Located in parcel 2,1 (X = 32 to 48, Z = 16 to 32)
  */
-export function setupControlsTest() {
-  const controlCenterX = 40  // Center of parcel 2,1
-  const controlCenterZ = 24
+export function main() {
+  const controlCenterX = 8
+  const controlCenterZ = 8
 
   createLabel('CONTROL MAPPING TEST\n(test all input actions)', Vector3.create(controlCenterX, 4, controlCenterZ - 6), 1.2)
+
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
   // Master cube - responds to ALL input actions
   createInputCube(
