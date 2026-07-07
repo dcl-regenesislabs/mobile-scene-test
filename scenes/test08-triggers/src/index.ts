@@ -18,22 +18,28 @@ import {
   AvatarShape
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
-import { createPlatform, createLabel, TriggerVisual, TRIGGER_COLOR_OUTSIDE, TRIGGER_COLOR_INSIDE } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel, TriggerVisual, TRIGGER_COLOR_OUTSIDE, TRIGGER_COLOR_INSIDE } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 8: TRIGGER AREAS - Testing TriggerArea feature (ADR-258)
- * Located in negative X parcels - comprehensive test of all use cases
+ * comprehensive test of all use cases
  */
-export function setupTriggersTest() {
-  const triggerBaseX = -48
-  const triggerBaseZ = 8
+export function main() {
+  const parcelsX = 4
+  const parcelsZ = 7
+  const triggerBaseX = 0
+  const triggerBaseZ = 16
 
   createLabel('TRIGGER AREA TEST (ADR-258)\nComprehensive Test Suite', Vector3.create(triggerBaseX, 8, triggerBaseZ - 12), 3)
 
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+
   // Platform floor for trigger area test
   createPlatform(
-    Vector3.create(-40, 0.05, 41),
-    Vector3.create(64, 0.1, 110),
+    Vector3.create(16, 0.05, 8 * parcelsZ),
+    Vector3.create(16 * parcelsX, 0.1, 16 * parcelsZ),
     Color4.create(0.2, 0.2, 0.2, 1)
   )
 

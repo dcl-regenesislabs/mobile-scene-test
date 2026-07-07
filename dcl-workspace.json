@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test08-triggers"
+    },
+    {
       "path": "scenes/test07-controls"
     },
     {
