@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test03-platforms"
+    },
+    {
       "path": "scenes/test02-jumping"
     },
     {
