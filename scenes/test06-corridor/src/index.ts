@@ -1,17 +1,21 @@
 import { Vector3, Color4 } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 6: CORRIDOR WIDTH TEST - Testing player collision width
  * Located in parcels 0,1, 1,1, 1,2 (Z = 16 to 48)
  */
-export function setupCorridorsTest() {
-  const corridorBaseZ = 20
-  const corridorBaseX = 4
+export function main() {
+  const corridorBaseZ = 4
+  const corridorBaseX = 8
   const columnHeight = 3
   const columnWidth = 0.5
 
   createLabel('CORRIDOR WIDTH TEST\n(can you fit through?)', Vector3.create(12, 4, corridorBaseZ - 2), 1.2)
+
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
   // Gap widths to test (in meters) - fine scale around player width
   const gapWidths = [0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5]
