@@ -1,19 +1,23 @@
 import { Vector3, Color4 } from '@dcl/sdk/math'
-import { createRamp, createLabel } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createRamp, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 5: INCLINED RAMPS - Testing climbable angles
  * Located in parcels 1,0 to 4,0 (X = 16 to 80)
  */
-export function setupRampsTest() {
+export function main() {
   const rampAngles = [45, 50, 55, 60, 65, 70]
   const rampBaseZ = 4
   const rampLength = 6
 
   createLabel('RAMP ANGLE TEST\n(climb without jumping)', Vector3.create(40, 4, rampBaseZ - 2), 1.2)
 
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+
   rampAngles.forEach((angle, index) => {
-    const x = 24 + index * 8  // Start at X=24, space 8m apart
+    const x = 4 + index * 8  // Start at X=24, space 8m apart
 
     const radians = (angle * Math.PI) / 180
     const halfDepth = 1.5  // Half of ramp depth (3m along Z)

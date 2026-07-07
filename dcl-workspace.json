@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test05-ramps"
+    },
+    {
       "path": "scenes/test04-step_height"
     },
     {
