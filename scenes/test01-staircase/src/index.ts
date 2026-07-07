@@ -1,16 +1,20 @@
 import { Vector3, Color4 } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 1: FINE SCALE STAIRCASE - 2.0m to 2.5m in 0.05m increments
  * Solid pillars from floor, testing exact jump height limit
  */
-export function setupStaircaseTest() {
+export function main() {
   const fineScaleHeights = [2.0, 2.05, 2.1, 2.15, 2.2, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5]
   const fineScaleStartX = 2
   const fineScaleZ = 6
 
   createLabel('FINE SCALE STAIRCASE\n(2.0m - 2.5m)', Vector3.create(8, 4, fineScaleZ), 1.2)
+
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
   fineScaleHeights.forEach((height, index) => {
     const x = fineScaleStartX + index * 1.3
