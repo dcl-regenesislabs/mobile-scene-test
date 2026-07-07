@@ -12,7 +12,9 @@ import {
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { movePlayerTo } from '~system/RestrictedActions'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 // Helper to get LOCAL player position (engine.PlayerEntity is the local player)
 function getLocalPlayerPosition(): Vector3 | null {
@@ -27,26 +29,27 @@ function getLocalPlayerPosition(): Vector3 | null {
 
 /**
  * TEST 9: WALL TELEPORT TEST - Testing movePlayerTo into solid objects
- * Located in negative Z parcels
  */
-export function setupTeleportTest() {
-  const wallTestX = 8
-  const wallTestZ = -40
+export function main() {
+  const wallTestX = 0
+  const wallTestZ = 0
   const wallSize = 6
 
-  createLabel('WALL TELEPORT TEST\n(teleport into solid box)', Vector3.create(wallTestX, 8, wallTestZ), 1.5)
+  createLabel('WALL TELEPORT TEST\n(teleport into solid box)', Vector3.create(wallTestX - 14, 2, wallTestZ + 14), 1.5)
+
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
   // Platform for the test area
   createPlatform(
-    Vector3.create(wallTestX + 10, 0.05, wallTestZ),
-    Vector3.create(50, 0.1, 30),
+    Vector3.create(wallTestX + 8, 0.05, wallTestZ),
+    Vector3.create(48, 0.1, 32),
     Color4.create(0.25, 0.25, 0.25, 1)
   )
 
   // The solid wall/box to teleport into
   const wallBox = engine.addEntity()
   Transform.create(wallBox, {
-    position: Vector3.create(wallTestX, wallSize / 2, wallTestZ),
+    position: Vector3.create(wallTestX - 8, wallSize / 2, wallTestZ + 8),
     scale: Vector3.create(wallSize, wallSize, wallSize)
   })
   MeshRenderer.setBox(wallBox)
@@ -54,10 +57,10 @@ export function setupTeleportTest() {
   Material.setPbrMaterial(wallBox, {
     albedoColor: Color4.create(0.6, 0.2, 0.2, 1)
   })
-  createLabel('SOLID BOX', Vector3.create(wallTestX, wallSize + 1, wallTestZ), 1)
+  createLabel('SOLID BOX', Vector3.create(wallTestX - 8, wallSize + 1, wallTestZ + 8), 1)
 
   // Safe area marker
-  const safeAreaPos = Vector3.create(wallTestX, 1, wallTestZ + 15)
+  const safeAreaPos = Vector3.create(wallTestX - 14, 1, wallTestZ + 14)
   const safeMarker = engine.addEntity()
   Transform.create(safeMarker, {
     position: Vector3.create(safeAreaPos.x, 0.1, safeAreaPos.z),
@@ -84,20 +87,22 @@ export function setupTeleportTest() {
     { label: '3.0m\nCENTER', depth: 3.0 },
     { label: '3.5m', depth: 3.5 },
     { label: '4.0m', depth: 4.0 },
-    { label: '5.0m\nTHROUGH', depth: 5.0 }
+    { label: '5.0m', depth: 5.0 },
+    { label: '5.5m', depth: 5.5 },
+    { label: '6.0m\nTHROUGH', depth: 6.0 }
   ]
 
   // Store all button entities and their target positions
   const teleportButtons: { entity: Entity, targetX: number, targetY: number, targetZ: number }[] = []
 
   // Create teleport buttons arranged in a line on the +X side of the box
-  const buttonStartX = wallTestX + wallSize / 2 + 2
+  const buttonStartX = wallTestX - 8 + wallSize / 2 + 2
   const buttonY = 0.5
   const buttonSpacing = 1.8
 
   teleportDepths.forEach((tp, index) => {
     const buttonX = buttonStartX + index * buttonSpacing
-    const buttonZ = wallTestZ
+    const buttonZ = wallTestZ + 8
 
     // Create button
     const button = engine.addEntity()
@@ -112,7 +117,7 @@ export function setupTeleportTest() {
     let buttonColor: Color4
     if (tp.depth < 0) {
       buttonColor = Color4.create(0.2, 0.7, 0.2, 1)  // Green - outside
-    } else if (tp.depth === 0) {
+    } else if (tp.depth === 0 || tp.depth == wallSize) {
       buttonColor = Color4.create(0.8, 0.8, 0.2, 1)  // Yellow - edge
     } else {
       buttonColor = Color4.create(0.7, 0.2, 0.2, 1)  // Red - inside
@@ -120,9 +125,9 @@ export function setupTeleportTest() {
     Material.setPbrMaterial(button, { albedoColor: buttonColor })
 
     // Calculate target position
-    const targetX = wallTestX + wallSize / 2 - tp.depth
+    const targetX = wallTestX - 8 + wallSize / 2 - tp.depth
     const targetY = 1
-    const targetZ = wallTestZ
+    const targetZ = wallTestZ + 8
 
     // Store button info
     teleportButtons.push({ entity: button, targetX, targetY, targetZ })
@@ -168,18 +173,11 @@ export function setupTeleportTest() {
   // Testing what happens when a solid box moves onto the player
   // (inverse of teleporting player into box)
   // =========================================================================
-  const moveBoxTestZ = wallTestZ - 15
+  const moveBoxTestZ = wallTestZ - 8
   const moveBoxSize = 4
-  const moveBoxOriginalPos = Vector3.create(wallTestX - 10, moveBoxSize / 2, moveBoxTestZ)
+  const moveBoxOriginalPos = Vector3.create(wallTestX - 8, moveBoxSize / 2, moveBoxTestZ)
 
   createLabel('BOX TELEPORTS ONTO YOU\n(instant teleport test)', Vector3.create(wallTestX, 6, moveBoxTestZ), 1.2)
-
-  // Platform for this test area
-  createPlatform(
-    Vector3.create(wallTestX, 0.05, moveBoxTestZ),
-    Vector3.create(30, 0.1, 15),
-    Color4.create(0.25, 0.2, 0.3, 1)
-  )
 
   // The movable solid box
   const moveBox = engine.addEntity()
