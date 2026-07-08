@@ -63,7 +63,7 @@ export const uiMenu = () => (
             minWidth: "48px",
             minHeight: "48px",
             flexDirection: "column",
-            position: { top: '20%', right: '20px' },
+            position: { top: '20%', right: '48px' },
             padding: { top: "16px", bottom: "16px", left: "16px", right: "16px", }
         }}
         uiBackground={{ color: Color4.create(0.25, 0.25, 0.25, 0.75) }}
@@ -85,6 +85,7 @@ export const uiMenu = () => (
                 }}
             />
             <Dropdown
+                fontSize={18}
                 options={[
                     `Landing`,
                     `Test 1: Staircase`,
