@@ -10,21 +10,21 @@ import {
   MaterialTransparencyMode
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3 } from '@dcl/sdk/math'
-import { createPlatform, createLabel, TRIGGER_COLOR_OUTSIDE, TRIGGER_COLOR_INSIDE } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel, TRIGGER_COLOR_OUTSIDE, TRIGGER_COLOR_INSIDE } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 13: BOUNDARY TRIGGER TEST
  * Testing TriggerArea behavior at scene boundaries.
- *
- * A giant 48x48m trigger area placed at parcel -9,-9
- * to test if scene limits properly clip/handle oversized triggers.
  */
-export function setupBoundaryTriggerTest() {
-  // Position at parcel -9,-9 (each parcel = 16m, so -9 * 16 = -144)
-  const baseX = -144
-  const baseZ = -144
+export function main() {
+  const baseX = 8
+  const baseZ = 8
 
   createLabel('BOUNDARY TRIGGER TEST\n48x48m trigger at scene edge', Vector3.create(baseX + 8, 10, baseZ + 8), 3)
+
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
   // Small platform at the corner so player can stand
   createPlatform(
@@ -115,7 +115,7 @@ export function setupBoundaryTriggerTest() {
 
   // Info text
   createLabel(
-    `TEST: Giant 48x48m trigger at parcel -9,-9\nCentered at (${baseX}, ${baseZ})\nExtends 24m in each direction`,
+    `TEST: Giant 48x48m trigger\nExtends 24m in each direction`,
     Vector3.create(baseX + 8, 1, baseZ + 12),
     1.4
   )
@@ -145,5 +145,5 @@ export function setupBoundaryTriggerTest() {
     })
   }
 
-  createLabel('TEST 13: Boundary Trigger\n(Parcel -9,-9)', Vector3.create(baseX - 5, 3, baseZ + 4), 2)
+  createLabel('TEST 13: Boundary Trigger', Vector3.create(baseX - 5, 3, baseZ + 4), 2)
 }
