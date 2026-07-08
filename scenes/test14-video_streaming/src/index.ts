@@ -14,24 +14,26 @@ import {
   Billboard
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 14: VIDEO STREAMING TEST
  * Testing VideoPlayer with a Blender Foundation movie.
- * Located at parcel 7,-7 (X = 112, Z = -112)
  */
-export function setupVideoStreamingTest() {
-  // Parcel 7,-7: 7 * 16 = 112, -7 * 16 = -112
-  const baseX = 112
-  const baseZ = -112
+export function main() {
+  const baseX = 16
+  const baseZ = 0
 
   createLabel('VIDEO STREAMING TEST\nBlender Foundation - Sintel (2010)', Vector3.create(baseX + 8, 12, baseZ + 8), 3)
 
-  // Platform floor (4x larger: 64x64)
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+
+  // Platform floor (3x larger: 48x48)
   createPlatform(
-    Vector3.create(baseX + 32, 0.05, baseZ + 32),
-    Vector3.create(64, 0.1, 64),
+    Vector3.create(baseX + 8, 0.05, baseZ + 8),
+    Vector3.create(48, 0.1, 48),
     Color4.create(0.15, 0.15, 0.2, 1)
   )
 

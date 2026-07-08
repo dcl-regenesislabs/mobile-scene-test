@@ -1,6 +1,21 @@
 {
   "folders": [
     {
+      "path": "scenes/test14-video_streaming"
+    },
+    {
+      "path": "scenes/test13-boundary_trigger"
+    },
+    {
+      "path": "scenes/test11-texture_tweens"
+    },
+    {
+      "path": "scenes/test10-continuous_tween"
+    },
+    {
+      "path": "scenes/test09-teleport"
+    },
+    {
       "path": "scenes/test08-triggers"
     },
     {

@@ -45,6 +45,9 @@ function selectOption(index: number) {
         case 13:
             teleportTo({ worldCoordinates: Vector2.create(-7, 1) })
             break
+        case 14:
+            teleportTo({ worldCoordinates: Vector2.create(6, 0) })
+            break
         default:
             teleportTo({ worldCoordinates: Vector2.create(0, 0) })
             break
@@ -97,6 +100,7 @@ export const uiMenu = () => (
                     `Test 11: Texture Tweens`,
                     `Test 12: UNIMPLEMENTED`,
                     `Test 13: Boundary Trigger`,
+                    `Test 14: Video Streaming`,
                 ]}
                 onChange={selectOption}
             />
