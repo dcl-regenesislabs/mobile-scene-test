@@ -15,7 +15,9 @@ import {
   Entity
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 // State tracking
 let virtualCameraActive = false
@@ -24,11 +26,10 @@ let orbitingCameraActive = false
 
 /**
  * TEST 15: MISC TEST - VirtualCamera and InputModifier
- * Located in parcel 3,2 (X = 48 to 64, Z = 32 to 48)
  */
-export function setupMiscTest() {
-  const miscCenterX = 56
-  const miscCenterZ = 40
+export function main() {
+  const miscCenterX = 8
+  const miscCenterZ = 8
 
   // Main platform
   createPlatform(
@@ -39,18 +40,21 @@ export function setupMiscTest() {
 
   createLabel('MISC TEST\n(VirtualCamera & InputModifier)', Vector3.create(miscCenterX, 4, miscCenterZ - 6), 1.2)
 
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+
   // =========================================================================
   // VIRTUAL CAMERA TEST
   // =========================================================================
   const vcTestX = miscCenterX - 4
   const vcTestZ = miscCenterZ
+  const vcTestZOffset = 7
 
   createLabel('VIRTUAL CAMERA\nClick to toggle', Vector3.create(vcTestX, 3, vcTestZ - 2.5), 0.8)
 
   // Create a VirtualCamera entity with a fixed position
   const virtualCameraEntity = engine.addEntity()
   Transform.create(virtualCameraEntity, {
-    position: Vector3.create(miscCenterX, 8, miscCenterZ - 10),
+    position: Vector3.create(miscCenterX, 8, miscCenterZ - vcTestZOffset),
     rotation: Quaternion.fromEulerDegrees(30, 0, 0)
   })
 
@@ -93,7 +97,7 @@ export function setupMiscTest() {
   // Create visual marker at camera position
   const cameraMarker = engine.addEntity()
   Transform.create(cameraMarker, {
-    position: Vector3.create(miscCenterX, 8, miscCenterZ - 10),
+    position: Vector3.create(miscCenterX, 8, miscCenterZ - vcTestZOffset),
     scale: Vector3.create(0.5, 0.5, 0.5)
   })
   MeshRenderer.setBox(cameraMarker)
@@ -102,7 +106,7 @@ export function setupMiscTest() {
     emissiveColor: Color4.create(1, 1, 0, 1),
     emissiveIntensity: 2
   })
-  createLabel('Fixed Camera\nPosition', Vector3.create(miscCenterX, 9, miscCenterZ - 10), 0.6)
+  createLabel('Fixed Camera\nPosition', Vector3.create(miscCenterX, 9, miscCenterZ - vcTestZOffset), 0.6)
 
   // =========================================================================
   // ORBITING VIRTUAL CAMERA TEST
@@ -248,25 +252,25 @@ export function setupMiscTest() {
   // =========================================================================
   // TEXTURE FORMAT TEST
   // =========================================================================
-  const texTestZ = miscCenterZ + 10
+  const texTestZ = miscCenterZ + 8
 
   createLabel('TEXTURE FORMATS\nTesting different image formats', Vector3.create(miscCenterX, 4, texTestZ + 4), 0.8)
 
   const textureFormats = [
-    { format: 'PNG', file: 'images/test-texture.png', x: -9 },
-    { format: 'JPEG', file: 'images/test-texture.jpg', x: -6 },
-    { format: 'GIF', file: 'images/test-texture.gif', x: -3 },
-    { format: 'WEBP', file: 'images/test-texture.webp', x: 0 },
-    { format: 'AVIF', file: 'images/test-texture.avif', x: 3 },
-    { format: 'HEIC', file: 'images/test-texture.heic', x: 6 },
-    { format: 'KTX2', file: 'images/test-texture.ktx2', x: 9 }
+    { format: 'PNG', file: 'images/test-texture.png', x: -7, y: 2 },
+    { format: 'JPEG', file: 'images/test-texture.jpg', x: -3.5, y: 2 },
+    { format: 'GIF', file: 'images/test-texture.gif', x: 0, y: 2 },
+    { format: 'WEBP', file: 'images/test-texture.webp', x: 3.5, y: 2 },
+    { format: 'AVIF', file: 'images/test-texture.avif', x: 7, y: 2 },
+    { format: 'HEIC', file: 'images/test-texture.heic', x: -7, y: 5 },
+    { format: 'KTX2', file: 'images/test-texture.ktx2', x: -3.5, y: 5 }
   ]
 
-  textureFormats.forEach(({ format, file, x }) => {
+  textureFormats.forEach(({ format, file, x, y }) => {
     // Create a plane to display the texture
     const texturePlane = engine.addEntity()
     Transform.create(texturePlane, {
-      position: Vector3.create(miscCenterX + x, 2, texTestZ),
+      position: Vector3.create(miscCenterX + x, y, texTestZ),
       scale: Vector3.create(2, 2, 0.1)
     })
     MeshRenderer.setPlane(texturePlane)
@@ -277,7 +281,7 @@ export function setupMiscTest() {
     })
 
     // Label for the format
-    createLabel(format, Vector3.create(miscCenterX + x, 3.5, texTestZ), 0.6)
+    createLabel(format, Vector3.create(miscCenterX + x, y + 1.5, texTestZ), 0.6)
   })
 
   console.log('Texture format tests created: PNG, JPEG, GIF, WEBP, AVIF, HEIC, KTX2')
@@ -285,9 +289,9 @@ export function setupMiscTest() {
   // =========================================================================
   // NFT SHAPE TEST (OpenSea NFTs) - All URNs with click support
   // =========================================================================
-  const nftTestZ = miscCenterZ - 10
+  const nftTestZ = miscCenterZ - 8
 
-  createLabel('NFT SHAPES (Click to open)\nAll URNs from NFT Museum', Vector3.create(miscCenterX, 5, nftTestZ - 2), 0.8)
+  createLabel('NFT SHAPES (Click to open)\nAll URNs from NFT Museum', Vector3.create(miscCenterX, 5, nftTestZ + 2), 0.8)
 
   // ALL NFT URNs from the NFT Museum
   const allNftUrns = [
@@ -342,8 +346,8 @@ export function setupMiscTest() {
 
   // Create NFTs in a wall grid layout (6 columns x 3 rows on same wall)
   const nftsPerRow = 6
-  const xSpacing = 3.2
-  const ySpacing = 3.2
+  const xSpacing = 2.8
+  const ySpacing = 2.8
 
   allNftUrns.forEach((urn, index) => {
     const row = Math.floor(index / nftsPerRow)
