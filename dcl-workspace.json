@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test24-memory_stress"
+    },
+    {
       "path": "scenes/test23-player_physics"
     },
     {
