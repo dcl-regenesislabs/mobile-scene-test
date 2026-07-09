@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test20-morph_targets"
+    },
+    {
       "path": "scenes/test19-animations"
     },
     {
