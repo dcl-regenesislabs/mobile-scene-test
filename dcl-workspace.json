@@ -1,7 +1,10 @@
 {
   "folders": [
     {
-      "path": "scenes/test15-misc copy"
+      "path": "scenes/test17-materials"
+    },
+    {
+      "path": "scenes/test16-meshes"
     },
     {
       "path": "scenes/test15-misc"
