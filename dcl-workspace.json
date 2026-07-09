@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test19-animations"
+    },
+    {
       "path": "scenes/test18-gltf_models"
     },
     {
