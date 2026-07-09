@@ -20,7 +20,7 @@ import {
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel, TriggerVisual, TRIGGER_COLOR_OUTSIDE, TRIGGER_COLOR_INSIDE } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 8: TRIGGER AREAS - Testing TriggerArea feature (ADR-258)
@@ -34,7 +34,7 @@ export function main() {
 
   createLabel('TRIGGER AREA TEST (ADR-258)\nComprehensive Test Suite', Vector3.create(triggerBaseX, 8, triggerBaseZ - 12), 3)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   // Platform floor for trigger area test
   createPlatform(

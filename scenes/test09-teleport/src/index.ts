@@ -14,7 +14,7 @@ import { Vector3, Color4 } from '@dcl/sdk/math'
 import { movePlayerTo } from '~system/RestrictedActions'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 // Helper to get LOCAL player position (engine.PlayerEntity is the local player)
 function getLocalPlayerPosition(): Vector3 | null {
@@ -37,7 +37,7 @@ export function main() {
 
   createLabel('WALL TELEPORT TEST\n(teleport into solid box)', Vector3.create(wallTestX - 14, 2, wallTestZ + 14), 1.5)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   // Platform for the test area
   createPlatform(

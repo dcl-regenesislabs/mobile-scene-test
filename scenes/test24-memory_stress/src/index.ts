@@ -16,7 +16,7 @@ import {
 import { Vector3, Color4, Color3 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 24: MEMORY STRESS LAB
@@ -130,7 +130,7 @@ export function main() {
     1.3
   )
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   const statusLabel = createLabel('', Vector3.create(0, 6, 0), 0.85)
   function refreshStatus(): void {

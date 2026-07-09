@@ -6,7 +6,7 @@ import {
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 20: Morph Targets
@@ -29,7 +29,7 @@ export function main() {
 
   createLabel('TEST 20: MORPH TARGETS\n(Blend Shape Animations)', Vector3.create(baseX, 5, baseZ), labelSizeBig)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   // AnimatedCubeMorph
   const cubeMorph = engine.addEntity()

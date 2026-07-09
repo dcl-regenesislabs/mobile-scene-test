@@ -18,7 +18,7 @@ import {
 import { Vector3, Color4, Quaternion } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 23: PLAYER PHYSICS
@@ -42,7 +42,7 @@ export function main() {
     3
   )
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   // Shared platform floor
   createPlatform(

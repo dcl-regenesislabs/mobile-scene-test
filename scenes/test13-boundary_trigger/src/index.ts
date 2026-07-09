@@ -12,7 +12,7 @@ import {
 import { Vector3, Color4, Color3 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel, TRIGGER_COLOR_OUTSIDE, TRIGGER_COLOR_INSIDE } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 13: BOUNDARY TRIGGER TEST
@@ -24,7 +24,7 @@ export function main() {
 
   createLabel('BOUNDARY TRIGGER TEST\n48x48m trigger at scene edge', Vector3.create(baseX + 8, 10, baseZ + 8), 3)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   // Small platform at the corner so player can stand
   createPlatform(

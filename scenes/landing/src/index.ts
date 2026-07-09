@@ -1,7 +1,7 @@
 import { engine, Material, MeshCollider, MeshRenderer, TextShape, Transform } from '@dcl/sdk/ecs';
 import { Color3, Color4, Quaternion, Vector3 } from '@dcl/sdk/math';
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 import { SCENE_VERSION } from '../../../utils/version'
 
 export function main() {
@@ -11,7 +11,7 @@ export function main() {
     MeshCollider.setBox(floor);
     Material.setPbrMaterial(floor, { albedoColor: Color4.create(0.2, 0.2, 0.2, 1.) });
 
-    ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+    teleportUi()
 
     // Version label on the floor at origin
     const versionLabel = engine.addEntity()

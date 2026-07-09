@@ -2,13 +2,13 @@ import { engine, Material, MaterialTransparencyMode, MeshRenderer, PBSkyboxTime,
 import { Color4, Vector3 } from "@dcl/sdk/math"
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createLabel, createPlatform, TRIGGER_COLOR_INSIDE, TRIGGER_COLOR_OUTSIDE, TriggerVisual } from "../../../utils/helpers"
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 export function main() {
     const triggerBaseX = 4
     const triggerBaseZ = 8
 
-    ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+    teleportUi()
 
     const nightTrigger = buildTrigger(
         triggerBaseX,

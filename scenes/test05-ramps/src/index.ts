@@ -1,7 +1,7 @@
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createRamp, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 5: INCLINED RAMPS - Testing climbable angles
@@ -13,7 +13,7 @@ export function main() {
 
   createLabel('RAMP ANGLE TEST\n(climb without jumping)', Vector3.create(40, 4, rampBaseZ - 2), 1.2)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   rampAngles.forEach((angle, index) => {
     const x = 4 + index * 8  // Start at X=24, space 8m apart

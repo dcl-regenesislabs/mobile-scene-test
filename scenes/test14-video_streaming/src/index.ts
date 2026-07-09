@@ -19,7 +19,7 @@ import {
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 import { videoState, DEFAULT_VIDEO_URL } from '../../../utils/state'
 import { fetchStreamKeyInfo } from '../../../utils/api'
 
@@ -87,7 +87,7 @@ export function main() {
 
   createLabel('VIDEO STREAMING TEST\nBlender Foundation - Sintel (2010)', Vector3.create(baseX + 8, 12, baseZ + 8), 3)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   // Platform floor (3x larger: 48x48)
   createPlatform(

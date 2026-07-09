@@ -17,7 +17,7 @@ import {
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 // State tracking
 let virtualCameraActive = false
@@ -40,7 +40,7 @@ export function main() {
 
   createLabel('MISC TEST\n(VirtualCamera & InputModifier)', Vector3.create(miscCenterX, 4, miscCenterZ - 6), 1.2)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   // =========================================================================
   // VIRTUAL CAMERA TEST

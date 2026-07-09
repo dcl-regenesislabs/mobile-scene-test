@@ -6,7 +6,7 @@ import {
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 18: GLTF/GLB Models (Static)
@@ -27,7 +27,7 @@ export function main() {
 
   createLabel('TEST 18: GLTF/GLB MODELS (Static)', Vector3.create(baseX, 8, baseZ - 12), 1.8)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   // Small models row
   createLabel('Small static models:', Vector3.create(baseX - 40, yPos + 0.5, baseZ - 6), 0.45)

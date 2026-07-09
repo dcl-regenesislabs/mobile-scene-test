@@ -8,7 +8,7 @@ import {
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 16: Primitive Meshes
@@ -29,7 +29,7 @@ export function main() {
 
   createLabel('TEST 16: PRIMITIVE MESHES', Vector3.create(baseX, 5, baseZ - 10), 1.5)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   // Mesh configurations in 3x2 grid with compact spacing
   const meshConfigs = [

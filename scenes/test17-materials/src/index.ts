@@ -8,7 +8,7 @@ import {
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 17: PBR & Unlit Materials
@@ -32,7 +32,7 @@ export function main() {
 
   createLabel('TEST 17: PBR & UNLIT MATERIALS', Vector3.create(baseX, 6, baseZ - 15), labelSize)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   let rowZ = baseZ - 12
 

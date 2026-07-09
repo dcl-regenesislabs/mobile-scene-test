@@ -1,7 +1,7 @@
 import { Vector3, Color4 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 1: FINE SCALE STAIRCASE - 2.0m to 2.5m in 0.05m increments
@@ -14,7 +14,7 @@ export function main() {
 
   createLabel('FINE SCALE STAIRCASE\n(2.0m - 2.5m)', Vector3.create(8, 4, fineScaleZ), 1.2)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   fineScaleHeights.forEach((height, index) => {
     const x = fineScaleStartX + index * 1.3

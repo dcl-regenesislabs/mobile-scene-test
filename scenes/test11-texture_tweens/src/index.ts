@@ -14,7 +14,7 @@ import {
 import { Vector3, Color4, Vector2 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 // Custom component to track texture move tween data
 const TextureMoveReadback = engine.defineComponent('TextureMoveReadback', {
@@ -56,7 +56,7 @@ export function main() {
 
   createLabel('TEXTURE TWEENS TEST (ADR-255)\nAnimated textures', Vector3.create(textureTweenBaseX, 8, textureTweenBaseZ - 10), 1.5)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   // Platform floor for texture tween test area
   createPlatform(

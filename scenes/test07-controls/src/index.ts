@@ -18,7 +18,7 @@ import {
   getActionColor,
   updateHoverText
 } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 /**
  * TEST 7: CONTROL MAPPING TEST - Testing input actions
@@ -29,7 +29,7 @@ export function main() {
 
   createLabel('CONTROL MAPPING TEST\n(test all input actions)', Vector3.create(controlCenterX, 4, controlCenterZ - 6), 1.2)
 
-  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+  teleportUi()
 
   createInputCube(
     Vector3.create(controlCenterX, 1.5, controlCenterZ),

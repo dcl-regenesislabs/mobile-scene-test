@@ -2,7 +2,7 @@ import { AvatarAnchorPointType, AvatarAttach, engine, Entity, Material, MeshRend
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math";
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
-import { uiMenu } from '../../../utils/ui';
+import { teleportUi } from '../../../utils/ui';
 
 export function main() {
     const baseX = 8
@@ -11,7 +11,7 @@ export function main() {
     createLabel('TEST 21: AVATAR ANCHOR POINTS', Vector3.create(baseX, 3.5, baseZ), 1.5)
     createPlatform(Vector3.create(baseX, 0.1, baseZ), Vector3.create(16, 0.05, 16), Color4.create(0.2, 0.2, 0.2, 1))
 
-    ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+    teleportUi()
 
     createAttachment(Color4.create(1, 0.75, 0), AvatarAnchorPointType.AAPT_HEAD);
     createAttachment(Color4.create(1, 0, 0.75), AvatarAnchorPointType.AAPT_NECK);
