@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test22-skybox_time"
+    },
+    {
       "path": "scenes/test21-anchor_points"
     },
     {

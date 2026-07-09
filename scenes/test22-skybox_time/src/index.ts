@@ -1,10 +1,14 @@
 import { engine, Material, MaterialTransparencyMode, MeshRenderer, PBSkyboxTime, SkyboxTime, Transform, TransitionMode, TriggerArea, triggerAreaEventsSystem } from "@dcl/sdk/ecs"
 import { Color4, Vector3 } from "@dcl/sdk/math"
-import { createLabel, createPlatform, TRIGGER_COLOR_INSIDE, TRIGGER_COLOR_OUTSIDE, TriggerVisual } from "../utils/helpers"
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createLabel, createPlatform, TRIGGER_COLOR_INSIDE, TRIGGER_COLOR_OUTSIDE, TriggerVisual } from "../../../utils/helpers"
+import { uiMenu } from '../../../utils/ui';
 
-export function setupSkyboxTimeZones() {
-    const triggerBaseX = -76
-    const triggerBaseZ = 0
+export function main() {
+    const triggerBaseX = 4
+    const triggerBaseZ = 8
+
+    ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
     const nightTrigger = buildTrigger(
         triggerBaseX,
@@ -17,8 +21,8 @@ export function setupSkyboxTimeZones() {
     )
 
     const dayTrigger = buildTrigger(
-        triggerBaseX,
-        triggerBaseZ + 8,
+        triggerBaseX + 8,
+        triggerBaseZ,
         { fixedTime: 43200 },
         'Day Skybox: Enter',
         'Day Skybox: Exit',
@@ -27,8 +31,8 @@ export function setupSkyboxTimeZones() {
     )
 
     const nightRevTrigger = buildTrigger(
-        triggerBaseX,
-        triggerBaseZ + 16,
+        triggerBaseX + 16,
+        triggerBaseZ,
         { fixedTime: 0, transitionMode: TransitionMode.TM_BACKWARD },
         'Reverse Night Skybox: Enter',
         'Reverse Night Skybox: Exit',
@@ -37,8 +41,8 @@ export function setupSkyboxTimeZones() {
     )
 
     const dayRevTrigger = buildTrigger(
-        triggerBaseX,
-        triggerBaseZ + 24,
+        triggerBaseX + 24,
+        triggerBaseZ,
         { fixedTime: 43200, transitionMode: TransitionMode.TM_BACKWARD },
         'Reverse Day Skybox: Enter',
         'Reverse Day Skybox: Exit',
