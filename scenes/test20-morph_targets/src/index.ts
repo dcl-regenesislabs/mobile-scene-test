@@ -27,7 +27,7 @@ export function main() {
     Color4.create(0.2, 0.22, 0.2, 1)
   )
 
-  createLabel('TEST 20: MORPH TARGETS\n(Blend Shape Animations)', Vector3.create(baseX, 5, baseZ - 10), labelSizeBig)
+  createLabel('TEST 20: MORPH TARGETS\n(Blend Shape Animations)', Vector3.create(baseX, 5, baseZ), labelSizeBig)
 
   ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
