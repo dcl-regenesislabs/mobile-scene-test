@@ -121,7 +121,7 @@ export const uiMenu = () => (
                     `Test 16: Meshes`,
                     `Test 17: Materials`,
                     `Test 18: glTF Models`,
-                    `Test 18: Animations`,
+                    `Test 19: Animations`,
                 ]}
                 onChange={selectOption}
             />
