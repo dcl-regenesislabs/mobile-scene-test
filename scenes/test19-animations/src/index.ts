@@ -30,6 +30,8 @@ export function main() {
 
   createLabel('TEST 19: GLTF ANIMATIONS', Vector3.create(baseX, 6, baseZ - 15), labelSizeBig)
 
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+
   // Row 1: Auto-play animations (embedded in GLTF)
   createLabel('Auto-play animations (embedded in GLTF)', Vector3.create(baseX - 18, yPos + 0.5, baseZ - 10), labelSize)
 
