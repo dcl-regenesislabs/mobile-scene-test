@@ -37,7 +37,6 @@ export function main() {
     createAttachment(Color4.create(0.25, 0.25, 1), AvatarAnchorPointType.AAPT_RIGHT_LEG);
     createAttachment(Color4.create(0.75, 0.75, 1), AvatarAnchorPointType.AAPT_RIGHT_FOOT);
     createAttachment(Color4.create(0, 0, 1), AvatarAnchorPointType.AAPT_RIGHT_TOE_BASE);
-
 }
 
 function createAttachment(albedoColor: Color4, anchorPointId: AvatarAnchorPointType): Entity {

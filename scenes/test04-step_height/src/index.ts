@@ -28,14 +28,12 @@ export function main() {
     const x = 8 + index * 1.2
     stepCurrentHeight += stepHeight
 
-    // Each step rises by stepHeight from the previous
     createPlatform(
       Vector3.create(x, stepCurrentHeight / 2, stepZ + 1),
       Vector3.create(1, stepCurrentHeight, 2),
       Color4.create(0.6, 0.4 + (index * 0.05), 0.2, 1)
     )
 
-    // Label showing the step increment
     createLabel(
       `+${stepHeight.toFixed(2)}m`,
       Vector3.create(x, stepCurrentHeight + 0.5, stepZ + 1),

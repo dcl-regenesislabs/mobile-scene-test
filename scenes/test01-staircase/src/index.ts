@@ -19,14 +19,12 @@ export function main() {
   fineScaleHeights.forEach((height, index) => {
     const x = fineScaleStartX + index * 1.3
 
-    // Solid pillar from floor (top surface at 'height')
     createPlatform(
       Vector3.create(x, height / 2, fineScaleZ),
       Vector3.create(1.2, height, 1.2),
       Color4.create(0.2 + (index * 0.07), 0.8 - (index * 0.05), 0.2, 1)
     )
 
-    // Height label
     createLabel(
       `${height.toFixed(2)}m`,
       Vector3.create(x, height + 0.5, fineScaleZ),

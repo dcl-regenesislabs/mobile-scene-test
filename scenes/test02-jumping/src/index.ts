@@ -27,14 +27,12 @@ export function main() {
   createLabel('RUNNING JUMP TEST\n(horizontal distance)', Vector3.create(12, 2.5, runwayZ - 2), 1.2)
 
   gapSizes.forEach((gap, index) => {
-    // Landing platform (longer for easier landing)
     createPlatform(
       Vector3.create(currentX + gap + 1.5, 0.5, runwayZ),
       Vector3.create(3, 1, 3),
       Color4.create(0.5, 0.3 + (index * 0.05), 0.2, 1)
     )
 
-    // Gap label
     createLabel(
       `${gap.toFixed(1)}m`,
       Vector3.create(currentX + gap / 2, 1.5, runwayZ),

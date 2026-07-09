@@ -5,24 +5,83 @@ import {
   MeshCollider,
   Material,
   VideoPlayer,
+  VideoEvent,
+  VideoState,
   GltfContainer,
   PointerEvents,
   PointerEventType,
   InputAction,
   inputSystem,
   TextShape,
-  Billboard
+  Billboard,
+  Entity
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
 import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createLabel } from '../../../utils/helpers'
 import { uiMenu } from '../../../utils/ui';
+import { videoState, DEFAULT_VIDEO_URL } from '../../../utils/state'
+import { fetchStreamKeyInfo } from '../../../utils/api'
 
 /**
  * TEST 14: VIDEO STREAMING TEST
  * Testing VideoPlayer with a Blender Foundation movie.
  */
 export function main() {
+  const baseX_ui = 36  // test14 origin X + 16; lands ~16m east of stage center
+  const baseZ_ui = 4 // test14 origin Z
+  // -------------------------------------------------------------------------
+  // UI-CONTROLLED VIDEO SCREEN — controllable from the video UI panel.
+  // Positioned in the test14 coordinate space so the stage offset puts it
+  // beside the GLTF screen instead of at world origin.
+  // -------------------------------------------------------------------------
+  const uiVideoScreen = engine.addEntity()
+  Transform.create(uiVideoScreen, {
+    position: Vector3.create(baseX_ui, 3.5, baseZ_ui),
+    scale: Vector3.create(8, 4.5, 1)
+  })
+  MeshRenderer.setPlane(uiVideoScreen)
+  MeshCollider.setPlane(uiVideoScreen)
+  VideoPlayer.create(uiVideoScreen, {
+    src: DEFAULT_VIDEO_URL,
+    playing: false,
+    volume: 1,
+    loop: true
+  })
+  Material.setBasicMaterial(uiVideoScreen, {
+    texture: Material.Texture.Video({ videoPlayerEntity: uiVideoScreen })
+  })
+  videoState.setVideoEntity(uiVideoScreen)
+  fetchStreamKeyInfo()
+
+  // VideoEvent tracking system (logs state changes)
+  const VIDEO_STATE_NAMES: Record<number, string> = {
+    [VideoState.VS_NONE]: 'NONE',
+    [VideoState.VS_ERROR]: 'ERROR',
+    [VideoState.VS_LOADING]: 'LOADING',
+    [VideoState.VS_READY]: 'READY',
+    [VideoState.VS_PLAYING]: 'PLAYING',
+    [VideoState.VS_BUFFERING]: 'BUFFERING',
+    [VideoState.VS_SEEKING]: 'SEEKING',
+    [VideoState.VS_PAUSED]: 'PAUSED'
+  }
+  const lastEventTimestamps = new Map<Entity, number>()
+  engine.addSystem(() => {
+    for (const [entity, videoEvents] of engine.getEntitiesWith(VideoEvent)) {
+      const lastTimestamp = lastEventTimestamps.get(entity) ?? 0
+      for (const ev of videoEvents) {
+        if (ev.timestamp > lastTimestamp) {
+          lastEventTimestamps.set(entity, ev.timestamp)
+          const stateName = VIDEO_STATE_NAMES[ev.state] || `UNKNOWN(${ev.state})`
+          console.log(`[STREAM] Video state: ${stateName} | Time: ${ev.currentOffset?.toFixed(1)}s / ${ev.videoLength?.toFixed(1)}s`)
+        }
+      }
+    }
+  })
+
+  // -------------------------------------------------------------------------
+  // ORIGINAL TEST 14 CONTENT
+  // -------------------------------------------------------------------------
   const baseX = 16
   const baseZ = 0
 

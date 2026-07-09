@@ -5,7 +5,6 @@ import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 5: INCLINED RAMPS - Testing climbable angles
- * Located in parcels 1,0 to 4,0 (X = 16 to 80)
  */
 export function main() {
   const rampAngles = [45, 50, 55, 60, 65, 70]
@@ -20,11 +19,9 @@ export function main() {
     const x = 4 + index * 8  // Start at X=24, space 8m apart
 
     const radians = (angle * Math.PI) / 180
-    const halfDepth = 1.5  // Half of ramp depth (3m along Z)
-    const halfThickness = 0.1  // Half of ramp thickness (0.2)
+    const halfDepth = 1.5
+    const halfThickness = 0.1
 
-    // X-axis rotation: Y and Z are affected, X stays fixed
-    // Position so bottom edge touches floor
     const centerX = x
     const centerY = Math.sin(radians) * halfDepth + Math.cos(radians) * halfThickness - 0.2
     const centerZ = rampBaseZ + Math.cos(radians) * halfDepth
@@ -36,7 +33,6 @@ export function main() {
       Color4.create(0.3, 0.5 + (index * 0.06), 0.7, 1)
     )
 
-    // Angle label higher up
     createLabel(
       `${angle}°`,
       Vector3.create(x, 3, rampBaseZ),

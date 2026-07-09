@@ -72,6 +72,19 @@ class VideoState {
     this.streamKeyError = error
     this.streamKeyLoading = false
   }
+
+  // Clear all state — called when the video test scene is unloaded so
+  // the UI panel has nothing to control.
+  reset() {
+    this._videoEntity = null
+    this.sourceType = VideoSourceType.VIDEO_URL
+    this.currentSource = DEFAULT_VIDEO_URL
+    this.streamingUrl = ''
+    this.streamingKey = ''
+    this.streamKeyExpiresAt = 0
+    this.streamKeyLoading = false
+    this.streamKeyError = ''
+  }
 }
 
 // Export singleton instance

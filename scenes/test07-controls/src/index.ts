@@ -31,7 +31,6 @@ export function main() {
 
   ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
-  // Master cube - responds to ALL input actions
   createInputCube(
     Vector3.create(controlCenterX, 1.5, controlCenterZ),
     Vector3.create(2, 2, 2),
@@ -40,7 +39,6 @@ export function main() {
   )
   createLabel('ALL ACTIONS', Vector3.create(controlCenterX, 4, controlCenterZ), 1.5)
 
-  // Individual action cubes arranged in a circle
   const radius = 5
   const angleStep = (Math.PI * 2) / INPUT_ACTIONS.length
 
