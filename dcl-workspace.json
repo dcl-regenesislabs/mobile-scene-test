@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test18-gltf_models"
+    },
+    {
       "path": "scenes/test17-materials"
     },
     {

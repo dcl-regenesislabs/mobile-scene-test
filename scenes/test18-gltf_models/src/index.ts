@@ -4,17 +4,18 @@ import {
   GltfContainer
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4 } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 18: GLTF/GLB Models (Static)
  * Display static GLTF/GLB models including sample scenes and simple models
- * Location: X:-65, Z:-115 (Row 3, spanning both columns of visual test grid)
  */
-export function setupGltfModelsTest() {
+export function main() {
   // Grid position: Row 3, spanning full width
-  const baseX = -65
-  const baseZ = -115
+  const baseX = 0
+  const baseZ = 0
   const yPos = 1
 
   // Large platform for full-size models
@@ -25,6 +26,8 @@ export function setupGltfModelsTest() {
   )
 
   createLabel('TEST 18: GLTF/GLB MODELS (Static)', Vector3.create(baseX, 8, baseZ - 12), 1.8)
+
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
   // Small models row
   createLabel('Small static models:', Vector3.create(baseX - 40, yPos + 0.5, baseZ - 6), 0.45)
