@@ -6,27 +6,30 @@ import {
   Material
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4 } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 16: Primitive Meshes
  * Display all primitive mesh types: Box, Sphere, Cylinder, Plane, Cone, Truncated Cylinder
- * Location: X:-90, Z:-35 (Row 1, Column 1 of visual test grid)
  */
-export function setupMeshesTest() {
+export function main() {
   // Grid position: Row 1, Column 1
-  const baseX = -90
-  const baseZ = -35
+  const baseX = 16
+  const baseZ = 0
   const yPos = 1
 
   // Platform
   createPlatform(
     Vector3.create(baseX, 0.05, baseZ),
-    Vector3.create(35, 0.1, 25),
+    Vector3.create(32, 0.1, 32),
     Color4.create(0.2, 0.2, 0.25, 1)
   )
 
   createLabel('TEST 16: PRIMITIVE MESHES', Vector3.create(baseX, 5, baseZ - 10), 1.5)
+
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
 
   // Mesh configurations in 3x2 grid with compact spacing
   const meshConfigs = [
