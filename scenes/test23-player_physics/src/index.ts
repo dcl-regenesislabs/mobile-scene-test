@@ -16,8 +16,9 @@ import {
   EasingFunction
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Quaternion } from '@dcl/sdk/math'
-import { createPlatform, createLabel } from '../utils/helpers'
-import { runScoped, TestSceneHandle } from '../lobby/tracker'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { uiMenu } from '../../../utils/ui';
 
 /**
  * TEST 23: PLAYER PHYSICS
@@ -29,25 +30,24 @@ import { runScoped, TestSceneHandle } from '../lobby/tracker'
  *  - applyRepulsionForceToPlayer (continuous repulsion + vortex/attraction)
  *  - Transform.localToWorldDirection (rotating launcher)
  */
-export function setupPlayerPhysicsTest(): TestSceneHandle {
-  return runScoped(() => {
-  // Empty far-east strip — clear of all other sectors (triggers, materials,
-  // meshes, animations, morph, etc.). Parcels (5..7, -4..-1).
-  const baseX = 90
-  const baseZ = -50
+export function main() {
+  const baseX = 1
+  const baseZ = 7
   const floorY = 0.05
 
   createLabel(
     'PLAYER PHYSICS TEST\nImpulses, Forces, Knockback, Repulsion\n' +
-      'Impulse rows -> PBPhysicsCombinedImpulse\nForce rows -> PBPhysicsCombinedForce',
+    'Impulse rows -> PBPhysicsCombinedImpulse\nForce rows -> PBPhysicsCombinedForce',
     Vector3.create(baseX + 15, 9, baseZ - 12),
     3
   )
 
+  ReactEcsRenderer.setUiRenderer(uiMenu, { virtualWidth: 1920, virtualHeight: 1080 })
+
   // Shared platform floor
   createPlatform(
     Vector3.create(baseX + 15, floorY, baseZ + 25),
-    Vector3.create(64, 0.1, 90),
+    Vector3.create(64, 0.1, 96),
     Color4.create(0.18, 0.18, 0.22, 1)
   )
 
@@ -452,5 +452,4 @@ export function setupPlayerPhysicsTest(): TestSceneHandle {
     Vector3.create(baseX + 15, 1, baseZ - 6),
     1.6
   )
-  })
 }

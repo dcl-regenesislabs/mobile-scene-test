@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test23-player_physics"
+    },
+    {
       "path": "scenes/test22-skybox_time"
     },
     {
