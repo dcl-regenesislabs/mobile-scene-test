@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test21-anchor_points"
+    },
+    {
       "path": "scenes/test20-morph_targets"
     },
     {
