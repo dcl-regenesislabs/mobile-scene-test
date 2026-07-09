@@ -1,7 +1,7 @@
 {
-  "name": "skybox_time",
+  "name": "player_physics",
   "version": "1.0.0",
-  "description": "Test for skybox time",
+  "description": "Test for player physics",
   "scripts": {
     "start": "sdk-commands start",
     "deploy": "sdk-commands deploy",

@@ -1,7 +1,7 @@
 {
-  "name": "meshes",
+  "name": "materials",
   "version": "1.0.0",
-  "description": "Test for primitive meshes",
+  "description": "Test for materials",
   "scripts": {
     "start": "sdk-commands start",
     "deploy": "sdk-commands deploy",
