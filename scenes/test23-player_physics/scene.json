@@ -1,0 +1,80 @@
+{
+	"ecs7": true,
+	"runtimeVersion": "7",
+	"display": {
+		"title": "Player Physics",
+		"description": "Test for player physics",
+		"navmapThumbnail": "../../images/scene-thumbnail.png",
+		"favicon": "favicon_asset"
+	},
+	"owner": "DCLRegenesisLabs",
+	"contact": {
+		"name": "DCL Regenesis Labs",
+		"email": ""
+	},
+	"main": "bin/index.js",
+	"tags": [],
+	"scene": {
+		"parcels": [
+			"-6,3",
+			"-7,3",
+			"-8,3",
+			"-9,3",
+			"-6,4",
+			"-7,4",
+			"-8,4",
+			"-9,4",
+			"-6,5",
+			"-7,5",
+			"-8,5",
+			"-9,5",
+			"-6,6",
+			"-7,6",
+			"-8,6",
+			"-9,6",
+			"-6,7",
+			"-7,7",
+			"-8,7",
+			"-9,7",
+			"-6,8",
+			"-7,8",
+			"-8,8",
+			"-9,8"
+		],
+		"base": "-8,4"
+	},
+	"spawnPoints": [
+		{
+			"name": "spawn1",
+			"default": true,
+			"position": {
+				"x": [
+					0,
+					3
+				],
+				"y": [
+					0,
+					0
+				],
+				"z": [
+					0,
+					3
+				]
+			},
+			"cameraTarget": {
+				"x": 8,
+				"y": 1,
+				"z": 8
+			}
+		}
+	],
+	"requiredPermissions": [
+		"ALLOW_TO_TRIGGER_AVATAR_EMOTE",
+		"ALLOW_TO_MOVE_PLAYER_INSIDE_SCENE"
+	],
+	"featureToggles": {},
+	"skyboxConfig": {},
+	"worldConfiguration": {
+		"name": "kuruk.dcl.eth"
+	}
+}

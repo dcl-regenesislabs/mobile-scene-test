@@ -1,0 +1,34 @@
+import { Vector3, Color4 } from '@dcl/sdk/math'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { teleportUi } from '../../../utils/ui';
+
+/**
+ * TEST 1: FINE SCALE STAIRCASE - 2.0m to 2.5m in 0.05m increments
+ * Solid pillars from floor, testing exact jump height limit
+ */
+export function main() {
+  const fineScaleHeights = [2.0, 2.05, 2.1, 2.15, 2.2, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5]
+  const fineScaleStartX = 2
+  const fineScaleZ = 6
+
+  createLabel('FINE SCALE STAIRCASE\n(2.0m - 2.5m)', Vector3.create(8, 4, fineScaleZ), 1.2)
+
+  teleportUi()
+
+  fineScaleHeights.forEach((height, index) => {
+    const x = fineScaleStartX + index * 1.3
+
+    createPlatform(
+      Vector3.create(x, height / 2, fineScaleZ),
+      Vector3.create(1.2, height, 1.2),
+      Color4.create(0.2 + (index * 0.07), 0.8 - (index * 0.05), 0.2, 1)
+    )
+
+    createLabel(
+      `${height.toFixed(2)}m`,
+      Vector3.create(x, height + 0.5, fineScaleZ),
+      0.9
+    )
+  })
+}

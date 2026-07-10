@@ -1,0 +1,285 @@
+import {
+  engine,
+  Transform,
+  MeshRenderer,
+  MeshCollider,
+  Material,
+  VideoPlayer,
+  VideoEvent,
+  VideoState,
+  GltfContainer,
+  PointerEvents,
+  PointerEventType,
+  InputAction,
+  inputSystem,
+  TextShape,
+  Billboard,
+  Entity
+} from '@dcl/sdk/ecs'
+import { Vector3, Color4, Quaternion, Color3 } from '@dcl/sdk/math'
+import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
+import { createPlatform, createLabel } from '../../../utils/helpers'
+import { teleportUi } from '../../../utils/ui';
+import { videoState, DEFAULT_VIDEO_URL } from '../../../utils/state'
+import { fetchStreamKeyInfo } from '../../../utils/api'
+
+/**
+ * TEST 14: VIDEO STREAMING TEST
+ * Testing VideoPlayer with a Blender Foundation movie.
+ */
+export function main() {
+  const baseX_ui = 36  // test14 origin X + 16; lands ~16m east of stage center
+  const baseZ_ui = 4 // test14 origin Z
+  // -------------------------------------------------------------------------
+  // UI-CONTROLLED VIDEO SCREEN — controllable from the video UI panel.
+  // Positioned in the test14 coordinate space so the stage offset puts it
+  // beside the GLTF screen instead of at world origin.
+  // -------------------------------------------------------------------------
+  const uiVideoScreen = engine.addEntity()
+  Transform.create(uiVideoScreen, {
+    position: Vector3.create(baseX_ui, 3.5, baseZ_ui),
+    scale: Vector3.create(8, 4.5, 1)
+  })
+  MeshRenderer.setPlane(uiVideoScreen)
+  MeshCollider.setPlane(uiVideoScreen)
+  VideoPlayer.create(uiVideoScreen, {
+    src: DEFAULT_VIDEO_URL,
+    playing: false,
+    volume: 1,
+    loop: true
+  })
+  Material.setBasicMaterial(uiVideoScreen, {
+    texture: Material.Texture.Video({ videoPlayerEntity: uiVideoScreen })
+  })
+  videoState.setVideoEntity(uiVideoScreen)
+  fetchStreamKeyInfo()
+
+  // VideoEvent tracking system (logs state changes)
+  const VIDEO_STATE_NAMES: Record<number, string> = {
+    [VideoState.VS_NONE]: 'NONE',
+    [VideoState.VS_ERROR]: 'ERROR',
+    [VideoState.VS_LOADING]: 'LOADING',
+    [VideoState.VS_READY]: 'READY',
+    [VideoState.VS_PLAYING]: 'PLAYING',
+    [VideoState.VS_BUFFERING]: 'BUFFERING',
+    [VideoState.VS_SEEKING]: 'SEEKING',
+    [VideoState.VS_PAUSED]: 'PAUSED'
+  }
+  const lastEventTimestamps = new Map<Entity, number>()
+  engine.addSystem(() => {
+    for (const [entity, videoEvents] of engine.getEntitiesWith(VideoEvent)) {
+      const lastTimestamp = lastEventTimestamps.get(entity) ?? 0
+      for (const ev of videoEvents) {
+        if (ev.timestamp > lastTimestamp) {
+          lastEventTimestamps.set(entity, ev.timestamp)
+          const stateName = VIDEO_STATE_NAMES[ev.state] || `UNKNOWN(${ev.state})`
+          console.log(`[STREAM] Video state: ${stateName} | Time: ${ev.currentOffset?.toFixed(1)}s / ${ev.videoLength?.toFixed(1)}s`)
+        }
+      }
+    }
+  })
+
+  // -------------------------------------------------------------------------
+  // ORIGINAL TEST 14 CONTENT
+  // -------------------------------------------------------------------------
+  const baseX = 16
+  const baseZ = 0
+
+  createLabel('VIDEO STREAMING TEST\nBlender Foundation - Sintel (2010)', Vector3.create(baseX + 8, 12, baseZ + 8), 3)
+
+  teleportUi()
+
+  // Platform floor (3x larger: 48x48)
+  createPlatform(
+    Vector3.create(baseX + 8, 0.05, baseZ + 8),
+    Vector3.create(48, 0.1, 48),
+    Color4.create(0.15, 0.15, 0.2, 1)
+  )
+
+  // =========================================================================
+  // SEATS - From goerli-plaza reference
+  // =========================================================================
+  const seats = engine.addEntity()
+  Transform.create(seats, {
+    position: Vector3.create(baseX + 8, 0, baseZ),
+    rotation: Quaternion.fromEulerDegrees(0, 0, 0),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(seats, {
+    src: 'assets/seats.glb'
+  })
+
+  // =========================================================================
+  // VIDEO PLAYER - Sintel (Blender Foundation 2010)
+  // =========================================================================
+
+  // Create the video player entity (starts paused)
+  const videoPlayerEntity = engine.addEntity()
+  VideoPlayer.create(videoPlayerEntity, {
+    src: 'https://archive.org/download/Sintel/sintel-2048-stereo.mp4',
+    playing: false,
+    loop: true,
+    volume: 0.5
+  })
+
+  // Track play state
+  let isPlaying = false
+
+  // Create video texture from the player
+  const videoTexture = Material.Texture.Video({ videoPlayerEntity: videoPlayerEntity })
+
+  // Video material with emissive for better visibility
+  const videoMaterial = {
+    texture: videoTexture,
+    roughness: 1.0,
+    specularIntensity: 0,
+    metallic: 0,
+    emissiveTexture: videoTexture,
+    emissiveIntensity: 0.8,
+    emissiveColor: Color3.White()
+  }
+
+  // =========================================================================
+  // GLTF SCREEN - Using screen.glb from goerli-plaza
+  // Based on reference scene transforms
+  // =========================================================================
+
+  // Screen body (GLTF model) - positioned at center back of parcel
+  const screenBody = engine.addEntity()
+  Transform.create(screenBody, {
+    position: Vector3.create(baseX + 8, 0.05, baseZ + 6),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(screenBody, {
+    src: 'assets/screen.glb'
+  })
+
+  // Screen display parent (offset from screen body)
+  // Reference: y: 6.15, scale: 0.63
+  const screenDisplay = engine.addEntity()
+  Transform.create(screenDisplay, {
+    position: Vector3.create(baseX + 8, 6.15 * 0.63 + 0.05, baseZ + 14),
+    scale: Vector3.create(0.63, 0.63, 0.63)
+  })
+
+  // Video plane on the screen
+  // Reference: position relative (0, 1.15, 6), scale (18.63, 10.48, 1.59), slight tilt
+  const videoScreen = engine.addEntity()
+  Transform.create(videoScreen, {
+    position: Vector3.create(baseX + 8, 4.8, baseZ + 10.2),
+    rotation: Quaternion.fromEulerDegrees(-8.6, 0, 0),
+    scale: Vector3.create(11.7, 6.6, 1)
+  })
+  MeshRenderer.setPlane(videoScreen)
+  MeshCollider.setPlane(videoScreen)
+  Material.setPbrMaterial(videoScreen, videoMaterial)
+
+  // Add pointer events for play/pause toggle
+  PointerEvents.create(videoScreen, {
+    pointerEvents: [
+      {
+        eventType: PointerEventType.PET_DOWN,
+        eventInfo: {
+          button: InputAction.IA_POINTER,
+          hoverText: 'Click to PLAY'
+        }
+      }
+    ]
+  })
+
+  // Status label for play state
+  const playStatusLabel = engine.addEntity()
+  Transform.create(playStatusLabel, {
+    position: Vector3.create(baseX + 8, 9, baseZ + 10)
+  })
+  TextShape.create(playStatusLabel, {
+    text: 'PAUSED - Click screen to play',
+    fontSize: 4,
+    textColor: Color4.Yellow()
+  })
+  Billboard.create(playStatusLabel)
+
+  // System to handle play/pause toggle
+  engine.addSystem(() => {
+    const cmd = inputSystem.getInputCommand(
+      InputAction.IA_POINTER,
+      PointerEventType.PET_DOWN,
+      videoScreen
+    )
+
+    if (cmd) {
+      isPlaying = !isPlaying
+      const videoPlayer = VideoPlayer.getMutable(videoPlayerEntity)
+      videoPlayer.playing = isPlaying
+
+      // Update hover text and status label
+      const pointerEvents = PointerEvents.getMutable(videoScreen)
+      if (pointerEvents.pointerEvents && pointerEvents.pointerEvents[0]?.eventInfo) {
+        pointerEvents.pointerEvents[0].eventInfo.hoverText = isPlaying ? 'Click to PAUSE' : 'Click to PLAY'
+      }
+
+      TextShape.getMutable(playStatusLabel).text = isPlaying
+        ? 'PLAYING - Click screen to pause'
+        : 'PAUSED - Click screen to play'
+      TextShape.getMutable(playStatusLabel).textColor = isPlaying
+        ? Color4.Green()
+        : Color4.Yellow()
+
+      console.log(`VIDEO: ${isPlaying ? 'PLAY' : 'PAUSE'}`)
+    }
+  })
+
+  createLabel('GLTF Screen + Video\n(Click to Play/Pause)', Vector3.create(baseX + 8, 10.5, baseZ + 14), 2)
+
+  // =========================================================================
+  // SIDE SCREEN - Smaller screen on the left
+  // =========================================================================
+  const sideScreen = engine.addEntity()
+  Transform.create(sideScreen, {
+    position: Vector3.create(baseX + 1, 3, baseZ + 8),
+    rotation: Quaternion.fromEulerDegrees(0, 90, 0),
+    scale: Vector3.create(5, 3, 1)
+  })
+  MeshRenderer.setPlane(sideScreen)
+  Material.setPbrMaterial(sideScreen, videoMaterial)
+
+  createLabel('Side Screen', Vector3.create(baseX + 1, 6, baseZ + 8), 2)
+
+  // =========================================================================
+  // VIDEO CUBE - Cube with video on all sides
+  // =========================================================================
+  const videoCube = engine.addEntity()
+  Transform.create(videoCube, {
+    position: Vector3.create(baseX + 15, 2, baseZ + 4),
+    scale: Vector3.create(2, 2, 2)
+  })
+  MeshRenderer.setBox(videoCube)
+  Material.setPbrMaterial(videoCube, videoMaterial)
+
+  createLabel('Video Cube', Vector3.create(baseX + 15, 5, baseZ + 4), 2)
+
+  // =========================================================================
+  // FLOOR PROJECTION
+  // =========================================================================
+  const floorScreen = engine.addEntity()
+  Transform.create(floorScreen, {
+    position: Vector3.create(baseX + 8, 0.11, baseZ + 4),
+    rotation: Quaternion.fromEulerDegrees(90, 0, 0),
+    scale: Vector3.create(6, 4, 1)
+  })
+  MeshRenderer.setPlane(floorScreen)
+  Material.setPbrMaterial(floorScreen, videoMaterial)
+
+  createLabel('Floor Projection', Vector3.create(baseX + 8, 1, baseZ + 4), 1.6)
+
+  // =========================================================================
+  // Info labels
+  // =========================================================================
+  createLabel(
+    'Video: Sintel (2010)\n(c) Blender Foundation | CC BY 3.0',
+    Vector3.create(baseX + 8, 0.5, baseZ + 12),
+    1.4
+  )
+
+  createLabel('TEST 14: Video Streaming\n(Parcel 7,-7)', Vector3.create(baseX - 2, 3, baseZ + 8), 2)
+}
