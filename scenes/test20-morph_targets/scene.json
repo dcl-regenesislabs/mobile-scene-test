@@ -4,7 +4,7 @@
 	"display": {
 		"title": "Morph Targets",
 		"description": "Test for morph targets",
-		"navmapThumbnail": "../../images/scene-thumbnail.png",
+		"navmapThumbnail": "images/scene-thumbnail.png",
 		"favicon": "favicon_asset"
 	},
 	"owner": "DCLRegenesisLabs",

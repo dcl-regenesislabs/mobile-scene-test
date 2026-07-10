@@ -4,7 +4,7 @@
 	"display": {
 		"title": "Memory Stress",
 		"description": "Memory stress",
-		"navmapThumbnail": "../../images/scene-thumbnail.png",
+		"navmapThumbnail": "images/scene-thumbnail.png",
 		"favicon": "favicon_asset"
 	},
 	"owner": "DCLRegenesisLabs",

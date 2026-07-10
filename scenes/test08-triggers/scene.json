@@ -4,7 +4,7 @@
 	"display": {
 		"title": "Trigger Areas",
 		"description": "Test for trigger areas",
-		"navmapThumbnail": "../../images/scene-thumbnail.png",
+		"navmapThumbnail": "images/scene-thumbnail.png",
 		"favicon": "favicon_asset"
 	},
 	"owner": "DCLRegenesisLabs",

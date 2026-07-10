@@ -4,7 +4,7 @@
 	"display": {
 		"title": "Staircase",
 		"description": "Test for running jump",
-		"navmapThumbnail": "../../images/scene-thumbnail.png",
+		"navmapThumbnail": "images/scene-thumbnail.png",
 		"favicon": "favicon_asset"
 	},
 	"owner": "DCLRegenesisLabs",

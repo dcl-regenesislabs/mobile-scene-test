@@ -4,7 +4,7 @@
 	"display": {
 		"title": "Anchor points",
 		"description": "Test for avatar anchor points",
-		"navmapThumbnail": "../../images/scene-thumbnail.png",
+		"navmapThumbnail": "images/scene-thumbnail.png",
 		"favicon": "favicon_asset"
 	},
 	"owner": "DCLRegenesisLabs",

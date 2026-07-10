@@ -4,7 +4,7 @@
 	"display": {
 		"title": "Controls",
 		"description": "Test for input actions",
-		"navmapThumbnail": "../../images/scene-thumbnail.png",
+		"navmapThumbnail": "images/scene-thumbnail.png",
 		"favicon": "favicon_asset"
 	},
 	"owner": "DCLRegenesisLabs",

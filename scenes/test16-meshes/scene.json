@@ -4,7 +4,7 @@
 	"display": {
 		"title": "Meshes",
 		"description": "Test for primitive meshes",
-		"navmapThumbnail": "../../images/scene-thumbnail.png",
+		"navmapThumbnail": "images/scene-thumbnail.png",
 		"favicon": "favicon_asset"
 	},
 	"owner": "DCLRegenesisLabs",

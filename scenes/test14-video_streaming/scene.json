@@ -4,7 +4,7 @@
 	"display": {
 		"title": "Video Streaming",
 		"description": "Test for video streaming",
-		"navmapThumbnail": "../../images/scene-thumbnail.png",
+		"navmapThumbnail": "images/scene-thumbnail.png",
 		"favicon": "favicon_asset"
 	},
 	"owner": "DCLRegenesisLabs",

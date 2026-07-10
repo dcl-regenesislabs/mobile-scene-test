@@ -4,7 +4,7 @@
 	"display": {
 		"title": "Misc",
 		"description": "Test for virtual camera and input modifier",
-		"navmapThumbnail": "../../images/scene-thumbnail.png",
+		"navmapThumbnail": "images/scene-thumbnail.png",
 		"favicon": "favicon_asset"
 	},
 	"owner": "DCLRegenesisLabs",
