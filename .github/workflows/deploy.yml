@@ -69,7 +69,7 @@ jobs:
         run: npm install
 
       - name: Inject version from commit hash
-        run: sed -i "s/dev/${GITHUB_SHA::7}/g" ../utils/version.ts
+        run: sed -i "s/dev/${GITHUB_SHA::7}/g" ../../utils/version.ts
 
       - name: Build scene
         run: npm run build
