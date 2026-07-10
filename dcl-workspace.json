@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test25-particle_system"
+    },
+    {
       "path": "scenes/test24-memory_stress"
     },
     {
