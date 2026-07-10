@@ -169,6 +169,28 @@ export function createLabel(text: string, position: Vector3, fontSize: number = 
 }
 
 /**
+ * Creates a 3D text label on the ground facing up
+ */
+export function createFloorLabel(text: string, position: Vector3, fontSize: number = 2): Entity {
+  const label = engine.addEntity()
+
+  Transform.create(label, {
+    position: position,
+    rotation: Quaternion.fromEulerDegrees(90, 0, 0)
+  })
+
+  TextShape.create(label, {
+    text: text,
+    fontSize: fontSize,
+    textColor: Color4.White(),
+    outlineWidth: 0.2,
+    outlineColor: Color3.Black()
+  })
+
+  return label
+}
+
+/**
  * Helper to get key name for an action
  */
 export function getActionKey(action: InputAction): string {
