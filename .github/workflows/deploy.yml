@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      scene:
+        description: 'Scene folder to deploy (e.g. scenes/test01-staircase)'
+        type: string
+        required: true
 
 env:
   DCL_PRIVATE_KEY: ${{ secrets.DCL_PRIVATE_KEY }}
