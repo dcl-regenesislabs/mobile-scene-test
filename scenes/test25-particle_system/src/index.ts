@@ -53,17 +53,21 @@ export function main() {
       Vector3.create(3, 0.15, row1Z),
       3
     )
-    const points: [Quaternion, PBParticleSystem_SimulationSpace][] = [
-      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD],
-      [Quaternion.fromEulerDegrees(0, 45, 0), PBParticleSystem_SimulationSpace.PSS_WORLD],
-      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL],
-      [Quaternion.fromEulerDegrees(0, 45, 0), PBParticleSystem_SimulationSpace.PSS_LOCAL]
+    const points: [Quaternion, PBParticleSystem_SimulationSpace, number][] = [
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_WORLD, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL, 0],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_LOCAL, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, -1],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_WORLD, -1],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL, -1],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_LOCAL, -1]
     ]
     const pointShape: AnyShape = {
       $case: "point",
       point: PBParticleSystem_Point
     }
-    points.forEach(([rotation, simulation], index) => {
+    points.forEach(([rotation, simulation, gravity], index) => {
       let transform: TransformTypeWithOptionals = {
         position: Vector3.create(6 + 4 * index, 1, row1Z),
         rotation
@@ -72,7 +76,8 @@ export function main() {
       createParticleSystem(
         transform,
         pointShape,
-        simulation
+        simulation,
+        gravity
       )
     });
   }
@@ -84,17 +89,21 @@ export function main() {
       Vector3.create(3, 0.15, row2Z),
       3
     )
-    const spheres: [Quaternion, PBParticleSystem_SimulationSpace][] = [
-      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD],
-      [Quaternion.fromEulerDegrees(0, 45, 0), PBParticleSystem_SimulationSpace.PSS_WORLD],
-      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL],
-      [Quaternion.fromEulerDegrees(0, 45, 0), PBParticleSystem_SimulationSpace.PSS_LOCAL]
+    const spheres: [Quaternion, PBParticleSystem_SimulationSpace, number][] = [
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_WORLD, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL, 0],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_LOCAL, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, -1],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_WORLD, -1],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL, -1],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_LOCAL, -1]
     ]
     const sphereShape: AnyShape = {
       $case: "sphere",
       sphere: { radius: 0.5 }
     }
-    spheres.forEach(([rotation, simulation], index) => {
+    spheres.forEach(([rotation, simulation, gravity], index) => {
       let transform: TransformTypeWithOptionals = {
         position: Vector3.create(6 + 4 * index, 1, row2Z),
         rotation
@@ -103,7 +112,8 @@ export function main() {
       createParticleSystem(
         transform,
         sphereShape,
-        simulation
+        simulation,
+        gravity
       )
     });
   }
@@ -115,17 +125,21 @@ export function main() {
       Vector3.create(3, 0.15, row3Z),
       3
     )
-    const boxes: [Quaternion, PBParticleSystem_SimulationSpace][] = [
-      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD],
-      [Quaternion.fromEulerDegrees(0, 45, 0), PBParticleSystem_SimulationSpace.PSS_WORLD],
-      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL],
-      [Quaternion.fromEulerDegrees(0, 45, 0), PBParticleSystem_SimulationSpace.PSS_LOCAL]
+    const boxes: [Quaternion, PBParticleSystem_SimulationSpace, number][] = [
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_WORLD, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL, 0],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_LOCAL, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, -1],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_WORLD, -1],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL, -1],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_LOCAL, -1]
     ]
     const boxShape: AnyShape = {
       $case: "box",
       box: { size: Vector3.create(2, 1, 1) }
     }
-    boxes.forEach(([rotation, simulation], index) => {
+    boxes.forEach(([rotation, simulation, gravity], index) => {
       let transform: TransformTypeWithOptionals = {
         position: Vector3.create(6 + 4 * index, 1, row3Z),
         rotation
@@ -134,7 +148,8 @@ export function main() {
       createParticleSystem(
         transform,
         boxShape,
-        simulation
+        simulation,
+        gravity
       )
     });
   }
@@ -146,17 +161,21 @@ export function main() {
       Vector3.create(3, 0.15, row4Z),
       3
     )
-    const cones: [Quaternion, PBParticleSystem_SimulationSpace][] = [
-      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD],
-      [Quaternion.fromEulerDegrees(0, 45, 0), PBParticleSystem_SimulationSpace.PSS_WORLD],
-      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL],
-      [Quaternion.fromEulerDegrees(0, 45, 0), PBParticleSystem_SimulationSpace.PSS_LOCAL]
+    const cones: [Quaternion, PBParticleSystem_SimulationSpace, number][] = [
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_WORLD, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL, 0],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_LOCAL, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, -1],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_WORLD, -1],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_LOCAL, -1],
+      [Quaternion.fromEulerDegrees(0, 0, 180), PBParticleSystem_SimulationSpace.PSS_LOCAL, -1]
     ]
     const coneShape: AnyShape = {
       $case: "cone",
       cone: { angle: 45, radius: 0.5 }
     }
-    cones.forEach(([rotation, simulation], index) => {
+    cones.forEach(([rotation, simulation, gravity], index) => {
       let transform: TransformTypeWithOptionals = {
         position: Vector3.create(6 + 4 * index, 1, row4Z),
         rotation
@@ -165,7 +184,8 @@ export function main() {
       createParticleSystem(
         transform,
         coneShape,
-        simulation
+        simulation,
+        gravity
       )
     });
   }
@@ -176,7 +196,8 @@ export function main() {
 function createParticleSystem(
   transform: TransformTypeWithOptionals,
   shape: AnyShape,
-  simulationSpace: PBParticleSystem_SimulationSpace
+  simulationSpace: PBParticleSystem_SimulationSpace,
+  gravity: number
 ): Entity {
   const particleSystem = engine.addEntity();
 
@@ -188,7 +209,8 @@ function createParticleSystem(
     lifetime: 2,
     initialSize: { start: 0.1, end: 0.1 },
     simulationSpace,
-    initialColor: { start: color, end: color }
+    initialColor: { start: color, end: color },
+    gravity
   })
 
   let labelTransform = JSON.parse(JSON.stringify(transform.position))
@@ -199,7 +221,7 @@ function createParticleSystem(
   } else {
     simulationSpaceText = "Local"
   }
-  createFloorLabel(`${shape.$case}\n${simulationSpaceText}`, labelTransform)
+  createFloorLabel(`${shape.$case}\n${simulationSpaceText}\nGravity: ${gravity}`, labelTransform)
 
   return particleSystem
 }
