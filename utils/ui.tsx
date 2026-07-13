@@ -29,7 +29,7 @@ const TESTS = [
     { "test": "Test 22", "name": "Skybox Time", "base": [-5, -3] },
     { "test": "Test 23", "name": "Player Physics", "base": [-8, 4] },
     { "test": "Test 24", "name": "Memory Stress", "base": [-10, 4] },
-    { "test": "Test 25", "name": "Particle System", "base": [0, -5] },
+    { "test": "Test 25", "name": "Particle System", "base": [2, -6] },
 
 ]
 

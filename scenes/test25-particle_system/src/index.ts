@@ -1,28 +1,16 @@
 import {
   engine,
   Transform,
-  MeshRenderer,
-  MeshCollider,
-  Material,
-  GltfContainer,
-  TextShape,
-  PointerEvents,
-  PointerEventType,
-  InputAction,
-  inputSystem,
   Entity,
-  TextureWrapMode,
   TransformTypeWithOptionals,
   ParticleSystem,
   PBParticleSystem_Point,
   PBParticleSystem_Sphere,
   PBParticleSystem_Box,
   PBParticleSystem_Cone,
-  PBParticleSystem,
   PBParticleSystem_SimulationSpace
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3, Quaternion } from '@dcl/sdk/math'
-import { ReactEcsRenderer } from '@dcl/sdk/react-ecs';
 import { createPlatform, createFloorLabel } from '../../../utils/helpers'
 import { teleportUi } from '../../../utils/ui';
 
@@ -41,11 +29,11 @@ type AnyShape = {
 }
 
 export function main() {
-  const parcelsX = 2
+  const parcelsX = 3
   const parcelsZ = 3
 
   createPlatform(
-    Vector3.create(16, 0.05, -8),
+    Vector3.create(24, 0.05, -8),
     Vector3.create(16 * parcelsX, 0.1, 16 * parcelsZ),
     Color4.create(0.1, 0.14, 0.1, 1)
   )
