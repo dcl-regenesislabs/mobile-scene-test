@@ -33,9 +33,14 @@ jobs:
             echo "Manual deploy for: ${{ inputs.scene }}"
             CANDIDATES="${{ inputs.scene }}"
           else
+            UTILS=$(git diff --name-only HEAD~1 HEAD | grep '^utils/' | cut -d'/' -f1-2 | sort -u)
             CANDIDATES=$(git diff --name-only HEAD~1 HEAD | grep '^scenes/' | cut -d'/' -f1-2 | sort -u)
           fi
           JSON="[]"
+          if [ -n "${UTILS}" ]; then
+              echo "Change to utils detected, redeploying all scenes"
+              CANDIDATES=$(find . -iname "scene.json" | grep '^./scenes/' | cut -d'/' -f2-3 | sort -u)
+          fi
           for dir in $CANDIDATES; do
             if [ -f "$dir/scene.json" ]; then
               JSON=$(echo "$JSON" | jq -c --arg d "$dir" '. + [$d]')
