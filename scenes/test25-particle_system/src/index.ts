@@ -8,7 +8,9 @@ import {
   PBParticleSystem_Sphere,
   PBParticleSystem_Box,
   PBParticleSystem_Cone,
-  PBParticleSystem_SimulationSpace
+  PBParticleSystem_SimulationSpace,
+  MeshRenderer,
+  Material
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3, Quaternion } from '@dcl/sdk/math'
 import { createPlatform, createFloorLabel } from '../../../utils/helpers'
@@ -242,6 +244,39 @@ function createParticleSystem(
     initialColor: { start: color, end: color },
     gravity
   })
+  if (shape.$case == "point") {
+    const mesh = engine.addEntity()
+    Transform.create(mesh, { scale: Vector3.create(0.1, 0.1, 0.1), parent: particleSystem });
+    MeshRenderer.setSphere(mesh)
+    Material.setPbrMaterial(mesh, {
+      albedoColor: Color4.create(1, 1, 1, 0.125)
+    })
+  } else if (shape.$case == "sphere") {
+    const mesh = engine.addEntity()
+    Transform.create(mesh, { scale: Vector3.create(shape.sphere.radius, shape.sphere.radius, shape.sphere.radius), parent: particleSystem });
+    MeshRenderer.setSphere(mesh)
+    Material.setPbrMaterial(mesh, {
+      albedoColor: Color4.create(1, 1, 1, 0.125)
+    })
+  } else if (shape.$case == "box") {
+    const mesh = engine.addEntity()
+    Transform.create(mesh, { scale: Vector3.create(shape.box.size?.x, shape.box.size?.y, shape.box.size?.z), parent: particleSystem });
+    MeshRenderer.setBox(mesh)
+    Material.setPbrMaterial(mesh, {
+      albedoColor: Color4.create(1, 1, 1, 0.125)
+    })
+  } else if (shape.$case == "cone") {
+    const mesh = engine.addEntity()
+    Transform.create(mesh, {
+      rotation: Quaternion.fromEulerDegrees(90, 0, 0),
+      scale: Vector3.create(shape.cone.radius, 1 / 256, shape.cone.radius),
+      parent: particleSystem
+    });
+    MeshRenderer.setCylinder(mesh)
+    Material.setPbrMaterial(mesh, {
+      albedoColor: Color4.create(1, 1, 1, 0.125)
+    })
+  }
 
   let labelTransform = JSON.parse(JSON.stringify(transform.position))
   labelTransform.y = 0.15
