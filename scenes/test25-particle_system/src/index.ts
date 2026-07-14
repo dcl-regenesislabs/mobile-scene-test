@@ -221,7 +221,15 @@ function createParticleSystem(
   } else {
     simulationSpaceText = "Local"
   }
-  createFloorLabel(`${shape.$case}\n${simulationSpaceText}\nGravity: ${gravity}`, labelTransform)
+  let rotationText;
+  if (!transform.rotation) {
+    rotationText = "Undefined"
+  } else if (Quaternion.dot(transform.rotation, Quaternion.Identity()) >= 1.) {
+    rotationText = "Identity"
+  } else {
+    rotationText = "Rotated"
+  }
+  createFloorLabel(`${shape.$case}\n${simulationSpaceText}\nRotation: ${rotationText}\nGravity: ${gravity}`, labelTransform)
 
   return particleSystem
 }
