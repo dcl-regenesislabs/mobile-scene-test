@@ -209,7 +209,7 @@ export function main() {
     }
     cones.forEach(([rotation, simulation, gravity], index) => {
       let transform: TransformTypeWithOptionals = {
-        position: Vector3.create(6 + 8 * index, 1, row5Z),
+        position: Vector3.create(10 + 8 * index, 1, row5Z),
         rotation
       }
 
