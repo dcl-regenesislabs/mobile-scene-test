@@ -222,6 +222,41 @@ export function main() {
     });
   }
 
+  const row6Z = row5Z - 8
+  {
+    createFloorLabel(
+      'Row 6: Cones Angles',
+      Vector3.create(3, 0.15, row6Z),
+      3
+    )
+    const cones: [Quaternion, PBParticleSystem_SimulationSpace, number][] = [
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 15],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 30],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 45],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 60],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 90],
+    ]
+    cones.forEach(([rotation, simulation, angle], index) => {
+      const coneShape: AnyShape = {
+        $case: "cone",
+        cone: { angle: angle, radius: 0.5 }
+      }
+      let transform: TransformTypeWithOptionals = {
+        position: Vector3.create(6 + 4 * index, 1, row6Z),
+        rotation
+      }
+
+      createParticleSystem(
+        transform,
+        coneShape,
+        simulation,
+        0,
+        `Angle: ${angle}`
+      )
+    });
+  }
+
   console.log('Test 25: Particle systems initialized')
 }
 
@@ -229,7 +264,8 @@ function createParticleSystem(
   transform: TransformTypeWithOptionals,
   shape: AnyShape,
   simulationSpace: PBParticleSystem_SimulationSpace,
-  gravity: number
+  gravity: number,
+  label: string | undefined = undefined
 ): Entity {
   const particleSystem = engine.addEntity();
 
@@ -268,21 +304,24 @@ function createParticleSystem(
 
   let labelTransform = JSON.parse(JSON.stringify(transform.position))
   labelTransform.y = 0.15
-  let simulationSpaceText;
-  if (simulationSpace == PBParticleSystem_SimulationSpace.PSS_WORLD) {
-    simulationSpaceText = "World"
-  } else {
-    simulationSpaceText = "Local"
+  if (!label) {
+    let simulationSpaceText;
+    if (simulationSpace == PBParticleSystem_SimulationSpace.PSS_WORLD) {
+      simulationSpaceText = "World"
+    } else {
+      simulationSpaceText = "Local"
+    }
+    let rotationText;
+    if (!transform.rotation) {
+      rotationText = "Undefined"
+    } else if (Quaternion.dot(transform.rotation, Quaternion.Identity()) >= 1.) {
+      rotationText = "Identity"
+    } else {
+      rotationText = "Rotated"
+    }
+    label = `${shape.$case}\n${simulationSpaceText}\nRotation: ${rotationText}\nGravity: ${gravity}`;
   }
-  let rotationText;
-  if (!transform.rotation) {
-    rotationText = "Undefined"
-  } else if (Quaternion.dot(transform.rotation, Quaternion.Identity()) >= 1.) {
-    rotationText = "Identity"
-  } else {
-    rotationText = "Rotated"
-  }
-  createFloorLabel(`${shape.$case}\n${simulationSpaceText}\nRotation: ${rotationText}\nGravity: ${gravity}`, labelTransform)
+  createFloorLabel(label, labelTransform)
 
   return particleSystem
 }
