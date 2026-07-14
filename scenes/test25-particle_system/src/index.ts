@@ -190,6 +190,36 @@ export function main() {
     });
   }
 
+  const row5Z = row4Z - 8
+  {
+    createFloorLabel(
+      'Row 5: Huge Cones',
+      Vector3.create(3, 0.15, row5Z),
+      3
+    )
+    const cones: [Quaternion, PBParticleSystem_SimulationSpace, number][] = [
+      [Quaternion.fromEulerDegrees(90, 0, 0), PBParticleSystem_SimulationSpace.PSS_WORLD, 0],
+      [Quaternion.fromEulerDegrees(90, 0, 0), PBParticleSystem_SimulationSpace.PSS_LOCAL, 0],
+    ]
+    const coneShape: AnyShape = {
+      $case: "cone",
+      cone: { angle: 45, radius: 3 }
+    }
+    cones.forEach(([rotation, simulation, gravity], index) => {
+      let transform: TransformTypeWithOptionals = {
+        position: Vector3.create(6 + 8 * index, 1, row5Z),
+        rotation
+      }
+
+      createParticleSystem(
+        transform,
+        coneShape,
+        simulation,
+        gravity
+      )
+    });
+  }
+
   console.log('Test 25: Particle systems initialized')
 }
 
