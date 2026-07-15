@@ -10,7 +10,8 @@ import {
   PBParticleSystem_Cone,
   PBParticleSystem_SimulationSpace,
   MeshRenderer,
-  Material
+  Material,
+  PBParticleSystem
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3, Quaternion } from '@dcl/sdk/math'
 import { createPlatform, createFloorLabel } from '../../../utils/helpers'
@@ -69,17 +70,23 @@ export function main() {
       $case: "point",
       point: PBParticleSystem_Point
     }
-    points.forEach(([rotation, simulation, gravity], index) => {
+    points.forEach(([rotation, simulationSpace, gravity], index) => {
       let transform: TransformTypeWithOptionals = {
         position: Vector3.create(6 + 4 * index, 1, row1Z),
         rotation
       }
+      const color = Color4.fromColor3(Color3.Random())
 
       createParticleSystem(
         transform,
-        pointShape,
-        simulation,
-        gravity
+        {
+          shape: pointShape,
+          lifetime: 2,
+          initialSize: { start: 0.1, end: 0.1 },
+          simulationSpace,
+          initialColor: { start: color, end: color },
+          gravity
+        },
       )
     });
   }
@@ -105,17 +112,23 @@ export function main() {
       $case: "sphere",
       sphere: { radius: 0.5 }
     }
-    spheres.forEach(([rotation, simulation, gravity], index) => {
+    spheres.forEach(([rotation, simulationSpace, gravity], index) => {
       let transform: TransformTypeWithOptionals = {
         position: Vector3.create(6 + 4 * index, 1, row2Z),
         rotation
       }
+      const color = Color4.fromColor3(Color3.Random())
 
       createParticleSystem(
         transform,
-        sphereShape,
-        simulation,
-        gravity
+        {
+          shape: sphereShape,
+          lifetime: 2,
+          initialSize: { start: 0.1, end: 0.1 },
+          simulationSpace,
+          initialColor: { start: color, end: color },
+          gravity
+        },
       )
     });
   }
@@ -141,17 +154,23 @@ export function main() {
       $case: "box",
       box: { size: Vector3.create(2, 1, 1) }
     }
-    boxes.forEach(([rotation, simulation, gravity], index) => {
+    boxes.forEach(([rotation, simulationSpace, gravity], index) => {
       let transform: TransformTypeWithOptionals = {
         position: Vector3.create(6 + 4 * index, 1, row3Z),
         rotation
       }
+      const color = Color4.fromColor3(Color3.Random())
 
       createParticleSystem(
         transform,
-        boxShape,
-        simulation,
-        gravity
+        {
+          shape: boxShape,
+          lifetime: 2,
+          initialSize: { start: 0.1, end: 0.1 },
+          simulationSpace,
+          initialColor: { start: color, end: color },
+          gravity
+        },
       )
     });
   }
@@ -177,17 +196,23 @@ export function main() {
       $case: "cone",
       cone: { angle: 45, radius: 0.5 }
     }
-    cones.forEach(([rotation, simulation, gravity], index) => {
+    cones.forEach(([rotation, simulationSpace, gravity], index) => {
       let transform: TransformTypeWithOptionals = {
         position: Vector3.create(6 + 4 * index, 1, row4Z),
         rotation
       }
+      const color = Color4.fromColor3(Color3.Random())
 
       createParticleSystem(
         transform,
-        coneShape,
-        simulation,
-        gravity
+        {
+          shape: coneShape,
+          lifetime: 2,
+          initialSize: { start: 0.1, end: 0.1 },
+          simulationSpace,
+          initialColor: { start: color, end: color },
+          gravity
+        },
       )
     });
   }
@@ -207,17 +232,23 @@ export function main() {
       $case: "cone",
       cone: { angle: 45, radius: 3 }
     }
-    cones.forEach(([rotation, simulation, gravity], index) => {
+    cones.forEach(([rotation, simulationSpace, gravity], index) => {
       let transform: TransformTypeWithOptionals = {
         position: Vector3.create(10 + 8 * index, 1, row5Z),
         rotation
       }
+      const color = Color4.fromColor3(Color3.Random())
 
       createParticleSystem(
         transform,
-        coneShape,
-        simulation,
-        gravity
+        {
+          shape: coneShape,
+          lifetime: 2,
+          initialSize: { start: 0.1, end: 0.1 },
+          simulationSpace,
+          initialColor: { start: color, end: color },
+          gravity
+        },
       )
     });
   }
@@ -237,7 +268,7 @@ export function main() {
       [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 60],
       [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 90],
     ]
-    cones.forEach(([rotation, simulation, angle], index) => {
+    cones.forEach(([rotation, simulationSpace, angle], index) => {
       const coneShape: AnyShape = {
         $case: "cone",
         cone: { angle: angle, radius: 0.5 }
@@ -246,12 +277,18 @@ export function main() {
         position: Vector3.create(6 + 4 * index, 1, row6Z),
         rotation
       }
+      const color = Color4.fromColor3(Color3.Random())
 
       createParticleSystem(
         transform,
-        coneShape,
-        simulation,
-        0,
+        {
+          shape: coneShape,
+          lifetime: 2,
+          initialSize: { start: 0.1, end: 0.1 },
+          simulationSpace,
+          initialColor: { start: color, end: color },
+          gravity: 0
+        },
         `Angle: ${angle}`
       )
     });
@@ -262,38 +299,34 @@ export function main() {
 
 function createParticleSystem(
   transform: TransformTypeWithOptionals,
-  shape: AnyShape,
-  simulationSpace: PBParticleSystem_SimulationSpace,
-  gravity: number,
+  particle: PBParticleSystem,
   label: string | undefined = undefined
 ): Entity {
   const particleSystem = engine.addEntity();
 
-  const color = Color4.fromColor3(Color3.Random())
+  if (!particle.shape) {
+    particle.shape = ParticleSystem.Shape.Point()
+  }
+  if (!particle.shape) {
+    return particleSystem
+  }
 
   Transform.create(particleSystem, transform)
-  ParticleSystem.create(particleSystem, {
-    shape,
-    lifetime: 2,
-    initialSize: { start: 0.1, end: 0.1 },
-    simulationSpace,
-    initialColor: { start: color, end: color },
-    gravity
-  })
+  ParticleSystem.create(particleSystem, particle)
   const mesh = engine.addEntity()
-  if (shape.$case == "point") {
+  if (particle.shape.$case == "point") {
     Transform.create(mesh, { scale: Vector3.create(0.1, 0.1, 0.1), parent: particleSystem });
     MeshRenderer.setSphere(mesh)
-  } else if (shape.$case == "sphere") {
-    Transform.create(mesh, { scale: Vector3.create(shape.sphere.radius, shape.sphere.radius, shape.sphere.radius), parent: particleSystem });
+  } else if (particle.shape.$case == "sphere") {
+    Transform.create(mesh, { scale: Vector3.create(particle.shape.sphere.radius, particle.shape.sphere.radius, particle.shape.sphere.radius), parent: particleSystem });
     MeshRenderer.setSphere(mesh)
-  } else if (shape.$case == "box") {
-    Transform.create(mesh, { scale: Vector3.create(shape.box.size?.x, shape.box.size?.y, shape.box.size?.z), parent: particleSystem });
+  } else if (particle.shape.$case == "box") {
+    Transform.create(mesh, { scale: Vector3.create(particle.shape.box.size?.x, particle.shape.box.size?.y, particle.shape.box.size?.z), parent: particleSystem });
     MeshRenderer.setBox(mesh)
-  } else if (shape.$case == "cone") {
+  } else if (particle.shape.$case == "cone") {
     Transform.create(mesh, {
       rotation: Quaternion.fromEulerDegrees(90, 0, 0),
-      scale: Vector3.create(shape.cone.radius, 1 / 256, shape.cone.radius),
+      scale: Vector3.create(particle.shape.cone.radius, 1 / 256, particle.shape.cone.radius),
       parent: particleSystem
     });
     MeshRenderer.setCylinder(mesh)
@@ -306,7 +339,7 @@ function createParticleSystem(
   labelTransform.y = 0.15
   if (!label) {
     let simulationSpaceText;
-    if (simulationSpace == PBParticleSystem_SimulationSpace.PSS_WORLD) {
+    if (particle.simulationSpace == PBParticleSystem_SimulationSpace.PSS_WORLD) {
       simulationSpaceText = "World"
     } else {
       simulationSpaceText = "Local"
@@ -319,7 +352,7 @@ function createParticleSystem(
     } else {
       rotationText = "Rotated"
     }
-    label = `${shape.$case}\n${simulationSpaceText}\nRotation: ${rotationText}\nGravity: ${gravity}`;
+    label = `${particle.shape.$case}\n${simulationSpaceText}\nRotation: ${rotationText}\nGravity: ${particle.gravity}`;
   }
   createFloorLabel(label, labelTransform)
 
