@@ -468,8 +468,7 @@ export function main() {
           initialColor: { start: color, end: color },
           gravity: 0,
           rotationOverTime: Quaternion.fromEulerDegrees(x, y, z),
-          billboard: false,
-          faceTravelDirection: true
+          billboard: false
         },
         `Rotation: (${x}, ${y}, ${z})`
       )
