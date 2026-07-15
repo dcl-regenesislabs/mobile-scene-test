@@ -388,7 +388,7 @@ export function main() {
   {
     createFloorLabel(
       'Row 9: Initial Rotation\nFace Travel Direction ON',
-      Vector3.create(3, 0.15, row8Z),
+      Vector3.create(3, 0.15, row9Z),
       3
     )
     const cones: [Quaternion, PBParticleSystem_SimulationSpace, number, number, number][] = [
