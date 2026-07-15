@@ -384,6 +384,52 @@ export function main() {
     });
   }
 
+  const row9Z = row8Z - 4
+  {
+    createFloorLabel(
+      'Row 9: Initial Rotation\nFace Travel Direction ON',
+      Vector3.create(3, 0.15, row8Z),
+      3
+    )
+    const cones: [Quaternion, PBParticleSystem_SimulationSpace, number, number, number][] = [
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0, 0, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 30, 0, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 45, 0, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0, 30, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0, 45, 0],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0, 0, 30],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0, 0, 45],
+      [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 45, 45, 45],
+    ]
+    cones.forEach(([rotation, simulationSpace, x, y, z], index) => {
+      const boxShape: AnyShape = {
+        $case: "box",
+        box: { size: Vector3.create(4, 2, 2) }
+      }
+      let transform: TransformTypeWithOptionals = {
+        position: Vector3.create(6 + 4 * index, 1, row9Z),
+        rotation
+      }
+      const color = Color4.fromColor3(Color3.Random())
+
+      createParticleSystem(
+        transform,
+        {
+          shape: boxShape,
+          lifetime: 2,
+          initialSize: { start: 0.1, end: 0.1 },
+          simulationSpace,
+          initialColor: { start: color, end: color },
+          gravity: 0,
+          initialRotation: Quaternion.fromEulerDegrees(x, y, z),
+          billboard: false,
+          faceTravelDirection: true
+        },
+        `Rotation: (${x}, ${y}, ${z})`
+      )
+    });
+  }
+
   console.log('Test 25: Particle systems initialized')
 }
 
