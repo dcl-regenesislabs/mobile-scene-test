@@ -11,7 +11,8 @@ import {
   PBParticleSystem_SimulationSpace,
   MeshRenderer,
   Material,
-  PBParticleSystem
+  PBParticleSystem,
+  PBParticleSystem_Burst
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3, Quaternion } from '@dcl/sdk/math'
 import { createPlatform, createFloorLabel } from '../../../utils/helpers'
@@ -486,78 +487,58 @@ export function main() {
       $case: "box",
       box: { size: Vector3.create(4, 2, 2) }
     }
-    const boxes: [PBParticleSystem, string][] = [
+    const boxes: [PBParticleSystem_Burst, string][] = [
       [
         {
-          shape: boxShape,
-          lifetime: 2,
-          initialSize: { start: 0.1, end: 0.1 },
-          simulationSpace: PBParticleSystem_SimulationSpace.PSS_WORLD,
-          gravity: 0,
-          billboard: true,
-          bursts: {
-            values: [
-              {
-                time: 0.,
-                count: 500,
-                interval: Number.NaN
-              }
-            ]
-          }
+          time: 0.,
+          count: 25,
+          cycles: 10,
+          interval: Number.NaN
         },
         "NaN intervals"
       ],
       [
         {
-          shape: boxShape,
-          lifetime: 2,
-          initialSize: { start: 0.1, end: 0.1 },
-          simulationSpace: PBParticleSystem_SimulationSpace.PSS_WORLD,
-          gravity: 0,
-          billboard: true,
-          bursts: {
-            values: [
-              {
-                time: 0.,
-                count: 500,
-                interval: Number.POSITIVE_INFINITY
-              }
-            ]
-          }
+          time: 0.,
+          count: 25,
+          cycles: 10,
+          interval: Number.POSITIVE_INFINITY
         },
         "+Infinite intervals"
       ],
       [
         {
+          time: 0.,
+          count: 25,
+          cycles: 10,
+          interval: Number.NEGATIVE_INFINITY
+        },
+        "-Infinite intervals"
+      ],
+    ]
+    boxes.forEach(([burst, label], index) => {
+      let transform: TransformTypeWithOptionals = {
+        position: Vector3.create(6 + 4 * index, 1, row11Z),
+      }
+      const color = Color4.fromColor3(Color3.Random())
+
+      createParticleSystem(
+        transform,
+        {
           shape: boxShape,
+          rate: 0,
           lifetime: 2,
+          initialColor: { start: color, end: color },
           initialSize: { start: 0.1, end: 0.1 },
           simulationSpace: PBParticleSystem_SimulationSpace.PSS_WORLD,
           gravity: 0,
           billboard: true,
           bursts: {
             values: [
-              {
-                time: 0.,
-                count: 500,
-                interval: Number.NEGATIVE_INFINITY
-              }
+              burst
             ]
           }
         },
-        "-Infinite intervals"
-      ],
-    ]
-    boxes.forEach(([particleSystem, label], index) => {
-      let transform: TransformTypeWithOptionals = {
-        position: Vector3.create(6 + 4 * index, 1, row11Z),
-      }
-      const color = Color4.fromColor3(Color3.Random())
-      particleSystem.initialColor = { start: color, end: color }
-
-      createParticleSystem(
-        transform,
-        particleSystem,
         label
       )
     });
