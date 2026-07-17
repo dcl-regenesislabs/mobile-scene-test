@@ -475,6 +475,94 @@ export function main() {
     });
   }
 
+  const row11Z = row10Z - 4
+  {
+    createFloorLabel(
+      'Row 11: Weird Values',
+      Vector3.create(3, 0.15, row11Z),
+      3
+    )
+    const boxShape: AnyShape = {
+      $case: "box",
+      box: { size: Vector3.create(4, 2, 2) }
+    }
+    const boxes: [PBParticleSystem, string][] = [
+      [
+        {
+          shape: boxShape,
+          lifetime: 2,
+          initialSize: { start: 0.1, end: 0.1 },
+          simulationSpace: PBParticleSystem_SimulationSpace.PSS_WORLD,
+          gravity: 0,
+          billboard: true,
+          bursts: {
+            values: [
+              {
+                time: 0.,
+                count: 500,
+                interval: Number.NaN
+              }
+            ]
+          }
+        },
+        "NaN intervals"
+      ],
+      [
+        {
+          shape: boxShape,
+          lifetime: 2,
+          initialSize: { start: 0.1, end: 0.1 },
+          simulationSpace: PBParticleSystem_SimulationSpace.PSS_WORLD,
+          gravity: 0,
+          billboard: true,
+          bursts: {
+            values: [
+              {
+                time: 0.,
+                count: 500,
+                interval: Number.POSITIVE_INFINITY
+              }
+            ]
+          }
+        },
+        "+Infinite intervals"
+      ],
+      [
+        {
+          shape: boxShape,
+          lifetime: 2,
+          initialSize: { start: 0.1, end: 0.1 },
+          simulationSpace: PBParticleSystem_SimulationSpace.PSS_WORLD,
+          gravity: 0,
+          billboard: true,
+          bursts: {
+            values: [
+              {
+                time: 0.,
+                count: 500,
+                interval: Number.NEGATIVE_INFINITY
+              }
+            ]
+          }
+        },
+        "-Infinite intervals"
+      ],
+    ]
+    boxes.forEach(([particleSystem, label], index) => {
+      let transform: TransformTypeWithOptionals = {
+        position: Vector3.create(6 + 4 * index, 1, row11Z),
+      }
+      const color = Color4.fromColor3(Color3.Random())
+      particleSystem.initialColor = { start: color, end: color }
+
+      createParticleSystem(
+        transform,
+        particleSystem,
+        label
+      )
+    });
+  }
+
   console.log('Test 25: Particle systems initialized')
 }
 
