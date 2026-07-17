@@ -495,7 +495,7 @@ export function main() {
           cycles: 10,
           interval: Number.NaN
         },
-        "NaN intervals"
+        "Burst with\nNaN intervals"
       ],
       [
         {
@@ -504,7 +504,7 @@ export function main() {
           cycles: 10,
           interval: Number.POSITIVE_INFINITY
         },
-        "+Infinite intervals"
+        "Burst with\n+Infinite intervals"
       ],
       [
         {
@@ -513,7 +513,7 @@ export function main() {
           cycles: 10,
           interval: Number.NEGATIVE_INFINITY
         },
-        "-Infinite intervals"
+        "Burst with\n-Infinite intervals"
       ],
     ]
     boxes.forEach(([burst, label], index) => {
