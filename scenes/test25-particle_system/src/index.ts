@@ -544,6 +544,77 @@ export function main() {
     });
   }
 
+  const row12Z = row11Z - 4
+  {
+    createFloorLabel(
+      'Row 12: Additional Force',
+      Vector3.create(3, 0.15, row12Z),
+      3
+    )
+    const boxShape: AnyShape = {
+      $case: "box",
+      box: { size: Vector3.create(4, 2, 2) }
+    }
+    const boxes: [Vector3, PBParticleSystem_SimulationSpace][] = [
+      [
+        Vector3.create(1, 0, 0),
+        PBParticleSystem_SimulationSpace.PSS_WORLD
+      ],
+      [
+        Vector3.create(1, 0, 0),
+        PBParticleSystem_SimulationSpace.PSS_LOCAL
+      ],
+      [
+        Vector3.create(0, 1, 0),
+        PBParticleSystem_SimulationSpace.PSS_WORLD
+      ],
+      [
+        Vector3.create(0, 1, 0),
+        PBParticleSystem_SimulationSpace.PSS_LOCAL
+      ],
+      [
+        Vector3.create(0, 0, 1),
+        PBParticleSystem_SimulationSpace.PSS_WORLD
+      ],
+      [
+        Vector3.create(0, 0, 1),
+        PBParticleSystem_SimulationSpace.PSS_LOCAL
+      ],
+    ]
+    boxes.forEach(([additionalForce, simulationSpace], index) => {
+      let transform: TransformTypeWithOptionals = {
+        position: Vector3.create(6 + 4 * index, 1, row12Z),
+        rotation: Quaternion.fromEulerDegrees(90, 0, 0)
+      }
+      const color = Color4.fromColor3(Color3.Random())
+
+      let simulationSpaceText;
+      if (simulationSpace == PBParticleSystem_SimulationSpace.PSS_WORLD) {
+        simulationSpaceText = "World"
+      } else {
+        simulationSpaceText = "Local"
+      }
+
+      createParticleSystem(
+        transform,
+        {
+          shape: boxShape,
+          rate: 10,
+          lifetime: 2,
+          maxParticles: 300,
+          initialColor: { start: color, end: color },
+          initialSize: { start: 0.1, end: 0.1 },
+          initialVelocitySpeed: { start: 0, end: 0 },
+          simulationSpace,
+          additionalForce,
+          gravity: 0,
+          billboard: true,
+        },
+        `Aditional Force: ${JSON.stringify(additionalForce)}\n${simulationSpaceText}`
+      )
+    });
+  }
+
   console.log('Test 25: Particle systems initialized')
 }
 
