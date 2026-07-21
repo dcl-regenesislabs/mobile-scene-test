@@ -344,7 +344,7 @@ function row7(z: number) {
     [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0, 0, 45],
     [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 45, 45, 45],
   ]
-  cones.forEach(([rotation, simulationSpace, x, y, z], index) => {
+  cones.forEach(([rotation, simulationSpace, rx, ry, rz], index) => {
     const boxShape: AnyShape = {
       $case: "box",
       box: { size: Vector3.create(4, 2, 2) }
@@ -364,10 +364,10 @@ function row7(z: number) {
         simulationSpace,
         initialColor: { start: color, end: color },
         gravity: 0,
-        initialRotation: Quaternion.fromEulerDegrees(x, y, z),
+        initialRotation: Quaternion.fromEulerDegrees(rx, ry, rz),
         billboard: false
       },
-      `Rotation: (${x}, ${y}, ${z})`
+      `Rotation: (${rx}, ${ry}, ${rz})`
     )
   });
 }
@@ -388,7 +388,7 @@ function row8(z: number) {
     [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0, 0, 45],
     [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 45, 45, 45],
   ]
-  cones.forEach(([rotation, simulationSpace, x, y, z], index) => {
+  cones.forEach(([rotation, simulationSpace, rx, ry, rz], index) => {
     const boxShape: AnyShape = {
       $case: "box",
       box: { size: Vector3.create(4, 2, 2) }
@@ -408,10 +408,10 @@ function row8(z: number) {
         simulationSpace,
         initialColor: { start: color, end: color },
         gravity: 0,
-        initialRotation: Quaternion.fromEulerDegrees(x, y, z),
+        initialRotation: Quaternion.fromEulerDegrees(rx, ry, rz),
         billboard: true
       },
-      `Rotation: (${x}, ${y}, ${z})`
+      `Rotation: (${rx}, ${ry}, ${rz})`
     )
   });
 }
@@ -432,7 +432,7 @@ function row9(z: number) {
     [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0, 0, 45],
     [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 45, 45, 45],
   ]
-  cones.forEach(([rotation, simulationSpace, x, y, z], index) => {
+  cones.forEach(([rotation, simulationSpace, rx, ry, rz], index) => {
     const boxShape: AnyShape = {
       $case: "box",
       box: { size: Vector3.create(4, 2, 2) }
@@ -452,11 +452,11 @@ function row9(z: number) {
         simulationSpace,
         initialColor: { start: color, end: color },
         gravity: 0,
-        initialRotation: Quaternion.fromEulerDegrees(x, y, z),
+        initialRotation: Quaternion.fromEulerDegrees(rx, ry, rz),
         billboard: false,
         faceTravelDirection: true
       },
-      `Rotation: (${x}, ${y}, ${z})`
+      `Rotation: (${rx}, ${ry}, ${rz})`
     )
   });
 }
@@ -477,7 +477,7 @@ function row10(z: number) {
     [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 0, 0, 45],
     [Quaternion.Identity(), PBParticleSystem_SimulationSpace.PSS_WORLD, 45, 45, 45],
   ]
-  cones.forEach(([rotation, simulationSpace, x, y, z], index) => {
+  cones.forEach(([rotation, simulationSpace, rx, ry, rz], index) => {
     const boxShape: AnyShape = {
       $case: "box",
       box: { size: Vector3.create(4, 2, 2) }
@@ -497,10 +497,10 @@ function row10(z: number) {
         simulationSpace,
         initialColor: { start: color, end: color },
         gravity: 0,
-        rotationOverTime: Quaternion.fromEulerDegrees(x, y, z),
+        rotationOverTime: Quaternion.fromEulerDegrees(rx, ry, rz),
         billboard: false
       },
-      `Rotation: (${x}, ${y}, ${z})`
+      `Rotation: (${rx}, ${ry}, ${rz})`
     )
   });
 }
