@@ -12,7 +12,8 @@ import {
   MeshRenderer,
   Material,
   PBParticleSystem,
-  PBParticleSystem_Burst
+  PBParticleSystem_Burst,
+  PBParticleSystem_BurstConfiguration
 } from '@dcl/sdk/ecs'
 import { Vector3, Color4, Color3, Quaternion } from '@dcl/sdk/math'
 import { createPlatform, createFloorLabel } from '../../../utils/helpers'
@@ -85,6 +86,9 @@ export function main() {
 
   const row12Z = row11Z - 4
   row12(row12Z)
+
+  const row13Z = row12Z - 4
+  row13(row13Z)
 
   console.log('Test 25: Particle systems initialized')
 }
@@ -638,6 +642,72 @@ function row12(z: number) {
         billboard: true,
       },
       `Aditional Force: ${JSON.stringify(additionalForce)}\n${simulationSpaceText}`
+    )
+  });
+}
+
+function row13(z: number) {
+  createFloorLabel(
+    'Row 13: Bursts',
+    Vector3.create(3, 0.15, z),
+    3
+  )
+  const coneShape: AnyShape = {
+    $case: "cone",
+    cone: { radius: 0.5, angle: 0 }
+  }
+  const cones: [PBParticleSystem_BurstConfiguration][] = [
+    [
+      {
+        values: [{ time: 0, count: 100 }]
+      }
+    ],
+    [
+      {
+        values: [{ time: 0, count: 100 }, { time: 5, count: 1000 }]
+      }
+    ],
+    [
+      {
+        values: [{ time: 0, count: 100 }, { time: 10, count: 1000 }]
+      }
+    ],
+    [
+      {
+        values: [{ time: 0, count: 100 }, { time: 15, count: 1000 }]
+      }
+    ],
+  ]
+  cones.forEach(([bursts], index) => {
+    let transform: TransformTypeWithOptionals = {
+      position: Vector3.create(6 + 4 * index, 1, z),
+      rotation: Quaternion.fromEulerDegrees(90, 0, 0)
+    }
+    const color = Color4.fromColor3(Color3.Random())
+
+    let label = ""
+    bursts.values.forEach((element, index) => {
+      if (index != 0) {
+        label += `\n`
+      }
+      label += `Time: ${element.time}`
+    });
+
+    createParticleSystem(
+      transform,
+      {
+        shape: coneShape,
+        rate: 0,
+        lifetime: 2,
+        maxParticles: 1000,
+        initialColor: { start: color, end: color },
+        initialSize: { start: 0.1, end: 0.1 },
+        initialVelocitySpeed: { start: 0, end: 0 },
+        gravity: 0,
+        billboard: true,
+        bursts
+      },
+      label
     )
   });
 }
