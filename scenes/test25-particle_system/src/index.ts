@@ -677,6 +677,11 @@ function row13(z: number) {
         values: [{ time: 0, count: 100 }, { time: 15, count: 1000 }]
       }
     ],
+    [
+      {
+        values: [{ time: 0, count: 100 }, { time: 5, count: 400 }, { time: 10, count: 600 }, { time: 15, count: 1000 }]
+      }
+    ],
   ]
   cones.forEach(([bursts], index) => {
     let transform: TransformTypeWithOptionals = {
