@@ -657,36 +657,31 @@ function row13(z: number) {
     cone: { radius: 0.5, angle: 0 }
   }
   const cones: [PBParticleSystem_BurstConfiguration][] = [
-    [
-      {
-        values: [{ time: 0, count: 100 }]
-      }
-    ],
-    [
-      {
-        values: [{ time: 0, count: 100 }, { time: 5, count: 1000 }]
-      }
-    ],
-    [
-      {
-        values: [{ time: 0, count: 100 }, { time: 10, count: 1000 }]
-      }
-    ],
-    [
-      {
-        values: [{ time: 0, count: 100 }, { time: 15, count: 1000 }]
-      }
-    ],
-    [
-      {
-        values: [{ time: 0, count: 100 }, { time: 5, count: 400 }, { time: 10, count: 600 }, { time: 15, count: 1000 }]
-      }
-    ],
+    [{
+      values: [{ time: 0, count: 10, cycles: 2, interval: 0.5 }]
+    }],
+    [{
+      values: [{ time: 0, count: 10, cycles: 2, interval: 0.5 }, { time: 5, count: 50, cycles: 2, interval: 0.5 }]
+    }],
+    [{
+      values: [{ time: 0, count: 10, cycles: 2, interval: 0.5 }, { time: 10, count: 50, cycles: 2, interval: 0.5 }]
+    }],
+    [{
+      values: [{ time: 0, count: 10, cycles: 2, interval: 0.5 }, { time: 15, count: 50, cycles: 2, interval: 0.5 }]
+    }],
+    [{
+      values: [
+        { time: 0, count: 10, cycles: 2, interval: 0.5 },
+        { time: 5, count: 50, cycles: 2, interval: 0.5 },
+        { time: 10, count: 100, cycles: 2, interval: 0.5 },
+        { time: 15, count: 500, cycles: 2, interval: 0.5 }
+      ]
+    }],
   ]
   cones.forEach(([bursts], index) => {
     let transform: TransformTypeWithOptionals = {
       position: Vector3.create(6 + 4 * index, 1, z),
-      rotation: Quaternion.fromEulerDegrees(90, 0, 0)
+      rotation: Quaternion.fromEulerDegrees(-90, 0, 0)
     }
     const color = Color4.fromColor3(Color3.Random())
 
@@ -707,7 +702,7 @@ function row13(z: number) {
         maxParticles: 1000,
         initialColor: { start: color, end: color },
         initialSize: { start: 0.1, end: 0.1 },
-        initialVelocitySpeed: { start: 0, end: 0 },
+        initialVelocitySpeed: { start: 1, end: 1 },
         gravity: 0,
         billboard: true,
         bursts
