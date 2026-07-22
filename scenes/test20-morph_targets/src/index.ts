@@ -34,7 +34,8 @@ export function main() {
   // AnimatedCubeMorph
   const cubeMorph = engine.addEntity()
   Transform.create(cubeMorph, {
-    position: Vector3.create(baseX - 6, yPos, baseZ),
+    // Mesh is not on origin of glb
+    position: Vector3.create(baseX - 6 - 30, yPos, baseZ - 17.5),
     scale: Vector3.create(1.5, 1.5, 1.5)
   })
   GltfContainer.create(cubeMorph, { src: 'assets/models/animated/AnimatedCubeMorph.glb' })
@@ -43,7 +44,8 @@ export function main() {
   // AnimatedSphereMorph
   const sphereMorph = engine.addEntity()
   Transform.create(sphereMorph, {
-    position: Vector3.create(baseX + 6, yPos, baseZ),
+    // Mesh is not on origin of glb
+    position: Vector3.create(baseX + 6 - 26, yPos, baseZ - 17.5),
     scale: Vector3.create(1.5, 1.5, 1.5)
   })
   GltfContainer.create(sphereMorph, { src: 'assets/models/animated/AnimatedSphereMorph.glb' })
