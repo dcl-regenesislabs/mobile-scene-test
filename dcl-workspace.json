@@ -40,6 +40,12 @@
       "path": "scenes/test13-boundary_trigger"
     },
     {
+      "path": "scenes/test12-2-spatial_audio_stream"
+    },
+    {
+      "path": "scenes/test12-1-global_audio_stream"
+    },
+    {
       "path": "scenes/test11-texture_tweens"
     },
     {
