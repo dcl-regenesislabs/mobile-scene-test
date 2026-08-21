@@ -2,8 +2,8 @@
 	"ecs7": true,
 	"runtimeVersion": "7",
 	"display": {
-		"title": "Audio Stream",
-		"description": "Test for audio stream",
+		"title": "Global Audio Stream",
+		"description": "Test for global audio stream",
 		"navmapThumbnail": "images/scene-thumbnail.png",
 		"favicon": "favicon_asset"
 	},

@@ -1,5 +1,5 @@
 {
-  "name": "audio_stream",
+  "name": "spatial_audio_stream",
   "version": "1.0.0",
   "description": "Test for audio stream",
   "scripts": {
