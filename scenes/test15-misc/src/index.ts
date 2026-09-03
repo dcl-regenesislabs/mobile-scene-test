@@ -294,51 +294,31 @@ export function main() {
   createLabel('NFT SHAPES (Click to open)\nAll URNs from NFT Museum', Vector3.create(miscCenterX, 5, nftTestZ + 2), 0.8)
 
   // ALL NFT URNs from the NFT Museum
-  const allNftUrns = [
-    'urn:decentraland:ethereum:erc721:0xecf7ef42b57ee37a959bf507183c5dd6bf182081:100',
-    'urn:decentraland:ethereum:erc721:0x41a322b28d0ff354040e2cbc676f0320d8c8850d:3734',
-    'urn:decentraland:matic:erc721:0x7552589075e94b41819ddfef622f07160b5b813c:32',
-    'urn:decentraland:matic:erc721:0x2d58a44d6c0a355de25761fb33a1f6269a97e2c5:1855',
-    'urn:decentraland:matic:erc721:0xe89758f01d76e1f76bc900f6749f56e1e5edc7fc:896',
-    'urn:decentraland:ethereum:erc721:0x06012c8cf97bead5deae237070f9587f8e7a266d:1540722',
-    'urn:decentraland:matic:erc721:0xd27a967ee4f66226d49a18d4f9fd98f4aa0b26df:9567',
-    'urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:13726',
-    'urn:decentraland:matic:erc721:0x0520501f5fec9ada8198b40524ce1decac303ca7:9886',
-    'urn:decentraland:ethereum:erc721:0x7e6027a6a84fc1f6db6782c523efe62c923e46ff:26435179062837234498192774682918990336524160459589740286407496683957895479890',
-    'urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:15726',
-    'urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:13655',
-    'urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:11975',
-    'urn:decentraland:ethereum:erc721:0x495f947276749ce646f68ac8c248420045cb7b5e:51297453693788132298669809830038636826071347270421607062891710071363946414095',
-    'urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:12673',
-    'urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:13493',
-    'urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:13294'
-  ]
-
-  // All available frame types to cycle through
-  const frameTypes = [
-    NftFrameType.NFT_CLASSIC,
-    NftFrameType.NFT_BAROQUE_ORNAMENT,
-    NftFrameType.NFT_DIAMOND_ORNAMENT,
-    NftFrameType.NFT_MINIMAL_WIDE,
-    NftFrameType.NFT_MINIMAL_GREY,
-    NftFrameType.NFT_BLOCKY,
-    NftFrameType.NFT_GOLD_EDGES,
-    NftFrameType.NFT_GOLD_CARVED,
-    NftFrameType.NFT_GOLD_WIDE,
-    NftFrameType.NFT_GOLD_ROUNDED,
-    NftFrameType.NFT_METAL_MEDIUM,
-    NftFrameType.NFT_METAL_WIDE,
-    NftFrameType.NFT_METAL_SLIM,
-    NftFrameType.NFT_METAL_ROUNDED,
-    NftFrameType.NFT_PINS,
-    NftFrameType.NFT_MINIMAL_BLACK,
-    NftFrameType.NFT_MINIMAL_WHITE,
-    NftFrameType.NFT_TAPE,
-    NftFrameType.NFT_WOOD_SLIM,
-    NftFrameType.NFT_WOOD_WIDE,
-    NftFrameType.NFT_WOOD_TWIGS,
-    NftFrameType.NFT_CANVAS,
-    NftFrameType.NFT_NONE
+  const allNftUrns: [string, NftFrameType][] = [
+    ['urn:decentraland:ethereum:erc721:0xecf7ef42b57ee37a959bf507183c5dd6bf182081:100', NftFrameType.NFT_CLASSIC],
+    ['urn:decentraland:ethereum:erc721:0x41a322b28d0ff354040e2cbc676f0320d8c8850d:3734', NftFrameType.NFT_BAROQUE_ORNAMENT],
+    ['urn:decentraland:matic:erc721:0x7552589075e94b41819ddfef622f07160b5b813c:32', NftFrameType.NFT_DIAMOND_ORNAMENT],
+    ['urn:decentraland:matic:erc721:0x2d58a44d6c0a355de25761fb33a1f6269a97e2c5:1855', NftFrameType.NFT_MINIMAL_WIDE],
+    ['urn:decentraland:matic:erc721:0xe89758f01d76e1f76bc900f6749f56e1e5edc7fc:896', NftFrameType.NFT_MINIMAL_GREY],
+    ['urn:decentraland:ethereum:erc721:0x06012c8cf97bead5deae237070f9587f8e7a266d:1540722', NftFrameType.NFT_BLOCKY],
+    ['urn:decentraland:matic:erc721:0xd27a967ee4f66226d49a18d4f9fd98f4aa0b26df:9567', NftFrameType.NFT_GOLD_EDGES],
+    ['urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:13726', NftFrameType.NFT_GOLD_CARVED],
+    ['urn:decentraland:matic:erc721:0x0520501f5fec9ada8198b40524ce1decac303ca7:9886', NftFrameType.NFT_GOLD_WIDE],
+    ['urn:decentraland:ethereum:erc721:0x7e6027a6a84fc1f6db6782c523efe62c923e46ff:26435179062837234498192774682918990336524160459589740286407496683957895479890', NftFrameType.NFT_GOLD_ROUNDED],
+    ['urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:15726', NftFrameType.NFT_METAL_MEDIUM],
+    ['urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:13655', NftFrameType.NFT_METAL_WIDE],
+    ['urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:11975', NftFrameType.NFT_METAL_SLIM],
+    ['urn:decentraland:ethereum:erc721:0x495f947276749ce646f68ac8c248420045cb7b5e:51297453693788132298669809830038636826071347270421607062891710071363946414095', NftFrameType.NFT_METAL_ROUNDED,],
+    ['urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:12673', NftFrameType.NFT_PINS],
+    ['urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:13493', NftFrameType.NFT_MINIMAL_BLACK],
+    ['urn:decentraland:ethereum:erc721:0x22c1f6050e56d2876009903609a2cc3fef83b415:13294', NftFrameType.NFT_MINIMAL_WHITE],
+    // Urns below are repeated to match the size of NftFrameType
+    ['urn:decentraland:ethereum:erc721:0xecf7ef42b57ee37a959bf507183c5dd6bf182081:100', NftFrameType.NFT_TAPE],
+    ['urn:decentraland:ethereum:erc721:0x41a322b28d0ff354040e2cbc676f0320d8c8850d:3734', NftFrameType.NFT_WOOD_SLIM],
+    ['urn:decentraland:matic:erc721:0x7552589075e94b41819ddfef622f07160b5b813c:32', NftFrameType.NFT_WOOD_WIDE],
+    ['urn:decentraland:matic:erc721:0x2d58a44d6c0a355de25761fb33a1f6269a97e2c5:1855', NftFrameType.NFT_WOOD_TWIGS],
+    ['urn:decentraland:matic:erc721:0xe89758f01d76e1f76bc900f6749f56e1e5edc7fc:896', NftFrameType.NFT_CANVAS],
+    ['urn:decentraland:ethereum:erc721:0x06012c8cf97bead5deae237070f9587f8e7a266d:1540722', NftFrameType.NFT_NONE],
   ]
 
   // Store NFT entities for click handling
@@ -349,11 +329,11 @@ export function main() {
   const xSpacing = 2.8
   const ySpacing = 2.8
 
-  allNftUrns.forEach((urn, index) => {
+  allNftUrns.forEach(([urn, frameType], index) => {
     const row = Math.floor(index / nftsPerRow)
     const col = index % nftsPerRow
     const x = (col - (nftsPerRow - 1) / 2) * xSpacing
-    const y = 8 - row * ySpacing  // Row 0: Y=8, Row 1: Y=4.8, Row 2: Y=1.6
+    const y = 10 - row * ySpacing  // Row 0: Y=8, Row 1: Y=4.8, Row 2: Y=1.6
 
     const nftEntity = engine.addEntity()
     Transform.create(nftEntity, {
@@ -366,10 +346,9 @@ export function main() {
     MeshCollider.setPlane(nftEntity)
 
     // Add NFT shape with cycling frame types
-    const frameType = frameTypes[index % frameTypes.length]
     NftShape.create(nftEntity, {
       urn: urn,
-      color: Color3.White(),
+      color: Color3.Random(),
       style: frameType
     })
 
@@ -390,7 +369,7 @@ export function main() {
     nftEntities.push({ entity: nftEntity, urn: urn })
 
     // Label with index number below each NFT
-    createLabel(`#${index + 1}`, Vector3.create(miscCenterX + x, y - 1.8, nftTestZ + 0.1), 0.35)
+    createLabel(`${frameType}`, Vector3.create(miscCenterX + x, y + 1., nftTestZ + 0.1), 2.0)
   })
 
   // Import and setup click handlers for NFTs
