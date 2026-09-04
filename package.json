@@ -14,8 +14,9 @@
   },
   "devDependencies": {
     "@dcl/asset-packs": "latest",
-    "@dcl/js-runtime": "7.23.1",
-    "@dcl/sdk": "^7.24.4",
+    "@dcl/js-runtime": "^7.27.0",
+    "@dcl/sdk": "^7.27.0",
+    "@types/node": "^26.4.1",
     "glob": "=13.0.6"
   },
   "engines": {
@@ -31,5 +32,8 @@
   "workspaces": [
     ".",
     "scenes/*"
-  ]
+  ],
+  "allowScripts": {
+    "@dcl/sdk-commands@7.27.0": true
+  }
 }
