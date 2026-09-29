@@ -30,6 +30,7 @@ const TESTS = [
     { "test": "Test 23", "name": "Player Physics", "base": [-8, 4] },
     { "test": "Test 24", "name": "Memory Stress", "base": [-10, 4] },
     { "test": "Test 25", "name": "Particle System", "base": [2, -6] },
+    { "test": "Test 26", "name": "Shadow Casters", "base": [0, -6] },
 ]
 
 export function teleportUi() {
