@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "scenes/test26-shadow_casters"
+    },
+    {
       "path": "scenes/test25-particle_system"
     },
     {
