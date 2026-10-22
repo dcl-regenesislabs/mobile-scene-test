@@ -36,6 +36,6 @@ export function main() {
     position: Vector3.create(baseX, 1, baseZ)
   });
   MeshRenderer.setSphere(global_stream);
-  createLabel('Global Audio Source', Vector3.create(baseX, 2, baseZ), 1.5);
+  createLabel('Global Audio Stream', Vector3.create(baseX, 2, baseZ), 1.5);
 
 }

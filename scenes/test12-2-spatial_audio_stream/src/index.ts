@@ -36,5 +36,5 @@ export function main() {
     position: Vector3.create(baseX, 1, baseZ)
   });
   MeshRenderer.setSphere(spatial_stream);
-  createLabel('Spatial Audio Source', Vector3.create(baseX, 2, baseZ), 1.5);
+  createLabel('Spatial Audio Stream', Vector3.create(baseX, 2, baseZ), 1.5);
 }
